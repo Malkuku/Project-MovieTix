@@ -23,8 +23,4 @@ public class DataSourceConfig {
         config.setMaxLifetime(1800000);
         return new HikariDataSource(config);
     }
-    // 初始化
-    static {
-        JdbcUtils.init(createDataSource());
-    }
 }

@@ -1,5 +1,9 @@
 package com.movietix.xiazihao.constants;
 
+import com.movietix.xiazihao.config.DataSourceConfig;
+
+import javax.sql.DataSource;
+
 public class ConstantsManager {
     //数据库配置信息
     private static final String URL = "jdbc:mysql://localhost:3306/movie_tix";
