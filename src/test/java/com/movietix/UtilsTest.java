@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.movietix.xiazihao.utils.JdbcUtils.executeQuery;
+import static com.movietix.xiazihao.utils.JdbcUtils.executeUpdate;
 
 @Slf4j
 public class UtilsTest {
@@ -36,5 +37,12 @@ public class UtilsTest {
             return movie;
         });
         log.info(movieList.toString());
+    }
+
+    //测试删除
+    @Test
+    public void testExecteUpdate() throws SQLException {
+        String sql = "delete from movies where id = ?";
+        executeUpdate(sql,4);
     }
 }
