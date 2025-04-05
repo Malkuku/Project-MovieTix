@@ -3,18 +3,27 @@ package com.movietix.xiazihao.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class JsonUtils {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper;
 
     static {
-        // 全局配置
+        // 配置ObjectMapper实例
+        objectMapper = new ObjectMapper();
+        // 1. 忽略JSON中的未知属性
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+        // 2. 注册Java 8日期时间模块
+        objectMapper.registerModule(new JavaTimeModule());
+        // 3. 禁用日期作为时间戳的默认行为
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        // 4. 设置全局日期格式（传统Date和Java 8日期都适用）
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
     }
 
     // 解析普通对象

@@ -1,6 +1,7 @@
 package com.movietix;
 
 import com.movietix.xiazihao.entity.Movie;
+import com.movietix.xiazihao.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +15,74 @@ import static com.movietix.xiazihao.utils.JdbcUtils.executeUpdate;
 
 @Slf4j
 public class UtilsTest {
+
+    //测试Json封装
+    @Test
+    public void testToJson() {
+        Movie movie = new Movie(1, "Example Title", "http://example.com/poster.jpg", "2023-10-01", 120, "Action", 8.5, 1, LocalDateTime.now(), LocalDateTime.now());
+        String json = JsonUtils.toJson(movie);
+        log.info(json);
+    }
+
+    //测试Json解析
+    @Test
+    public void testParseJson() {
+        String json = "{\n" +
+                "  \"id\": 1,\n" +
+                "  \"title\": \"Example Title\",\n" +
+                "  \"poster_url\": \"http://example.com/poster.jpg\",\n" +
+                "  \"release_date\": \"2023-10-01\",\n" +
+                "  \"duration\": 120,\n" +
+                "  \"genre\": \"Action\",\n" +
+                "  \"rating\": 8.5,\n" +
+                "  \"status\": 1,\n" +
+                "  \"created_at\": \"2023-10-01T12:00:00\",\n" +
+                "  \"updated_at\": \"2023-10-01T12:00:00\"\n" +
+                "}";
+        Movie movie = JsonUtils.parseJson(json, Movie.class);
+        log.info(movie.toString());
+            json = "[\n" +
+                    "    {\n" +
+                    "        \"id\": 1,\n" +
+                    "        \"title\": \"Example Title 1\",\n" +
+                    "        \"poster_url\": \"http://example.com/poster1.jpg\",\n" +
+                    "        \"release_date\": \"2023-10-01\",\n" +
+                    "        \"duration\": 120,\n" +
+                    "        \"genre\": \"Action\",\n" +
+                    "        \"rating\": 8.5,\n" +
+                    "        \"status\": 1,\n" +
+                    "        \"created_at\": \"2023-10-01T12:00:00\",\n" +
+                    "        \"updated_at\": \"2023-10-01T12:00:00\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "        \"id\": 2,\n" +
+                    "        \"title\": \"Example Title 2\",\n" +
+                    "        \"poster_url\": \"http://example.com/poster2.jpg\",\n" +
+                    "        \"release_date\": \"2023-10-02\",\n" +
+                    "        \"duration\": 130,\n" +
+                    "        \"genre\": \"Comedy\",\n" +
+                    "        \"rating\": 7.5,\n" +
+                    "        \"status\": 1,\n" +
+                    "        \"created_at\": \"2023-10-02T12:00:00\",\n" +
+                    "        \"updated_at\": \"2023-10-02T12:00:00\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "        \"id\": 3,\n" +
+                    "        \"title\": \"Example Title 3\",\n" +
+                    "        \"poster_url\": \"http://example.com/poster3.jpg\",\n" +
+                    "        \"release_date\": \"2023-10-03\",\n" +
+                    "        \"duration\": 140,\n" +
+                    "        \"genre\": \"Drama\",\n" +
+                    "        \"rating\": 9.0,\n" +
+                    "        \"status\": 1,\n" +
+                    "        \"created_at\": \"2023-10-03T12:00:00\",\n" +
+                    "        \"updated_at\": \"2023-10-03T12:00:00\"\n" +
+                    "    }\n" +
+                    "]";
+        List<Movie> movies = JsonUtils.parseJsonToList(json, Movie.class);
+        log.info(movies.toString());
+    }
+
     //测试查询
     @Test
     public void testExecteQuery() throws SQLException {
