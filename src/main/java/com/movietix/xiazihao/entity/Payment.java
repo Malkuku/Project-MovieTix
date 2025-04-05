@@ -5,21 +5,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Movie {
+public class Payment {
     private Integer id; // 主键ID
-    private String title; // 电影名称
-    private String posterUrl; // 海报URL
-    private LocalDate releaseDate; // 上映日期
-    private Integer duration; // 时长(分钟)
-    private String genre; // 类型
-    private BigDecimal rating; // 评分
-    private Integer status = 1; // 状态:0-下架 1-上映
+    private Integer orderId; // 订单ID
+    private BigDecimal amount; // 支付金额
+    private String paymentMethod; // 支付方式
+    private String transactionId; // 交易号
+    private Integer status = 0; // 状态:0-未支付 1-支付成功 2-支付失败
+    private LocalDateTime payTime; // 支付时间
     private LocalDateTime createdAt; // 创建时间
     private LocalDateTime updatedAt; // 更新时间
 }
