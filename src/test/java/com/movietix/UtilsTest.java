@@ -1,17 +1,18 @@
 package com.movietix;
 
 import com.movietix.xiazihao.entity.Movie;
+import com.movietix.xiazihao.utils.JdbcUtils;
 import com.movietix.xiazihao.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static com.movietix.xiazihao.utils.JdbcUtils.executeQuery;
-import static com.movietix.xiazihao.utils.JdbcUtils.executeUpdate;
+import static com.movietix.xiazihao.utils.JdbcUtils.*;
 
 @Slf4j
 public class UtilsTest {
@@ -83,11 +84,41 @@ public class UtilsTest {
         log.info(movies.toString());
     }
 
+    //测试事务处理
+    @Test
+    public void testExecuteTransaction() throws Exception {
+        List<Integer> result = JdbcUtils.executeTransaction(conn -> {
+            String sql2 = "update movies set title = '鹤翼' where id = ?";
+            try {
+                JdbcUtils.executeUpdate(conn,sql2,2);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            String sql = "select id from movies where title like ?";
+            List<Integer> id = null;
+            try {
+                id = JdbcUtils.executeQuery(conn,sql, resultSet -> {
+                    Movie movie = new Movie();
+                    try {
+                        movie.setId(resultSet.getInt("id"));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return movie.getId();
+                },"鹤翼王");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            return id;
+        });
+        log.info(result.toString());
+    }
+
     //测试查询
     @Test
     public void testExecteQuery() throws SQLException {
         String sql = "select id,title,rating,genre,duration,status,created_at from movies";
-        List<Movie> movieList = executeQuery(sql, resultSet -> {
+        List<Movie> movieList = executeQuery(getConnection(),sql, resultSet -> {
             Movie movie = new Movie();
             try {
                 //设置日期格式
@@ -112,6 +143,6 @@ public class UtilsTest {
     @Test
     public void testExecteUpdate() throws SQLException {
         String sql = "delete from movies where id = ?";
-        executeUpdate(sql,4);
+        executeUpdate(getConnection(),sql,4);
     }
 }

@@ -23,42 +23,40 @@ public class JdbcUtils {
     }
 
     // 通用查询方法 (动态SQL+参数)
-    public static <T> List<T> executeQuery(String sql,
-                                           Function<ResultSet, T> rowMapper,
-                                           Object... params) throws SQLException {
-        Connection conn = null;
+    public static <T> List<T> executeQuery(Connection conn, String sql, Function<ResultSet, T> rowMapper, Object... params) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         List<T> result = new ArrayList<>();
-
         try {
-            conn = getConnection();
             stmt = conn.prepareStatement(sql);
             setParameters(stmt, params);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                log.debug("id:{}",rs.getString(1));
                 result.add(rowMapper.apply(rs));
             }
             return result;
         } finally {
-            closeResources(conn, stmt, rs);
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
         }
     }
 
     // 通用更新方法 (INSERT/UPDATE/DELETE)
-    public static int executeUpdate(String sql, Object... params) throws SQLException {
-        Connection conn = null;
+    public static int executeUpdate(Connection conn, String sql, Object... params) throws SQLException {
         PreparedStatement stmt = null;
-
         try {
-            conn = getConnection();
             stmt = conn.prepareStatement(sql);
             setParameters(stmt, params);
             return stmt.executeUpdate();
         } finally {
-            closeResources(conn, stmt, null);
+            if (stmt != null) {
+                stmt.close();
+            }
         }
     }
 
@@ -83,23 +81,32 @@ public class JdbcUtils {
         }
     }
 
-    // 事务执行模板
-    public static <T> T executeTransaction(TransactionCallback<T> action) throws SQLException {
+    public static <T> T executeTransaction(Function<Connection, T> action) throws Exception {
         Connection conn = null;
         try {
             conn = getConnection();
-            conn.setAutoCommit(false);
+            conn.setAutoCommit(false); // 关闭自动提交，开始事务
 
-            T result = action.doInTransaction(conn);
-            conn.commit();
+            T result = action.apply(conn); // 执行事务中的操作
+            conn.commit(); // 提交事务
             return result;
-        } catch (SQLException e) {
-            if (conn != null) conn.rollback();
-            throw e;
+        } catch (Exception e) {
+            if (conn != null) {
+                try {
+                    conn.rollback(); // 出现异常时回滚事务
+                } catch (SQLException rollbackEx) {
+                    System.err.println("Error rolling back transaction: " + rollbackEx.getMessage());
+                }
+            }
+            throw e; // 重新抛出异常
         } finally {
             if (conn != null) {
-                conn.setAutoCommit(true);
-                conn.close();
+                try {
+                    conn.setAutoCommit(true); // 恢复自动提交
+                    conn.close(); // 关闭连接
+                } catch (SQLException e) {
+                    System.err.println("Error closing connection: " + e.getMessage());
+                }
             }
         }
     }
