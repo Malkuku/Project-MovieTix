@@ -5,6 +5,8 @@ public class ConstantsManager {
     private static final String URL = "jdbc:mysql://localhost:3306/movie_tix";
     private static final String USER = "root";
     private static final String PASSWORD = "pin666";
+    //数据库引擎
+    private static final String DRIVER = "com.mysql.jdbc.Driver";
 
     private static ConstantsManager instance;
 
@@ -21,10 +23,14 @@ public class ConstantsManager {
     public String getDataBaseURL() {
         return URL;
     }
-    public String getUserDataBasename() {
+    public String getDataBaseUsername() {
         return USER;
     }
     public String getDataBasePassword() {
         return PASSWORD;
+    }
+    //获取引擎信息
+    public String getDataBaseDriver() {
+        return DRIVER;
     }
 }
