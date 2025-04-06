@@ -12,6 +12,15 @@ import java.util.List;
 @Slf4j
 public class LogDaoImpl implements LogDao {
     @Override
+    public void deleteLogByIds(List<Integer> ids) throws SQLException {
+        String sql = "DELETE FROM logs WHERE id IN (" +
+                String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) +
+                ")";
+        log.info("Executing SQL: {}", sql);
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, ids.toArray());
+    }
+
+    @Override
     public List<Log> selectAllLogs() throws SQLException {
         String sql = "SELECT * FROM logs";
         List<Log> logList = JdbcUtils.executeQuery(JdbcUtils.getConnection(), sql, rs -> {
