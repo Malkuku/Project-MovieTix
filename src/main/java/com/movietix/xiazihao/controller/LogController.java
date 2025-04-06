@@ -1,6 +1,7 @@
 package com.movietix.xiazihao.controller;
 
 import com.movietix.xiazihao.entity.Log;
+import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.LogService;
 import com.movietix.xiazihao.service.impl.LogServiceImpl;
 import com.movietix.xiazihao.utils.JsonUtils;
@@ -30,7 +31,7 @@ public class LogController extends HttpServlet {
             resp.setCharacterEncoding("UTF-8");
             resp.setContentType("application/json");
             // 3. 将请求体作为响应返回
-            String json = JsonUtils.toJson(logList);
+            String json = JsonUtils.toJson(Result.success(logList));
             PrintWriter out = resp.getWriter();
             out.print(json);
             out.flush();
@@ -38,4 +39,6 @@ public class LogController extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
+
+    //2.批量删除日志
 }
