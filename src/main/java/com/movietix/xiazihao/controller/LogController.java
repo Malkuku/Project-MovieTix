@@ -1,6 +1,6 @@
 package com.movietix.xiazihao.controller;
 
-import com.movietix.xiazihao.entity.Log;
+import com.movietix.xiazihao.entity.pojo.Log;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.LogService;
 import com.movietix.xiazihao.service.impl.LogServiceImpl;

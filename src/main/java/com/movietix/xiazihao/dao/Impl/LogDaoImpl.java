@@ -1,12 +1,11 @@
 package com.movietix.xiazihao.dao.Impl;
 
 import com.movietix.xiazihao.dao.LogDao;
-import com.movietix.xiazihao.entity.Log;
+import com.movietix.xiazihao.entity.pojo.Log;
 import com.movietix.xiazihao.utils.JdbcUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j

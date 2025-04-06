@@ -1,4 +1,4 @@
-package com.movietix.xiazihao.entity;
+package com.movietix.xiazihao.entity.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

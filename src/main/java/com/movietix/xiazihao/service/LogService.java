@@ -1,6 +1,6 @@
 package com.movietix.xiazihao.service;
 
-import com.movietix.xiazihao.entity.Log;
+import com.movietix.xiazihao.entity.pojo.Log;
 
 import java.sql.SQLException;
 import java.util.List;

@@ -2,7 +2,7 @@ package com.movietix.xiazihao.service.impl;
 
 import com.movietix.xiazihao.dao.Impl.LogDaoImpl;
 import com.movietix.xiazihao.dao.LogDao;
-import com.movietix.xiazihao.entity.Log;
+import com.movietix.xiazihao.entity.pojo.Log;
 import com.movietix.xiazihao.service.LogService;
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,13 +1,12 @@
 package com.movietix;
 
-import com.movietix.xiazihao.entity.Movie;
+import com.movietix.xiazihao.entity.pojo.Movie;
 import com.movietix.xiazihao.utils.JdbcUtils;
 import com.movietix.xiazihao.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
