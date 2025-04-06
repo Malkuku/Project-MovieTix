@@ -6,8 +6,10 @@ import com.movietix.xiazihao.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -20,7 +22,7 @@ public class UtilsTest {
     //测试Json封装
     @Test
     public void testToJson() {
-        Movie movie = new Movie(1, "Example Title", "http://example.com/poster.jpg", "2023-10-01", 120, "Action", 8.5, 1, LocalDateTime.now(), LocalDateTime.now());
+        Movie movie = new Movie(1, "Example Title", "http://example.com/poster.jpg", LocalDate.parse("2023-10-01"), 120, "Action", BigDecimal.valueOf(8.5), 1, LocalDateTime.now(), LocalDateTime.now());
         String json = JsonUtils.toJson(movie);
         log.info(json);
     }
@@ -126,11 +128,11 @@ public class UtilsTest {
                 //从结果集获取内容
                 movie.setId(resultSet.getInt("id"));
                 movie.setTitle(resultSet.getString("title"));
-                movie.setRating(resultSet.getDouble("rating"));
+                movie.setRating(resultSet.getBigDecimal("rating"));
                 movie.setGenre(resultSet.getString("genre"));
                 movie.setDuration(resultSet.getInt("duration"));
                 movie.setStatus(resultSet.getInt("status"));
-                movie.setCreated_at(LocalDateTime.parse(resultSet.getString("created_at"), formatter));
+                movie.setCreatedAt(LocalDateTime.parse(resultSet.getString("created_at"), formatter));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
