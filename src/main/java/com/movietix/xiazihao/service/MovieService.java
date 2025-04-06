@@ -19,4 +19,7 @@ public interface MovieService {
 
     //根据ID修改电影
     void updateMovie(Movie movie);
+
+    //根据ID查询电影
+    Movie selectMovieById(Integer id);
 }

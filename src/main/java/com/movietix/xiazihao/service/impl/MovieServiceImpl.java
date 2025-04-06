@@ -15,6 +15,15 @@ public class MovieServiceImpl implements MovieService {
     private final MovieDao movieDao = new MovieDaoImpl();
 
     @Override
+    public Movie selectMovieById(Integer id) {
+        try {
+            return movieDao.selectMovieById(id);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void updateMovie(Movie movie) {
         try {
             movieDao.updateMovie(movie);

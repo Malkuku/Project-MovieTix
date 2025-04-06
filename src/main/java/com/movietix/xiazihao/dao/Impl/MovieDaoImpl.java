@@ -13,6 +13,35 @@ import java.util.List;
 public class MovieDaoImpl implements MovieDao {
 
     @Override
+    public Movie selectMovieById(Integer id) throws SQLException {
+        String sql = "SELECT * FROM movies WHERE id = ?";
+        List<Movie> movieList = JdbcUtils.executeQuery(
+                JdbcUtils.getConnection(),
+                sql,
+                rs -> {
+                    Movie movie = new Movie();
+                    try {
+                        movie.setId(rs.getInt("id"));
+                        movie.setTitle(rs.getString("title"));
+                        movie.setReleaseDate(rs.getDate("release_date").toLocalDate());
+                        movie.setPosterUrl(rs.getString("poster_url"));
+                        movie.setDuration(rs.getInt("duration"));
+                        movie.setGenre(rs.getString("genre"));
+                        movie.setRating(rs.getBigDecimal("rating"));
+                        movie.setStatus(rs.getInt("status"));
+                        movie.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                        movie.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return movie;
+                },
+                id
+        );
+        return movieList.isEmpty() ? null : movieList.get(0);
+    }
+
+    @Override
     public void updateMovie(Movie movie) throws SQLException {
         String sql = "UPDATE movies SET " +
                 "title = COALESCE(?, title), " +

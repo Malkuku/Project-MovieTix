@@ -43,8 +43,7 @@ public class MovieController extends HttpServlet {
         String pathInfo = req.getPathInfo();
         // 处理/movies/{id}请求
         if (pathInfo != null && pathInfo.matches("/\\d+")) {
-            //selectMovieById(req, resp);
-            log.info("处理单个电影查询请求");
+            selectMovieById(req, resp);
         }
         // 处理/movies?query=params请求
         else {
@@ -61,6 +60,16 @@ public class MovieController extends HttpServlet {
         addMovie(req, resp);
     }
 
+    //根据id查询电影
+    private void selectMovieById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String pathInfo = req.getPathInfo();
+        String idStr = pathInfo.substring(1); // 去掉开头的"/"
+        Integer id = Integer.parseInt(idStr);
+        log.info("接收到的电影ID:{}", id);
+        Movie movie = movieService.selectMovieById(id);
+        log.info("查询到的电影信息:{}", movie);
+        ServletUtils.sendResponse(resp, Result.success(movie));
+    }
 
     //根据id修改电影
     private void updateMovie(HttpServletRequest req, HttpServletResponse resp) throws IOException {
