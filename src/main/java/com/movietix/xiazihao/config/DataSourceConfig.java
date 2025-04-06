@@ -23,4 +23,6 @@ public class DataSourceConfig {
         config.setMaxLifetime(1800000);
         return new HikariDataSource(config);
     }
+
+    //TODO 服务器热交换时，关闭连接池
 }

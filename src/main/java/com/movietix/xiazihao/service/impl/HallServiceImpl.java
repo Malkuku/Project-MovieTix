@@ -15,6 +15,11 @@ public class HallServiceImpl implements HallService {
     private final HallDao hallDao = new HallDaoImpl();
 
     @Override
+    public void deleteHallsByIds(List<Integer> ids) {
+        hallDao.deleteHallByIds(ids);
+    }
+
+    @Override
     public void addHall(Hall hall) {
         try {
             hallDao.addHall(hall);

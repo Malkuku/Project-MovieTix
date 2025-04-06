@@ -11,6 +11,16 @@ import java.util.List;
 public class HallDaoImpl implements HallDao {
 
     @Override
+    public void deleteHallByIds(List<Integer> ids) {
+        String sql = "DELETE FROM halls WHERE id IN (" + String.join(",",ids.stream().map(id -> "?").toArray(String[]::new)) + ")";
+        try {
+            JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, true, ids.toArray());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void addHall(Hall hall) throws SQLException {
         String sql = "INSERT INTO halls (name, capacity, `rows`, `cols`, facilities, status) VALUES (?, ?, ?, ?, ?, ?)";
         JdbcUtils.executeUpdate(

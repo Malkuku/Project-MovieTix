@@ -15,4 +15,7 @@ public interface HallDao {
 
     //添加影厅
     void addHall(Hall hall) throws SQLException;
+
+    //批量删除影厅
+    void deleteHallByIds(List<Integer> ids);
 }

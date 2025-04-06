@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @WebServlet("/halls/*")
@@ -40,7 +42,24 @@ public class HallController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        deleteHallsByIds(req, resp);
+    }
 
+    //通过id批量删除放映厅
+    private void deleteHallsByIds(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String[] values = req.getParameterValues("ids");
+        List<Integer> ids = new ArrayList<>();
+        {
+            if(values != null && values.length > 0) {
+                String[] id_strs = values[0].split(",");
+                for (String id_str : id_strs) {
+                    ids.add(Integer.valueOf(id_str));
+                }
+            }
+        }
+        hallService.deleteHallsByIds(ids);
+        log.info("批量删除影厅成功, 影厅id: {}", ids);
+        ServletUtils.sendResponse(resp, Result.success());
     }
 
     //添加放映厅
