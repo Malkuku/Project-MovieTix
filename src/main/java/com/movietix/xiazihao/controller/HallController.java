@@ -50,6 +50,8 @@ public class HallController extends HttpServlet {
         deleteHallsByIds(req, resp);
     }
 
+    //TODO 批量更新放映厅状态
+
     //根据ID查询放映厅
     private void selectHallById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
