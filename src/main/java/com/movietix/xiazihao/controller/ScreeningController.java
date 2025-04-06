@@ -21,6 +21,8 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @WebServlet("/screenings/*")
@@ -54,7 +56,11 @@ public class ScreeningController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        try {
+            deleteScreeningByIds(req,resp);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //条件分页查询放映场次
@@ -101,4 +107,12 @@ public class ScreeningController extends HttpServlet {
         ServletUtils.sendResponse(resp, Result.success(pageResult));
     }
 
+    //根据id批量删除场次
+    private void deleteScreeningByIds(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String[] values = req.getParameterValues("ids");
+        List<Integer> ids = ServletUtils.parseReqToList(values, Integer.class);
+        log.info("接收到的放映场次ID:{}", ids);
+        screeningService.deleteScreeningByIds(ids);
+        ServletUtils.sendResponse(resp, Result.success());
+    }
 }

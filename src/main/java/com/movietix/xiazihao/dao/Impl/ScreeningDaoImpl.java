@@ -9,6 +9,13 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ScreeningDaoImpl implements ScreeningDao {
+
+    @Override
+    public void deleteScreeningByIds(List<Integer> ids) throws SQLException {
+        String sql = "DELETE FROM screenings WHERE id IN (" + String.join(",", ids.stream().map(String::valueOf).toArray(String[]::new)) + ")";
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, false);
+    }
+
     @Override
     public Integer selectScreeningCount(ScreeningQueryParam param) throws SQLException {
         String sql = "SELECT COUNT(*) " +

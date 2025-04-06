@@ -14,6 +14,11 @@ public class ScreeningServiceImpl implements ScreeningService {
     private final ScreeningDao screeningDao = new ScreeningDaoImpl();
 
     @Override
+    public void deleteScreeningByIds(List<Integer> ids) throws SQLException {
+        screeningDao.deleteScreeningByIds(ids);
+    }
+
+    @Override
     public PageResult<Screening> selectScreeningByPage(ScreeningQueryParam param) throws SQLException {
         Integer total = screeningDao.selectScreeningCount(param);
         List<Screening> screeningList = screeningDao.selectScreeningByPage(param);

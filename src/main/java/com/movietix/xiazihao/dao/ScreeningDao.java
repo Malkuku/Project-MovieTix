@@ -11,4 +11,7 @@ public interface ScreeningDao {
     Integer selectScreeningCount(ScreeningQueryParam param) throws SQLException;
     // 查询电影场次列表
     List<Screening> selectScreeningByPage(ScreeningQueryParam param) throws SQLException;
+
+    // 批量删除电影场次
+    void deleteScreeningByIds(List<Integer> ids) throws SQLException;
 }
