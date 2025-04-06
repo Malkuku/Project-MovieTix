@@ -28,6 +28,15 @@ public class MovieController extends HttpServlet {
 
     private final MovieService movieService = new MovieServiceImpl();
 
+    //根据id修改电影
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String json = ServletUtils.getRequestBody(req);
+        Movie movie = JsonUtils.parseJson(json, Movie.class);
+        log.info("接收到的电影信息:{}", movie);
+        movieService.updateMovie(movie);
+        ServletUtils.sendResponse(resp, Result.success());
+    }
+
     //添加电影
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String json = ServletUtils.getRequestBody(req);

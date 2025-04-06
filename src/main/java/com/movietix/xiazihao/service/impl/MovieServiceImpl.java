@@ -8,10 +8,20 @@ import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.service.MovieService;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class MovieServiceImpl implements MovieService {
     private final MovieDao movieDao = new MovieDaoImpl();
+
+    @Override
+    public void updateMovie(Movie movie) {
+        try {
+            movieDao.updateMovie(movie);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void addMovie(Movie movie) {

@@ -19,4 +19,7 @@ public interface MovieDao {
 
     //添加电影
     void addMovie(Movie movie) throws SQLException;
+
+    //根据ID修改电影
+    void updateMovie(Movie movie) throws SQLException;
 }

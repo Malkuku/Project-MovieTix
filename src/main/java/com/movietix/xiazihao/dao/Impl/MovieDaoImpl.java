@@ -13,6 +13,30 @@ import java.util.List;
 public class MovieDaoImpl implements MovieDao {
 
     @Override
+    public void updateMovie(Movie movie) throws SQLException {
+        String sql = "UPDATE movies SET " +
+                "title = COALESCE(?, title), " +
+                "release_date = COALESCE(?, release_date), " +
+                "poster_url = COALESCE(?, poster_url), " +
+                "duration = COALESCE(?, duration), " +
+                "genre = COALESCE(?, genre), " +
+                "rating = COALESCE(?, rating), " +
+                "status = COALESCE(?, status), " +
+                "updated_at = NOW() " +
+                "WHERE id = ?";
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql,
+                movie.getTitle(),
+                movie.getReleaseDate(),
+                movie.getPosterUrl(),
+                movie.getDuration(),
+                movie.getGenre(),
+                movie.getRating(),
+                movie.getStatus(),
+                movie.getId()
+        );
+    }
+
+    @Override
     public void addMovie(Movie movie) throws SQLException {
         String sql = "INSERT INTO movies (title, release_date, poster_url, duration, genre, rating, status) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
