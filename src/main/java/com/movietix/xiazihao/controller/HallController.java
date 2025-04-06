@@ -37,12 +37,21 @@ public class HallController extends HttpServlet {
     //put请求入口
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        updateHall(req, resp);
     }
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         deleteHallsByIds(req, resp);
+    }
+
+    //修改放映厅信息
+    private void updateHall(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String json = ServletUtils.getRequestBody(req);
+        Hall hall = JsonUtils.parseJson(json, Hall.class);
+        hallService.updateHall(hall);
+        log.info("修改影厅成功, 影厅信息: {}", hall);
+        ServletUtils.sendResponse(resp, Result.success());
     }
 
     //通过id批量删除放映厅

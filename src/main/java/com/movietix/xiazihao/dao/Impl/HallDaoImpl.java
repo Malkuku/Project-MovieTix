@@ -11,6 +11,31 @@ import java.util.List;
 public class HallDaoImpl implements HallDao {
 
     @Override
+    public void updateHall(Hall hall) throws SQLException {
+        String sql = "UPDATE halls SET " +
+                "name = COALESCE(?, name), " +
+                "capacity = COALESCE(?, capacity), " +
+                "`rows` = COALESCE(?, `rows`), " +
+                "`cols` = COALESCE(?, `cols`), " +
+                "facilities = COALESCE(?, facilities), " +
+                "status = COALESCE(?, status), " +
+                "updated_at = NOW() " +
+                "WHERE id = ?";
+        JdbcUtils.executeUpdate(
+                JdbcUtils.getConnection(),
+                sql,
+                true,
+                hall.getName(),
+                hall.getCapacity(),
+                hall.getRows(),
+                hall.getCols(),
+                hall.getFacilities(),
+                hall.getStatus(),
+                hall.getId()
+        );
+    }
+
+    @Override
     public void deleteHallByIds(List<Integer> ids) {
         String sql = "DELETE FROM halls WHERE id IN (" + String.join(",",ids.stream().map(id -> "?").toArray(String[]::new)) + ")";
         try {

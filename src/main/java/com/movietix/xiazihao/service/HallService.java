@@ -15,4 +15,7 @@ public interface HallService {
 
     // 批量删除影厅
     void deleteHallsByIds(List<Integer> ids);
+
+    // 更新影厅信息
+    void updateHall(Hall hall);
 }

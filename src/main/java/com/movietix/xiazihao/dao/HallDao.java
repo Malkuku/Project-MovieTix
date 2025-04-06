@@ -18,4 +18,7 @@ public interface HallDao {
 
     //批量删除影厅
     void deleteHallByIds(List<Integer> ids);
+
+    //更新影厅信息
+    void updateHall(Hall hall) throws SQLException;
 }
