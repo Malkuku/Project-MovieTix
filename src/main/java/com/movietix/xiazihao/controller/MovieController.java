@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @WebServlet("/movies")
@@ -25,7 +27,7 @@ public class MovieController extends HttpServlet {
 
     private final MovieService movieService = new MovieServiceImpl();
 
-    //条件分页查询电影信息 // TODO
+    //条件分页查询电影信息
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         MovieQueryParam param = new MovieQueryParam();
         {
@@ -65,5 +67,27 @@ public class MovieController extends HttpServlet {
         }
         log.info("查询到的电影列表:{}", pageResult);
         ServletUtils.sendResponse(resp, Result.success(pageResult));
+    }
+
+    //批量删除电影
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String[] id_strs = req.getParameterValues("ids");
+        log.info("接收到的电影ID:{}", (Object) id_strs);
+        List<Integer> ids = new ArrayList<>();
+        {
+            if(id_strs != null) {
+                String[] idArray = id_strs[0].split(",");
+                for (String id_str : idArray) {
+                    log.info("处理ID:{}", id_str);
+                    try {
+                        ids.add(Integer.parseInt(id_str));
+                    } catch (NumberFormatException e) {
+                        log.error("ID格式错误:{}", id_str, e);
+                    }
+                }
+            }
+        }
+        movieService.deleteMoviesByIds(ids);
+        ServletUtils.sendResponse(resp, Result.success());
     }
 }

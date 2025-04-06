@@ -14,6 +14,18 @@ public class MovieServiceImpl implements MovieService {
     private final MovieDao movieDao = new MovieDaoImpl();
 
     @Override
+    public void deleteMoviesByIds(List<Integer> ids){
+        try {
+           if(ids == null || ids.isEmpty()) {
+                return;
+           }
+           movieDao.deleteMoviesByIds(ids);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public PageResult<Movie> selectMoviesByPage(MovieQueryParam param) throws SQLException {
         Integer total = movieDao.countMovies(param);
         List<Movie> movies = movieDao.selectMoviesByPage(param);

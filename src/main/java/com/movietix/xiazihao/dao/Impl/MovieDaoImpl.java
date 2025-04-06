@@ -13,6 +13,15 @@ import java.util.List;
 public class MovieDaoImpl implements MovieDao {
 
     @Override
+    public void deleteMoviesByIds(List<Integer> ids) throws SQLException {
+        String sql = "DELETE FROM movies WHERE id IN (" +
+                String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) +
+                ")";
+        log.info("Executing SQL: {}", sql);
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, ids.toArray());
+    }
+
+    @Override
     public Integer countMovies(MovieQueryParam param) throws SQLException {
         String sql = "SELECT COUNT(*) FROM movies WHERE 1=1 " +
                 "AND (? IS NULL OR title LIKE CONCAT('%', ?, '%')) " +

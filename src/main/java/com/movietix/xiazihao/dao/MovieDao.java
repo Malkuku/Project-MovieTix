@@ -13,4 +13,7 @@ public interface MovieDao {
 
     //分页条件查询
     List<Movie> selectMoviesByPage(MovieQueryParam param) throws SQLException;
+
+    //批量删除电影
+    void deleteMoviesByIds(List<Integer> ids) throws SQLException;
 }
