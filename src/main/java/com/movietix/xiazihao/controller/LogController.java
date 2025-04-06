@@ -4,7 +4,6 @@ import com.movietix.xiazihao.entity.pojo.Log;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.LogService;
 import com.movietix.xiazihao.service.impl.LogServiceImpl;
-import com.movietix.xiazihao.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.annotation.WebServlet;
@@ -14,21 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.io.PrintWriter;
+
+import static com.movietix.xiazihao.utils.ServletUtils.sendResponse;
 
 @Slf4j
 @WebServlet("/logs")
 public class LogController extends HttpServlet {
     private final LogService logService = new LogServiceImpl();
-
-    // 封装返回方法
-    private void sendResponse(HttpServletResponse resp, Result result) throws IOException {
-        resp.setCharacterEncoding("UTF-8");
-        resp.setContentType("application/json");
-        PrintWriter out = resp.getWriter();
-        out.print(JsonUtils.toJson(result));
-        out.flush();
-    }
 
     //1.返回日志列表
     @Override
