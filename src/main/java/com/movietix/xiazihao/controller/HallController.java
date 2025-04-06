@@ -6,6 +6,7 @@ import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.HallService;
 import com.movietix.xiazihao.service.impl.HallServiceImpl;
+import com.movietix.xiazihao.utils.JsonUtils;
 import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +25,7 @@ public class HallController extends HttpServlet {
     //post请求入口
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        addHall(req, resp);
     }
     //get请求入口
     @Override
@@ -40,6 +41,15 @@ public class HallController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+    }
+
+    //添加放映厅
+    private void addHall(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String json = ServletUtils.getRequestBody(req);
+        Hall hall = JsonUtils.parseJson(json, Hall.class);
+        hallService.addHall(hall);
+        log.info("添加影厅成功, 影厅信息: {}", hall);
+        ServletUtils.sendResponse(resp, Result.success());
     }
 
     //分页查询

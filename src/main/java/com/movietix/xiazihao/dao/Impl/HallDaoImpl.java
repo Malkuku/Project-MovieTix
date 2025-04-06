@@ -10,6 +10,23 @@ import java.util.List;
 
 public class HallDaoImpl implements HallDao {
 
+    @Override
+    public void addHall(Hall hall) throws SQLException {
+        String sql = "INSERT INTO halls (name, capacity, `rows`, `cols`, facilities, status) VALUES (?, ?, ?, ?, ?, ?)";
+        JdbcUtils.executeUpdate(
+                JdbcUtils.getConnection(),
+                sql,
+                true,
+                hall.getName(),
+                hall.getCapacity(),
+                hall.getRows(),
+                hall.getCols(),
+                hall.getFacilities(),
+                hall.getStatus()
+        );
+    }
+
+    @Override
     public List<Hall> selectHallsByPage(HallQueryParam param) throws SQLException, SQLException {
         String sql = "SELECT *\n" +
                 "FROM halls\n" +
@@ -56,6 +73,7 @@ public class HallDaoImpl implements HallDao {
         );
     }
 
+    @Override
     public Integer countHalls(HallQueryParam param) throws SQLException{
         String sql = "SELECT COUNT(*)\n" +
                 "FROM halls\n" +

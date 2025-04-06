@@ -12,4 +12,7 @@ public interface HallDao {
 
     //分页条件查询影厅
     List<Hall> selectHallsByPage(HallQueryParam param) throws SQLException;
+
+    //添加影厅
+    void addHall(Hall hall) throws SQLException;
 }

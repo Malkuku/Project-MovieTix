@@ -15,6 +15,15 @@ public class HallServiceImpl implements HallService {
     private final HallDao hallDao = new HallDaoImpl();
 
     @Override
+    public void addHall(Hall hall) {
+        try {
+            hallDao.addHall(hall);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public PageResult<Hall> selectHallsByPage(HallQueryParam param) {
         try {
             Integer total = hallDao.countHalls(param);
