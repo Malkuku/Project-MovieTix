@@ -21,4 +21,7 @@ public interface HallDao {
 
     //更新影厅信息
     void updateHall(Hall hall) throws SQLException;
+
+    //根据ID查询影厅
+    Hall selectHallById(Integer id) throws SQLException;
 }

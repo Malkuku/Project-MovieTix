@@ -15,6 +15,15 @@ public class HallServiceImpl implements HallService {
     private final HallDao hallDao = new HallDaoImpl();
 
     @Override
+    public Hall selectHallById(Integer id) {
+        try {
+            return hallDao.selectHallById(id);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void updateHall(Hall hall) {
         try {
             hallDao.updateHall(hall);

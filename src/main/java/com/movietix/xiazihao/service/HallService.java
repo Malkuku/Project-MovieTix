@@ -18,4 +18,7 @@ public interface HallService {
 
     // 更新影厅信息
     void updateHall(Hall hall);
+
+    // 根据ID查询影厅
+    Hall selectHallById(Integer integer);
 }

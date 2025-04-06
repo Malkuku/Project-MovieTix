@@ -32,7 +32,12 @@ public class HallController extends HttpServlet {
     //get请求入口
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        selectHallsByPage(req, resp);
+        String pathInfo = req.getPathInfo();
+        if (pathInfo != null && pathInfo.matches("/\\d+")) {
+            selectHallById(req, resp);
+        }else{
+            selectHallsByPage(req, resp);
+        }
     }
     //put请求入口
     @Override
@@ -43,6 +48,16 @@ public class HallController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         deleteHallsByIds(req, resp);
+    }
+
+    //根据ID查询放映厅
+    private void selectHallById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String pathInfo = req.getPathInfo();
+        String idStr = pathInfo.substring(1);
+        Integer id = Integer.valueOf(idStr);
+        Hall hall = hallService.selectHallById(id);
+        log.info("查询影厅成功, 影厅id: {}, 查询结果: {}", id, hall);
+        ServletUtils.sendResponse(resp, Result.success(hall));
     }
 
     //修改放映厅信息

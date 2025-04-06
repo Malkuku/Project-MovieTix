@@ -11,6 +11,35 @@ import java.util.List;
 public class HallDaoImpl implements HallDao {
 
     @Override
+    public Hall selectHallById(Integer id) throws SQLException {
+        String sql = "SELECT * FROM halls WHERE id = ?";
+        List<Hall> hallList = JdbcUtils.executeQuery(
+                JdbcUtils.getConnection(),
+                sql,
+                true,
+                rs -> {
+                    Hall hall = new Hall();
+                    try {
+                        hall.setId(rs.getInt("id"));
+                        hall.setName(rs.getString("name"));
+                        hall.setCapacity(rs.getInt("capacity"));
+                        hall.setRows(rs.getInt("rows"));
+                        hall.setCols(rs.getInt("cols"));
+                        hall.setFacilities(rs.getString("facilities"));
+                        hall.setStatus(rs.getInt("status"));
+                        hall.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                        hall.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return hall;
+                },
+                id
+        );
+        return hallList.isEmpty() ? null : hallList.get(0);
+    }
+
+    @Override
     public void updateHall(Hall hall) throws SQLException {
         String sql = "UPDATE halls SET " +
                 "name = COALESCE(?, name), " +
