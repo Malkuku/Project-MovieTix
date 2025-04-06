@@ -24,6 +24,8 @@ public class JdbcUtils {
 
     // 通用查询方法 (动态SQL+参数)
     public static <T> List<T> executeQuery(Connection conn, String sql, Function<ResultSet, T> rowMapper, Object... params) throws SQLException {
+        log.info("Executing SQL: {}", sql);
+        log.info("Parameters: {}", (Object) params);
         PreparedStatement stmt = null;
         ResultSet rs = null;
         List<T> result = new ArrayList<>();
@@ -48,6 +50,8 @@ public class JdbcUtils {
 
     // 通用更新方法 (INSERT/UPDATE/DELETE)
     public static int executeUpdate(Connection conn, String sql, Object... params) throws SQLException {
+        log.info("Executing SQL: {}", sql);
+        log.info("Parameters: {}", (Object) params);
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(sql);
@@ -77,7 +81,7 @@ public class JdbcUtils {
             if (stmt != null) stmt.close();
             if (conn != null) conn.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Error closing resources: {}", e.getMessage());
         }
     }
 
