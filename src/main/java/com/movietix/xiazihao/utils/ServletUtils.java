@@ -4,6 +4,7 @@ import com.movietix.xiazihao.entity.result.Result;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
@@ -23,5 +24,17 @@ public class ServletUtils {
         out.print(JsonUtils.toJson(result));
         out.flush();
     }
+    // 封装获取请求体方法
+    public static String getRequestBody(HttpServletRequest request) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        try (BufferedReader reader = request.getReader()) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+        }
+        return stringBuilder.toString();
+    }
+
     //TODO实现一个RequestParamBinder类？？
 }
