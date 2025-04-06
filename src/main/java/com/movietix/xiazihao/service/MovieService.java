@@ -13,4 +13,7 @@ public interface MovieService {
 
     //批量删除电影
     void deleteMoviesByIds(List<Integer> ids);
+
+    //添加电影
+    void addMovie(Movie movie);
 }

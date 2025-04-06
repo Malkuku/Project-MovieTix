@@ -7,13 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 public class ServletUtils {
     // 封装返回方法
@@ -26,6 +19,7 @@ public class ServletUtils {
     }
     // 封装获取请求体方法
     public static String getRequestBody(HttpServletRequest request) throws IOException {
+        request.setCharacterEncoding("UTF-8");
         StringBuilder stringBuilder = new StringBuilder();
         try (BufferedReader reader = request.getReader()) {
             String line;

@@ -6,6 +6,7 @@ import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.MovieService;
 import com.movietix.xiazihao.service.impl.MovieServiceImpl;
+import com.movietix.xiazihao.utils.JsonUtils;
 import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +27,15 @@ import java.util.List;
 public class MovieController extends HttpServlet {
 
     private final MovieService movieService = new MovieServiceImpl();
+
+    //添加电影
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String json = ServletUtils.getRequestBody(req);
+        Movie movie = JsonUtils.parseJson(json, Movie.class);
+        log.info("接收到的电影信息:{}", movie);
+        movieService.addMovie(movie);
+        ServletUtils.sendResponse(resp, Result.success());
+    }
 
     //条件分页查询电影信息
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

@@ -16,4 +16,7 @@ public interface MovieDao {
 
     //批量删除电影
     void deleteMoviesByIds(List<Integer> ids) throws SQLException;
+
+    //添加电影
+    void addMovie(Movie movie) throws SQLException;
 }

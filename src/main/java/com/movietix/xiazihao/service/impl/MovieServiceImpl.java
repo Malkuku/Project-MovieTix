@@ -14,6 +14,15 @@ public class MovieServiceImpl implements MovieService {
     private final MovieDao movieDao = new MovieDaoImpl();
 
     @Override
+    public void addMovie(Movie movie) {
+        try {
+            movieDao.addMovie(movie);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void deleteMoviesByIds(List<Integer> ids){
         try {
            if(ids == null || ids.isEmpty()) {

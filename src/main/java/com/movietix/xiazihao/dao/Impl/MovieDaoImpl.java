@@ -13,6 +13,22 @@ import java.util.List;
 public class MovieDaoImpl implements MovieDao {
 
     @Override
+    public void addMovie(Movie movie) throws SQLException {
+        String sql = "INSERT INTO movies (title, release_date, poster_url, duration, genre, rating, status) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        log.info("Executing SQL: {}", sql);
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql,
+                movie.getTitle(),
+                movie.getReleaseDate(),
+                movie.getPosterUrl(),
+                movie.getDuration(),
+                movie.getGenre(),
+                movie.getRating(),
+                movie.getStatus()
+        );
+    }
+
+    @Override
     public void deleteMoviesByIds(List<Integer> ids) throws SQLException {
         String sql = "DELETE FROM movies WHERE id IN (" +
                 String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) +
