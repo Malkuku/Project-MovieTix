@@ -91,14 +91,14 @@ public class UtilsTest {
         List<Integer> result = JdbcUtils.executeTransaction(conn -> {
             String sql2 = "update movies set title = '鹤翼' where id = ?";
             try {
-                JdbcUtils.executeUpdate(conn,sql2,2);
+                JdbcUtils.executeUpdate(conn,sql2,true,2);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
             String sql = "select id from movies where title like ?";
             List<Integer> id = null;
             try {
-                id = JdbcUtils.executeQuery(conn,sql, resultSet -> {
+                id = JdbcUtils.executeQuery(conn,sql,true, resultSet -> {
                     Movie movie = new Movie();
                     try {
                         movie.setId(resultSet.getInt("id"));
@@ -119,7 +119,7 @@ public class UtilsTest {
     @Test
     public void testExecteQuery() throws SQLException {
         String sql = "select id,title,rating,genre,duration,status,created_at from movies";
-        List<Movie> movieList = executeQuery(getConnection(),sql, resultSet -> {
+        List<Movie> movieList = executeQuery(getConnection(),sql, true,resultSet -> {
             Movie movie = new Movie();
             try {
                 //设置日期格式
@@ -144,6 +144,6 @@ public class UtilsTest {
     @Test
     public void testExecteUpdate() throws SQLException {
         String sql = "delete from movies where id = ?";
-        executeUpdate(getConnection(),sql,4);
+        executeUpdate(getConnection(),sql,true,4);
     }
 }

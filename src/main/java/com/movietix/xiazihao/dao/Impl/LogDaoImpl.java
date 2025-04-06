@@ -16,13 +16,13 @@ public class LogDaoImpl implements LogDao {
                 String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) +
                 ")";
         log.info("Executing SQL: {}", sql);
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, ids.toArray());
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, true,ids.toArray());
     }
 
     @Override
     public List<Log> selectAllLogs() throws SQLException {
         String sql = "SELECT * FROM logs";
-        List<Log> logList = JdbcUtils.executeQuery(JdbcUtils.getConnection(), sql, rs -> {
+        List<Log> logList = JdbcUtils.executeQuery(JdbcUtils.getConnection(), sql,true, rs -> {
             Log log = new Log();
             try {
                 log.setId(rs.getInt("id"));

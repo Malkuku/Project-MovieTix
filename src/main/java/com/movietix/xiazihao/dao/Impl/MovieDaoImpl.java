@@ -18,6 +18,7 @@ public class MovieDaoImpl implements MovieDao {
         List<Movie> movieList = JdbcUtils.executeQuery(
                 JdbcUtils.getConnection(),
                 sql,
+                true,
                 rs -> {
                     Movie movie = new Movie();
                     try {
@@ -53,7 +54,7 @@ public class MovieDaoImpl implements MovieDao {
                 "status = COALESCE(?, status), " +
                 "updated_at = NOW() " +
                 "WHERE id = ?";
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql,
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql,true,
                 movie.getTitle(),
                 movie.getReleaseDate(),
                 movie.getPosterUrl(),
@@ -70,7 +71,7 @@ public class MovieDaoImpl implements MovieDao {
         String sql = "INSERT INTO movies (title, release_date, poster_url, duration, genre, rating, status) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
         log.info("Executing SQL: {}", sql);
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql,
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql,true,
                 movie.getTitle(),
                 movie.getReleaseDate(),
                 movie.getPosterUrl(),
@@ -87,7 +88,7 @@ public class MovieDaoImpl implements MovieDao {
                 String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) +
                 ")";
         log.info("Executing SQL: {}", sql);
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, ids.toArray());
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, true,ids.toArray());
     }
 
     @Override
@@ -106,6 +107,7 @@ public class MovieDaoImpl implements MovieDao {
         List<Integer> total = JdbcUtils.executeQuery(
                 JdbcUtils.getConnection(),
                 sql,
+                true,
                 rs -> {
                     Integer count = 0;
                     try {
@@ -146,6 +148,7 @@ public class MovieDaoImpl implements MovieDao {
         return JdbcUtils.executeQuery(
                 JdbcUtils.getConnection(),
                 sql,
+                true,
                 rs -> {
                     Movie movie = new Movie();
                     try {

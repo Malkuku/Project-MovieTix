@@ -23,7 +23,7 @@ public class JdbcUtils {
     }
 
     // 通用查询方法 (动态SQL+参数)
-    public static <T> List<T> executeQuery(Connection conn, String sql, Function<ResultSet, T> rowMapper, Object... params) throws SQLException {
+    public static <T> List<T> executeQuery(Connection conn, String sql, boolean isAutoCloseConn ,Function<ResultSet, T> rowMapper,Object... params) throws SQLException {
         log.info("Executing SQL: {}", sql);
         log.info("Parameters: {}", (Object) params);
         PreparedStatement stmt = null;
@@ -45,11 +45,14 @@ public class JdbcUtils {
             if (stmt != null) {
                 stmt.close();
             }
+            if(conn != null && isAutoCloseConn) {
+                conn.close();
+            }
         }
     }
 
     // 通用更新方法 (INSERT/UPDATE/DELETE)
-    public static int executeUpdate(Connection conn, String sql, Object... params) throws SQLException {
+    public static int executeUpdate(Connection conn, String sql,boolean isAutoCloseConn, Object... params) throws SQLException {
         log.info("Executing SQL: {}", sql);
         log.info("Parameters: {}", (Object) params);
         PreparedStatement stmt = null;
@@ -60,6 +63,9 @@ public class JdbcUtils {
         } finally {
             if (stmt != null) {
                 stmt.close();
+            }
+            if(conn != null && isAutoCloseConn) {
+                conn.close();
             }
         }
     }
