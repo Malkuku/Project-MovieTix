@@ -27,4 +27,7 @@ public interface UserDao {
 
     // 批量修改用户状态
     void updateUserStatus(List<Integer> ids, Integer status, boolean isAutoCloseConn) throws SQLException;
+
+    // 根据ID查询用户信息
+    User selectUserById(Integer id, boolean isAutoCloseConn) throws SQLException;
 }

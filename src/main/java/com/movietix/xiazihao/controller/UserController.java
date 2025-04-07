@@ -40,7 +40,7 @@ public class UserController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo != null && pathInfo.matches("/\\d+")) {
-
+            selectUserById(req, resp);
         }else{
             try {
                 selectUsersByPage(req, resp);
@@ -92,6 +92,17 @@ public class UserController extends HttpServlet {
         Integer status = Integer.parseInt(req.getParameter("status"));
         userService.updateUserStatus(ids, status);
         ServletUtils.sendResponse(resp, Result.success());
+    }
+
+    //根据ID查询用户基础信息
+    private void selectUserById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String pathInfo = req.getPathInfo();
+        String idStr = pathInfo.substring(1); // 去掉开头的"/"
+        Integer id = Integer.parseInt(idStr);
+        log.info("接收到的用户ID:{}", id);
+        User user = userService.selectUserById(id);
+        log.info("查询到的用户信息:{}", user);
+        ServletUtils.sendResponse(resp, Result.success(user));
     }
 
     //修改用户余额
@@ -159,4 +170,5 @@ public class UserController extends HttpServlet {
         ServletUtils.sendResponse(resp, Result.success(pageResult));
     }
 
+    //TODO在更新用户状态时，先检查是不是管理员
 }

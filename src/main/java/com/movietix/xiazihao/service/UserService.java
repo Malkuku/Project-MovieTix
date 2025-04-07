@@ -25,4 +25,7 @@ public interface UserService {
 
     //批量修改用户状态
     void updateUserStatus(List<Integer> ids, Integer status) throws SQLException;
+
+    //根据ID查询用户信息
+    User selectUserById(Integer id);
 }

@@ -139,4 +139,32 @@ public class UserDaoImpl implements UserDao {
                 list.toArray()
         );
     }
+
+    @Override
+    public User selectUserById(Integer id, boolean isAutoCloseConn) throws SQLException {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        List<User> users = JdbcUtils.executeQuery(
+                JdbcUtils.getConnection(),
+                sql,
+                isAutoCloseConn,
+                rs -> {
+                    User user = new User();
+                    try {
+                        user.setId(rs.getInt("id"));
+                        user.setUsername(rs.getString("username"));
+                        user.setPasswordHash(rs.getString("password_hash"));
+                        user.setIsAdmin(rs.getInt("is_admin"));
+                        user.setIsBlocked(rs.getInt("is_blocked"));
+                        user.setBalance(rs.getBigDecimal("balance"));
+                        user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                        user.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return user;
+                },
+                id
+        );
+        return users.isEmpty() ? null : users.get(0);
+    }
 }

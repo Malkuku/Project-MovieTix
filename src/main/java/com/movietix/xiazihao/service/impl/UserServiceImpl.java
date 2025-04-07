@@ -24,6 +24,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User selectUserById(Integer id) {
+        try {
+            return userDao.selectUserById(id, true);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public PageResult<User> selectUsersByPage(UserQueryParam userQueryParam) throws SQLException {
         Integer total = userDao.selectUsersCount(userQueryParam, true);
         List<User> users = userDao.selectUsersByPage(userQueryParam, true);
