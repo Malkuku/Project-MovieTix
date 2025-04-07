@@ -15,4 +15,7 @@ public interface UserDao {
 
     // 批量删除用户信息
     void deleteUsersByIds(List<Integer> ids, boolean isAutoCloseConn) throws SQLException;
+
+    // 添加用户
+    void addUser(User user, boolean isAutoCloseConn) throws SQLException;
 }

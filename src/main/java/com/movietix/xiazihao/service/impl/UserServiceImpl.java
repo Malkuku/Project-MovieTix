@@ -27,4 +27,9 @@ public class UserServiceImpl implements UserService {
         }
         userDao.deleteUsersByIds(ids, true);
     }
+
+    @Override
+    public void addUser(User user) throws SQLException {
+        userDao.addUser(user, true);
+    }
 }

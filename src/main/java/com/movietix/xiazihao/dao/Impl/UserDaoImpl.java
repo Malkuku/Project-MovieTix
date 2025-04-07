@@ -88,4 +88,17 @@ public class UserDaoImpl implements UserDao {
                 String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) + ")";
         JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn, ids.toArray());
     }
+
+    @Override
+    public void addUser(User user, boolean isAutoCloseConn) throws SQLException {
+        String sql = "INSERT INTO users (username, password_hash, is_admin, is_blocked, balance) " +
+                "VALUES (?, ?, ?, ?, ?)";
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+                user.getUsername(),
+                user.getPasswordHash(),
+                user.getIsAdmin(),
+                user.getIsBlocked(),
+                user.getBalance()
+        );
+    }
 }

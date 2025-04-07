@@ -6,6 +6,7 @@ import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.UserService;
 import com.movietix.xiazihao.service.impl.UserServiceImpl;
+import com.movietix.xiazihao.utils.JsonUtils;
 import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +28,11 @@ public class UserController extends HttpServlet {
     //post请求入口
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            addUser(req, resp);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //get请求入口
@@ -63,6 +69,15 @@ public class UserController extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //添加用户
+    private void addUser(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String json = ServletUtils.getRequestBody(req);
+        User user = JsonUtils.parseJson(json, User.class);
+        log.info("接收到的用户信息:{}", user);
+        userService.addUser(user);
+        ServletUtils.sendResponse(resp, Result.success());
     }
 
     //批量删除用户

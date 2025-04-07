@@ -13,4 +13,7 @@ public interface UserService {
 
     //批量删除用户信息
     void deleteUsersByIds(List<Integer> ids) throws SQLException;
+
+    //添加用户
+    void addUser(User user) throws SQLException;
 }
