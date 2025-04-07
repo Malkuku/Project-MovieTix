@@ -22,5 +22,8 @@ public interface ScreeningDao {
     void updateScreening(Screening screening, boolean isAutoCloseConn) throws SQLException;
 
     //根据id查询电影场次
-    Screening selectScreeningById(int id) throws SQLException;
+    Screening selectScreeningById(Integer id,boolean isAutoCloseConn) throws SQLException;
+
+    //批量设置场次状态
+    void setScreeningStatus(List<Integer> ids, Integer status, boolean isAutoCloseConn) throws SQLException;
 }

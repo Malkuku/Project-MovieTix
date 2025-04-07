@@ -25,7 +25,7 @@ public class ScreeningServiceImpl implements ScreeningService {
     public void updateScreening(Screening screening) throws SQLException {
 
         //获取原来场次的信息
-        Screening oldScreening = screeningDao.selectScreeningById(screening.getId());
+        Screening oldScreening = screeningDao.selectScreeningById(screening.getId(),true);
         //填补电影和放映厅空值
         {
             if (screening.getMovieId() == null) {
@@ -41,8 +41,13 @@ public class ScreeningServiceImpl implements ScreeningService {
     }
 
     @Override
-    public Screening selectScreeningById(int id) throws SQLException {
-        return screeningDao.selectScreeningById(id);
+    public Screening selectScreeningById(Integer id) throws SQLException {
+        return screeningDao.selectScreeningById(id,true);
+    }
+
+    @Override
+    public void setScreeningStatus(List<Integer> ids, Integer status) throws SQLException {
+        screeningDao.setScreeningStatus(ids, status,true);
     }
 
     @Override
@@ -64,6 +69,7 @@ public class ScreeningServiceImpl implements ScreeningService {
         return new PageResult<>(total, screeningList);
     }
 
+    //设置场次的结束时间和剩余座位数
     private void setScreeningEndTimeAndSeats(Screening screening) throws SQLException {
         //根据id查询电影和影厅的信息
         Movie movie = movieDao.selectMovieById(screening.getMovieId(), true);

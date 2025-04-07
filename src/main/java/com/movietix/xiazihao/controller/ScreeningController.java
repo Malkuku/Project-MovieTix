@@ -49,10 +49,20 @@ public class ScreeningController extends HttpServlet {
             }
         }
     }
+
     //put请求入口
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        updateScreening(req,resp);
+        String pathInfo = req.getPathInfo();
+        if(pathInfo != null && pathInfo.matches("/status")){
+            try {
+                setScreeningStatus(req,resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }else{
+            updateScreening(req,resp);
+        }
     }
 
     //delete请求入口
@@ -63,6 +73,16 @@ public class ScreeningController extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //批量设置场次的状态
+    private void setScreeningStatus(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String[] values = req.getParameterValues("ids");
+        List<Integer> ids = ServletUtils.parseReqToList(values, Integer.class);
+        int status = Integer.parseInt(req.getParameter("status"));
+        log.info("接收到的放映场次ID:{}", ids);
+        screeningService.setScreeningStatus(ids,status);
+        ServletUtils.sendResponse(resp, Result.success());
     }
 
     //根据id查询场次信息

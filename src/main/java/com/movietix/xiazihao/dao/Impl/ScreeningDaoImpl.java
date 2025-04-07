@@ -33,12 +33,12 @@ public class ScreeningDaoImpl implements ScreeningDao {
     }
 
     @Override
-    public Screening selectScreeningById(int id) throws SQLException {
+    public Screening selectScreeningById(Integer id,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * FROM screenings WHERE id = ?";
         List<Screening> screeningList = JdbcUtils.executeQuery(
                 JdbcUtils.getConnection(),
                 sql,
-                false,
+                isAutoCloseConn,
                 rs -> {
                     Screening screening = new Screening();
                     try {
@@ -60,6 +60,13 @@ public class ScreeningDaoImpl implements ScreeningDao {
                 id
         );
         return screeningList.isEmpty() ? null : screeningList.get(0);
+    }
+
+    @Override
+    public void setScreeningStatus(List<Integer> ids, Integer status, boolean isAutoCloseConn) throws SQLException {
+        String sql = "UPDATE screenings SET status = ? WHERE id IN (" + String.join(",", ids.stream().map(String::valueOf).toArray(String[]::new)) + ")";
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+                status);
     }
 
     @Override
