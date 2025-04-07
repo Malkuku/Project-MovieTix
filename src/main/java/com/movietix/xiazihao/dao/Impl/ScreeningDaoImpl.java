@@ -85,8 +85,8 @@ public class ScreeningDaoImpl implements ScreeningDao {
 
     @Override
     public void deleteScreeningByIds(List<Integer> ids,boolean isAutoCloseConn) throws SQLException {
-        String sql = "DELETE FROM screenings WHERE id IN (" + String.join(",", ids.stream().map(String::valueOf).toArray(String[]::new)) + ")";
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn);
+        String sql = "DELETE FROM screenings WHERE id IN (" + String.join(",", ids.stream().map(id->"?").toArray(String[]::new)) + ")";
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,ids.toArray());
     }
 
     @Override

@@ -81,4 +81,11 @@ public class UserDaoImpl implements UserDao {
                 param.getPageSize(), (param.getPage() - 1) * param.getPageSize()
         );
     }
+
+    @Override
+    public void deleteUsersByIds(List<Integer> ids, boolean isAutoCloseConn) throws SQLException {
+        String sql = "DELETE FROM users WHERE id IN (" +
+                String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) + ")";
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn, ids.toArray());
+    }
 }

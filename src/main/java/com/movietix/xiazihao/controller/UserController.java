@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @WebServlet("/users/*")
@@ -57,7 +58,20 @@ public class UserController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            deleteUsersByIds(req, resp);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    //批量删除用户
+    private void deleteUsersByIds(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String[] values = req.getParameterValues("ids");
+        List<Integer> ids = ServletUtils.parseReqToList(values,Integer.class);
+        log.info("接收到的用户删除参数:{}", ids);
+        userService.deleteUsersByIds(ids);
+        ServletUtils.sendResponse(resp, Result.success());
     }
 
     //条件分页查询用户信息

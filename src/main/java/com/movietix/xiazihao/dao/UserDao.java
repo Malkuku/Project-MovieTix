@@ -12,4 +12,7 @@ public interface UserDao {
 
     // 条件分页查询用户信息
     List<User> selectUsersByPage(UserQueryParam param,boolean isAutoCloseConn) throws SQLException;
+
+    // 批量删除用户信息
+    void deleteUsersByIds(List<Integer> ids, boolean isAutoCloseConn) throws SQLException;
 }

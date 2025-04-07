@@ -19,4 +19,12 @@ public class UserServiceImpl implements UserService {
         List<User> users = userDao.selectUsersByPage(userQueryParam, true);
         return new PageResult<>(total, users);
     }
+
+    @Override
+    public void deleteUsersByIds(List<Integer> ids) throws SQLException {
+        if(ids == null || ids.isEmpty()){
+            return;
+        }
+        userDao.deleteUsersByIds(ids, true);
+    }
 }
