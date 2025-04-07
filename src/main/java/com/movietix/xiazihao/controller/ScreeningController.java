@@ -36,7 +36,11 @@ public class ScreeningController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo != null && pathInfo.matches("/\\d+")) {
-
+            try {
+                selectScreeningById(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }else{
             try {
                 selectScreeningByPage(req, resp);
@@ -48,8 +52,9 @@ public class ScreeningController extends HttpServlet {
     //put请求入口
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        updateScreening(req,resp);
     }
+
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -57,6 +62,29 @@ public class ScreeningController extends HttpServlet {
             deleteScreeningByIds(req,resp);
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    //根据id查询场次信息
+    private void selectScreeningById(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String pathInfo = req.getPathInfo();
+        int id = Integer.parseInt(pathInfo.substring(1));
+        Screening screening = null;
+        screening = screeningService.selectScreeningById(id);
+        log.info("查询到的放映场次信息:{}", screening);
+        ServletUtils.sendResponse(resp, Result.success(screening));
+    }
+
+    //修改场次信息
+    private void updateScreening(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String json = ServletUtils.getRequestBody(req);
+        Screening screening = JsonUtils.parseJson(json, Screening.class);
+        log.info("接收到的放映场次信息:{}", screening);
+        try {
+            screeningService.updateScreening(screening);
+            ServletUtils.sendResponse(resp, Result.success());
+        } catch (SQLException e) {
+            ServletUtils.sendResponse(resp, Result.error("修改放映场次失败"));
         }
     }
 

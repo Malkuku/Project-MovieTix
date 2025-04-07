@@ -22,16 +22,32 @@ public class ScreeningServiceImpl implements ScreeningService {
     private final HallDao hallDoo = new HallDaoImpl();
 
     @Override
-    public void addScreening(Screening screening) throws SQLException {
-       //根据id查询电影和影厅的信息
-        Movie movie =  movieDao.selectMovieById(screening.getMovieId(),true);
-        Hall hall = hallDoo.selectHallById(screening.getHallId(),true);
-        if(movie == null || hall == null){
-            throw new SQLException("电影或影厅不存在");
+    public void updateScreening(Screening screening) throws SQLException {
+
+        //获取原来场次的信息
+        Screening oldScreening = screeningDao.selectScreeningById(screening.getId());
+        //填补电影和放映厅空值
+        {
+            if (screening.getMovieId() == null) {
+                screening.setMovieId(oldScreening.getMovieId());
+            }
+            if (screening.getHallId() == null) {
+                screening.setHallId(oldScreening.getHallId());
+            }
         }
-        //设置反映场次的结束时间和剩余座位数
-        screening.setEndTime(screening.getStartTime().plusMinutes(movie.getDuration()));
-        screening.setRemainingSeats(hall.getCapacity());
+        setScreeningEndTimeAndSeats(screening);
+        //修改场次
+        screeningDao.updateScreening(screening,true);
+    }
+
+    @Override
+    public Screening selectScreeningById(int id) throws SQLException {
+        return screeningDao.selectScreeningById(id);
+    }
+
+    @Override
+    public void addScreening(Screening screening) throws SQLException {
+        setScreeningEndTimeAndSeats(screening);
         //添加场次
         screeningDao.addScreening(screening,true);
     }
@@ -46,5 +62,17 @@ public class ScreeningServiceImpl implements ScreeningService {
         Integer total = screeningDao.selectScreeningCount(param,true);
         List<Screening> screeningList = screeningDao.selectScreeningByPage(param,true);
         return new PageResult<>(total, screeningList);
+    }
+
+    private void setScreeningEndTimeAndSeats(Screening screening) throws SQLException {
+        //根据id查询电影和影厅的信息
+        Movie movie = movieDao.selectMovieById(screening.getMovieId(), true);
+        Hall hall = hallDoo.selectHallById(screening.getHallId(), true);
+        if (movie == null || hall == null) {
+            throw new SQLException("电影或影厅不存在");
+        }
+        //设置反映场次的结束时间和剩余座位数
+        screening.setEndTime(screening.getStartTime().plusMinutes(movie.getDuration()));
+        screening.setRemainingSeats(hall.getCapacity());
     }
 }

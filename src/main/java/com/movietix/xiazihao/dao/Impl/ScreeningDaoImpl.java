@@ -11,6 +11,58 @@ import java.util.List;
 public class ScreeningDaoImpl implements ScreeningDao {
 
     @Override
+    public void updateScreening(Screening screening, boolean isAutoCloseConn) throws SQLException {
+        String sql = "UPDATE screenings SET " +
+                "movie_id = COALESCE(?, movie_id), " +
+                "hall_id = COALESCE(?, hall_id), " +
+                "start_time = COALESCE(?, start_time), " +
+                "end_time = COALESCE(?, end_time), " +
+                "price = COALESCE(?, price), " +
+                "remaining_seats = COALESCE(?, remaining_seats), " +
+                "status = COALESCE(?, status) " +
+                "WHERE id = ?";
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+                screening.getMovieId(),
+                screening.getHallId(),
+                screening.getStartTime(),
+                screening.getEndTime(),
+                screening.getPrice(),
+                screening.getRemainingSeats(),
+                screening.getStatus(),
+                screening.getId());
+    }
+
+    @Override
+    public Screening selectScreeningById(int id) throws SQLException {
+        String sql = "SELECT * FROM screenings WHERE id = ?";
+        List<Screening> screeningList = JdbcUtils.executeQuery(
+                JdbcUtils.getConnection(),
+                sql,
+                false,
+                rs -> {
+                    Screening screening = new Screening();
+                    try {
+                        screening.setId(rs.getInt("id"));
+                        screening.setMovieId(rs.getInt("movie_id"));
+                        screening.setHallId(rs.getInt("hall_id"));
+                        screening.setStartTime(rs.getTimestamp("start_time").toLocalDateTime());
+                        screening.setEndTime(rs.getTimestamp("end_time").toLocalDateTime());
+                        screening.setPrice(rs.getBigDecimal("price"));
+                        screening.setRemainingSeats(rs.getInt("remaining_seats"));
+                        screening.setStatus(rs.getInt("status"));
+                        screening.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                        screening.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return screening;
+                },
+                id
+        );
+        return screeningList.isEmpty() ? null : screeningList.get(0);
+    }
+
+    @Override
     public void addScreening(Screening screening, boolean isAutoCloseConn) throws SQLException {
         String sql = "INSERT INTO screenings (movie_id, hall_id, start_time, end_time, price, remaining_seats, status) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";

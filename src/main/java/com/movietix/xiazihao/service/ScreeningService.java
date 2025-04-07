@@ -17,4 +17,10 @@ public interface ScreeningService {
 
     //添加电影场次
     void addScreening(Screening screening) throws SQLException;
+
+    //修改电影场次
+    void updateScreening(Screening screening) throws SQLException;
+
+    //根据id查询电影场次
+    Screening selectScreeningById(int id) throws SQLException;
 }
