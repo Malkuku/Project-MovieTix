@@ -16,5 +16,5 @@ public interface ScreeningService {
     void deleteScreeningByIds(List<Integer> ids) throws SQLException;
 
     //添加电影场次
-    void addScreening(Screening screening);
+    void addScreening(Screening screening) throws SQLException;
 }

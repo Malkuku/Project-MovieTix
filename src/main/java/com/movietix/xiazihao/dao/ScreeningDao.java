@@ -14,4 +14,7 @@ public interface ScreeningDao {
 
     // 批量删除电影场次
     void deleteScreeningByIds(List<Integer> ids,boolean isAutoCloseConn) throws SQLException;
+
+    // 添加电影场次
+    void addScreening(Screening screening, boolean isAutoCloseConn) throws SQLException;
 }

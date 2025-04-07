@@ -1,13 +1,12 @@
 package com.movietix.xiazihao.controller;
 
-import com.movietix.xiazihao.entity.param.MovieQueryParam;
 import com.movietix.xiazihao.entity.param.ScreeningQueryParam;
-import com.movietix.xiazihao.entity.pojo.Movie;
 import com.movietix.xiazihao.entity.pojo.Screening;
 import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.ScreeningService;
 import com.movietix.xiazihao.service.impl.ScreeningServiceImpl;
+import com.movietix.xiazihao.utils.JsonUtils;
 import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,9 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -32,7 +29,7 @@ public class ScreeningController extends HttpServlet {
     //post请求入口
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        addScreening(req, resp);
     }
     //get请求入口
     @Override
@@ -114,5 +111,18 @@ public class ScreeningController extends HttpServlet {
         log.info("接收到的放映场次ID:{}", ids);
         screeningService.deleteScreeningByIds(ids);
         ServletUtils.sendResponse(resp, Result.success());
+    }
+
+    //添加放映场次
+    private void addScreening(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String json = ServletUtils.getRequestBody(req);
+        Screening screening = JsonUtils.parseJson(json, Screening.class);
+        log.info("接收到的放映场次信息:{}", screening);
+        try {
+            screeningService.addScreening(screening);
+            ServletUtils.sendResponse(resp, Result.success());
+        } catch (SQLException e) {
+            ServletUtils.sendResponse(resp, Result.error("添加放映场次失败"));
+        }
     }
 }

@@ -11,6 +11,20 @@ import java.util.List;
 public class ScreeningDaoImpl implements ScreeningDao {
 
     @Override
+    public void addScreening(Screening screening, boolean isAutoCloseConn) throws SQLException {
+        String sql = "INSERT INTO screenings (movie_id, hall_id, start_time, end_time, price, remaining_seats, status) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+                screening.getMovieId(),
+                screening.getHallId(),
+                screening.getStartTime(),
+                screening.getEndTime(),
+                screening.getPrice(),
+                screening.getRemainingSeats(),
+                screening.getStatus());
+    }
+
+    @Override
     public void deleteScreeningByIds(List<Integer> ids,boolean isAutoCloseConn) throws SQLException {
         String sql = "DELETE FROM screenings WHERE id IN (" + String.join(",", ids.stream().map(String::valueOf).toArray(String[]::new)) + ")";
         JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn);
