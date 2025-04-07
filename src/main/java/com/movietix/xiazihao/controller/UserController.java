@@ -60,9 +60,18 @@ public class UserController extends HttpServlet {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        }else if(pathInfo != null && pathInfo.matches("/balance")){
+            try {
+                updateUserBalance(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }else if(pathInfo != null && pathInfo.matches("/status")){
-
-        }else{
+            try {
+                updateUserStatus(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
 
         }
     }
@@ -75,6 +84,23 @@ public class UserController extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //修改用户状态
+    private void updateUserStatus(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        List<Integer> ids = ServletUtils.parseReqToList(req.getParameterValues("ids"), Integer.class);
+        Integer status = Integer.parseInt(req.getParameter("status"));
+        userService.updateUserStatus(ids, status);
+        ServletUtils.sendResponse(resp, Result.success());
+    }
+
+    //修改用户余额
+    private void updateUserBalance(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String json = ServletUtils.getRequestBody(req);
+        User user = JsonUtils.parseJson(json, User.class);
+        log.info("接收到的用户信息:{}", user);
+        userService.updateUserBalance(user);
+        ServletUtils.sendResponse(resp, Result.success());
     }
 
     //修改用户密码

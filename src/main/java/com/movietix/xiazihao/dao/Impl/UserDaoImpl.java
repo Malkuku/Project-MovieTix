@@ -6,6 +6,7 @@ import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoImpl implements UserDao {
@@ -104,11 +105,38 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void updateUserPassword(User user, boolean isAutoCloseConn) throws SQLException {
-        String sql = "UPDATE users SET password_hash = COALESCE(?, password_hash) WHERE id = ?";
+        String sql = "UPDATE users SET password_hash = COALESCE(?, password_hash), " +
+                "   updated_at = NOW()" +
+                "  WHERE id = ?";
         JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
                 user.getPasswordHash(),
                 user.getId()
         );
 
+    }
+
+    @Override
+    public void updateUserBalance(User user, boolean isAutoCloseConn) throws SQLException {
+        String sql = "UPDATE users SET balance = COALESCE(?, balance), " +
+                "  updated_at = NOW() " +
+                " WHERE id = ?";
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+                user.getBalance(),
+                user.getId()
+        );
+    }
+
+    @Override
+    public void updateUserStatus(List<Integer> ids, Integer status, boolean isAutoCloseConn) throws SQLException {
+        String sql = "UPDATE users SET is_blocked = ? , " +
+                " updated_at = NOW() " +
+                " WHERE id IN (" +
+                String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) + ") ";
+        List<Object> list = new ArrayList<>();
+        list.add(status);
+        list.addAll(ids);
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+                list.toArray()
+        );
     }
 }

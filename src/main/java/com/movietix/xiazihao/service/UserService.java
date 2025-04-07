@@ -19,4 +19,10 @@ public interface UserService {
 
     //修改用户密码
     void updateUserPassword(User user) throws SQLException;
+
+    //修改用户余额
+    void updateUserBalance(User user) throws SQLException;
+
+    //批量修改用户状态
+    void updateUserStatus(List<Integer> ids, Integer status) throws SQLException;
 }

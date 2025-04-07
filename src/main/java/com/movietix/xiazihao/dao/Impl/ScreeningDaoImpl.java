@@ -6,6 +6,7 @@ import com.movietix.xiazihao.entity.pojo.Screening;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScreeningDaoImpl implements ScreeningDao {
@@ -20,6 +21,7 @@ public class ScreeningDaoImpl implements ScreeningDao {
                 "price = COALESCE(?, price), " +
                 "remaining_seats = COALESCE(?, remaining_seats), " +
                 "status = COALESCE(?, status) " +
+                "updated_at = NOW() " +
                 "WHERE id = ?";
         JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
                 screening.getMovieId(),
@@ -64,9 +66,12 @@ public class ScreeningDaoImpl implements ScreeningDao {
 
     @Override
     public void setScreeningStatus(List<Integer> ids, Integer status, boolean isAutoCloseConn) throws SQLException {
-        String sql = "UPDATE screenings SET status = ? WHERE id IN (" + String.join(",", ids.stream().map(String::valueOf).toArray(String[]::new)) + ")";
+        String sql = "UPDATE screenings SET status = ? WHERE id IN (" + String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) + ")";
+        List<Object> params = new ArrayList<>();
+        params.add(status);
+        params.addAll(ids);
         JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
-                status);
+                params.toArray());
     }
 
     @Override

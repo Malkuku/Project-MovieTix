@@ -21,4 +21,10 @@ public interface UserDao {
 
     // 修改用户密码
     void updateUserPassword(User user, boolean isAutoCloseConn) throws SQLException;
+
+    // 修改用户余额
+    void updateUserBalance(User user, boolean isAutoCloseConn) throws SQLException;
+
+    // 批量修改用户状态
+    void updateUserStatus(List<Integer> ids, Integer status, boolean isAutoCloseConn) throws SQLException;
 }

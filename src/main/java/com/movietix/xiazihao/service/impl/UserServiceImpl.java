@@ -14,6 +14,16 @@ public class UserServiceImpl implements UserService {
     private static final UserDao userDao = new UserDaoImpl();
 
     @Override
+    public void updateUserBalance(User user) throws SQLException {
+        userDao.updateUserBalance(user, true);
+    }
+
+    @Override
+    public void updateUserStatus(List<Integer> ids, Integer status) throws SQLException {
+        userDao.updateUserStatus(ids, status, true);
+    }
+
+    @Override
     public PageResult<User> selectUsersByPage(UserQueryParam userQueryParam) throws SQLException {
         Integer total = userDao.selectUsersCount(userQueryParam, true);
         List<User> users = userDao.selectUsersByPage(userQueryParam, true);
