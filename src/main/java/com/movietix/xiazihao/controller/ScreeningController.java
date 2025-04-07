@@ -31,6 +31,7 @@ public class ScreeningController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         addScreening(req, resp);
     }
+
     //get请求入口
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
