@@ -11,18 +11,18 @@ import java.util.List;
 @Slf4j
 public class LogDaoImpl implements LogDao {
     @Override
-    public void deleteLogByIds(List<Integer> ids) throws SQLException {
+    public void deleteLogByIds(List<Integer> ids,boolean isAutoCloseConn) throws SQLException {
         String sql = "DELETE FROM logs WHERE id IN (" +
                 String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) +
                 ")";
         log.info("Executing SQL: {}", sql);
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, true,ids.toArray());
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,ids.toArray());
     }
 
     @Override
-    public List<Log> selectAllLogs() throws SQLException {
+    public List<Log> selectAllLogs(boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * FROM logs";
-        List<Log> logList = JdbcUtils.executeQuery(JdbcUtils.getConnection(), sql,true, rs -> {
+        List<Log> logList = JdbcUtils.executeQuery(JdbcUtils.getConnection(), sql,isAutoCloseConn, rs -> {
             Log log = new Log();
             try {
                 log.setId(rs.getInt("id"));

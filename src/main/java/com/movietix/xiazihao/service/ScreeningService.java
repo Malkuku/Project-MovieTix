@@ -1,7 +1,6 @@
 package com.movietix.xiazihao.service;
 
 import com.movietix.xiazihao.entity.param.ScreeningQueryParam;
-import com.movietix.xiazihao.entity.pojo.Movie;
 import com.movietix.xiazihao.entity.pojo.Screening;
 import com.movietix.xiazihao.entity.result.PageResult;
 
@@ -15,4 +14,7 @@ public interface ScreeningService {
 
     // 批量删除电影场次
     void deleteScreeningByIds(List<Integer> ids) throws SQLException;
+
+    //添加电影场次
+    void addScreening(Screening screening);
 }

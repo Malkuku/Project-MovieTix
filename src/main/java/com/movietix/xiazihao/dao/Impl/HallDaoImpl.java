@@ -11,12 +11,12 @@ import java.util.List;
 public class HallDaoImpl implements HallDao {
 
     @Override
-    public Hall selectHallById(Integer id) throws SQLException {
+    public Hall selectHallById(Integer id,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * FROM halls WHERE id = ?";
         List<Hall> hallList = JdbcUtils.executeQuery(
                 JdbcUtils.getConnection(),
                 sql,
-                true,
+                isAutoCloseConn,
                 rs -> {
                     Hall hall = new Hall();
                     try {
@@ -40,7 +40,7 @@ public class HallDaoImpl implements HallDao {
     }
 
     @Override
-    public void updateHall(Hall hall) throws SQLException {
+    public void updateHall(Hall hall,boolean isAutoCloseConn) throws SQLException {
         String sql = "UPDATE halls SET " +
                 "name = COALESCE(?, name), " +
                 "capacity = COALESCE(?, capacity), " +
@@ -53,7 +53,7 @@ public class HallDaoImpl implements HallDao {
         JdbcUtils.executeUpdate(
                 JdbcUtils.getConnection(),
                 sql,
-                true,
+                isAutoCloseConn,
                 hall.getName(),
                 hall.getCapacity(),
                 hall.getRows(),
@@ -65,22 +65,22 @@ public class HallDaoImpl implements HallDao {
     }
 
     @Override
-    public void deleteHallByIds(List<Integer> ids) {
+    public void deleteHallByIds(List<Integer> ids,boolean isAutoCloseConn) {
         String sql = "DELETE FROM halls WHERE id IN (" + String.join(",",ids.stream().map(id -> "?").toArray(String[]::new)) + ")";
         try {
-            JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, true, ids.toArray());
+            JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn, ids.toArray());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void addHall(Hall hall) throws SQLException {
+    public void addHall(Hall hall,boolean isAutoCloseConn) throws SQLException {
         String sql = "INSERT INTO halls (name, capacity, `rows`, `cols`, facilities, status) VALUES (?, ?, ?, ?, ?, ?)";
         JdbcUtils.executeUpdate(
                 JdbcUtils.getConnection(),
                 sql,
-                true,
+                isAutoCloseConn,
                 hall.getName(),
                 hall.getCapacity(),
                 hall.getRows(),
@@ -91,7 +91,7 @@ public class HallDaoImpl implements HallDao {
     }
 
     @Override
-    public List<Hall> selectHallsByPage(HallQueryParam param) throws SQLException, SQLException {
+    public List<Hall> selectHallsByPage(HallQueryParam param,boolean isAutoCloseConn) throws SQLException, SQLException {
         String sql = "SELECT *\n" +
                 "FROM halls\n" +
                 "WHERE 1=1 \n" +
@@ -108,7 +108,7 @@ public class HallDaoImpl implements HallDao {
         return JdbcUtils.executeQuery(
                 JdbcUtils.getConnection(),
                 sql,
-                true,
+                isAutoCloseConn,
                 rs -> {
                     Hall hall = new Hall();
                     try {
@@ -138,7 +138,7 @@ public class HallDaoImpl implements HallDao {
     }
 
     @Override
-    public Integer countHalls(HallQueryParam param) throws SQLException{
+    public Integer countHalls(HallQueryParam param,boolean isAutoCloseConn) throws SQLException{
         String sql = "SELECT COUNT(*)\n" +
                 "FROM halls\n" +
                 "WHERE 1=1 \n" +
@@ -153,7 +153,7 @@ public class HallDaoImpl implements HallDao {
         List<Integer> total = JdbcUtils.executeQuery(
                 JdbcUtils.getConnection(),
                 sql,
-                true,
+                isAutoCloseConn,
                 rs -> {
                     try {
                         return rs.getInt(1);

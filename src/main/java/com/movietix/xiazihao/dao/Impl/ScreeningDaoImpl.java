@@ -11,13 +11,13 @@ import java.util.List;
 public class ScreeningDaoImpl implements ScreeningDao {
 
     @Override
-    public void deleteScreeningByIds(List<Integer> ids) throws SQLException {
+    public void deleteScreeningByIds(List<Integer> ids,boolean isAutoCloseConn) throws SQLException {
         String sql = "DELETE FROM screenings WHERE id IN (" + String.join(",", ids.stream().map(String::valueOf).toArray(String[]::new)) + ")";
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, false);
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn);
     }
 
     @Override
-    public Integer selectScreeningCount(ScreeningQueryParam param) throws SQLException {
+    public Integer selectScreeningCount(ScreeningQueryParam param,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT COUNT(*) " +
                 "FROM screenings s " +
                 "JOIN movies m ON s.movie_id = m.id " +
@@ -37,7 +37,7 @@ public class ScreeningDaoImpl implements ScreeningDao {
         List<Integer> total = JdbcUtils.executeQuery(
                 JdbcUtils.getConnection(),
                 sql,
-                true,
+                isAutoCloseConn,
                 rs -> {
                     try {
                         return rs.getInt(1);
@@ -60,7 +60,7 @@ public class ScreeningDaoImpl implements ScreeningDao {
     }
 
     @Override
-    public List<Screening> selectScreeningByPage(ScreeningQueryParam param) throws SQLException {
+    public List<Screening> selectScreeningByPage(ScreeningQueryParam param,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT s.*, m.title AS movie_title, h.name AS hall_name " +
                 "FROM screenings s " +
                 "JOIN movies m ON s.movie_id = m.id " +
@@ -82,7 +82,7 @@ public class ScreeningDaoImpl implements ScreeningDao {
         return JdbcUtils.executeQuery(
                 JdbcUtils.getConnection(),
                 sql,
-                true,
+                isAutoCloseConn,
                 rs -> {
                     Screening screening = new Screening();
                     try {

@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface ScreeningDao {
     // 查询电影场次总数
-    Integer selectScreeningCount(ScreeningQueryParam param) throws SQLException;
+    Integer selectScreeningCount(ScreeningQueryParam param,boolean isAutoCloseConn) throws SQLException;
     // 查询电影场次列表
-    List<Screening> selectScreeningByPage(ScreeningQueryParam param) throws SQLException;
+    List<Screening> selectScreeningByPage(ScreeningQueryParam param,boolean isAutoCloseConn) throws SQLException;
 
     // 批量删除电影场次
-    void deleteScreeningByIds(List<Integer> ids) throws SQLException;
+    void deleteScreeningByIds(List<Integer> ids,boolean isAutoCloseConn) throws SQLException;
 }

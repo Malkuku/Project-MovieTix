@@ -8,20 +8,20 @@ import java.util.List;
 
 public interface HallDao {
     //统计影厅数量
-    Integer countHalls(HallQueryParam param) throws SQLException;
+    Integer countHalls(HallQueryParam param,boolean isAutoCloseConn) throws SQLException;
 
     //分页条件查询影厅
-    List<Hall> selectHallsByPage(HallQueryParam param) throws SQLException;
+    List<Hall> selectHallsByPage(HallQueryParam param,boolean isAutoCloseConn) throws SQLException;
 
     //添加影厅
-    void addHall(Hall hall) throws SQLException;
+    void addHall(Hall hall,boolean isAutoCloseConn) throws SQLException;
 
     //批量删除影厅
-    void deleteHallByIds(List<Integer> ids);
+    void deleteHallByIds(List<Integer> ids,boolean isAutoCloseConn);
 
     //更新影厅信息
-    void updateHall(Hall hall) throws SQLException;
+    void updateHall(Hall hall,boolean isAutoCloseConn) throws SQLException;
 
     //根据ID查询影厅
-    Hall selectHallById(Integer id) throws SQLException;
+    Hall selectHallById(Integer id,boolean isAutoCloseConn) throws SQLException;
 }

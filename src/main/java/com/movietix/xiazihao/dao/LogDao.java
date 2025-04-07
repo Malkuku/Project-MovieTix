@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface LogDao {
     //查询所有日志
-    List<Log> selectAllLogs() throws SQLException;
+    List<Log> selectAllLogs(boolean isAutoCloseConn) throws SQLException;
 
     //批量删除日志
-    void deleteLogByIds(List<Integer> ids) throws SQLException;
+    void deleteLogByIds(List<Integer> ids,boolean isAutoCloseConn) throws SQLException;
 }

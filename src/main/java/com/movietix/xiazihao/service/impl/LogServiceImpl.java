@@ -16,7 +16,7 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public List<Log> selectAllLogs() throws SQLException {
-        return logDao.selectAllLogs();
+        return logDao.selectAllLogs(true);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class LogServiceImpl implements LogService {
                 }
             }
             log.info("Parsed IDs for deletion: {}", ids);
-            logDao.deleteLogByIds(ids);
+            logDao.deleteLogByIds(ids, true);
         }
     }
 }

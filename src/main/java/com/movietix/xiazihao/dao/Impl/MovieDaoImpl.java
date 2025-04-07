@@ -13,12 +13,12 @@ import java.util.List;
 public class MovieDaoImpl implements MovieDao {
 
     @Override
-    public Movie selectMovieById(Integer id) throws SQLException {
+    public Movie selectMovieById(Integer id,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * FROM movies WHERE id = ?";
         List<Movie> movieList = JdbcUtils.executeQuery(
                 JdbcUtils.getConnection(),
                 sql,
-                true,
+                isAutoCloseConn,
                 rs -> {
                     Movie movie = new Movie();
                     try {
@@ -43,7 +43,7 @@ public class MovieDaoImpl implements MovieDao {
     }
 
     @Override
-    public void updateMovie(Movie movie) throws SQLException {
+    public void updateMovie(Movie movie,boolean isAutoCloseConn) throws SQLException {
         String sql = "UPDATE movies SET " +
                 "title = COALESCE(?, title), " +
                 "release_date = COALESCE(?, release_date), " +
@@ -54,7 +54,7 @@ public class MovieDaoImpl implements MovieDao {
                 "status = COALESCE(?, status), " +
                 "updated_at = NOW() " +
                 "WHERE id = ?";
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql,true,
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql,isAutoCloseConn,
                 movie.getTitle(),
                 movie.getReleaseDate(),
                 movie.getPosterUrl(),
@@ -67,11 +67,11 @@ public class MovieDaoImpl implements MovieDao {
     }
 
     @Override
-    public void addMovie(Movie movie) throws SQLException {
+    public void addMovie(Movie movie,boolean isAutoCloseConn) throws SQLException {
         String sql = "INSERT INTO movies (title, release_date, poster_url, duration, genre, rating, status) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
         log.info("Executing SQL: {}", sql);
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql,true,
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql,isAutoCloseConn,
                 movie.getTitle(),
                 movie.getReleaseDate(),
                 movie.getPosterUrl(),
@@ -83,16 +83,16 @@ public class MovieDaoImpl implements MovieDao {
     }
 
     @Override
-    public void deleteMoviesByIds(List<Integer> ids) throws SQLException {
+    public void deleteMoviesByIds(List<Integer> ids,boolean isAutoCloseConn) throws SQLException {
         String sql = "DELETE FROM movies WHERE id IN (" +
                 String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) +
                 ")";
         log.info("Executing SQL: {}", sql);
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, true,ids.toArray());
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,ids.toArray());
     }
 
     @Override
-    public Integer countMovies(MovieQueryParam param) throws SQLException {
+    public Integer countMovies(MovieQueryParam param,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT COUNT(*) FROM movies WHERE 1=1 " +
                 "AND (? IS NULL OR title LIKE CONCAT('%', ?, '%')) " +
                 "AND (? IS NULL OR release_date = ?) " +
@@ -107,7 +107,7 @@ public class MovieDaoImpl implements MovieDao {
         List<Integer> total = JdbcUtils.executeQuery(
                 JdbcUtils.getConnection(),
                 sql,
-                true,
+                isAutoCloseConn,
                 rs -> {
                     Integer count = 0;
                     try {
@@ -130,7 +130,7 @@ public class MovieDaoImpl implements MovieDao {
     }
 
     @Override
-    public List<Movie> selectMoviesByPage(MovieQueryParam param) throws SQLException {
+    public List<Movie> selectMoviesByPage(MovieQueryParam param,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT *\n" +
                 "FROM movies\n" +
                 "WHERE 1=1 \n" +
@@ -148,7 +148,7 @@ public class MovieDaoImpl implements MovieDao {
         return JdbcUtils.executeQuery(
                 JdbcUtils.getConnection(),
                 sql,
-                true,
+                isAutoCloseConn,
                 rs -> {
                     Movie movie = new Movie();
                     try {

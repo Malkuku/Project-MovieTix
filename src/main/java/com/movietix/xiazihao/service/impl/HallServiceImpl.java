@@ -17,7 +17,7 @@ public class HallServiceImpl implements HallService {
     @Override
     public Hall selectHallById(Integer id) {
         try {
-            return hallDao.selectHallById(id);
+            return hallDao.selectHallById(id,true);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -26,7 +26,7 @@ public class HallServiceImpl implements HallService {
     @Override
     public void updateHall(Hall hall) {
         try {
-            hallDao.updateHall(hall);
+            hallDao.updateHall(hall,true);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -34,13 +34,13 @@ public class HallServiceImpl implements HallService {
 
     @Override
     public void deleteHallsByIds(List<Integer> ids) {
-        hallDao.deleteHallByIds(ids);
+        hallDao.deleteHallByIds(ids,true);
     }
 
     @Override
     public void addHall(Hall hall) {
         try {
-            hallDao.addHall(hall);
+            hallDao.addHall(hall,true);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -49,8 +49,8 @@ public class HallServiceImpl implements HallService {
     @Override
     public PageResult<Hall> selectHallsByPage(HallQueryParam param) {
         try {
-            Integer total = hallDao.countHalls(param);
-            List<Hall> hallList = hallDao.selectHallsByPage(param);
+            Integer total = hallDao.countHalls(param,true);
+            List<Hall> hallList = hallDao.selectHallsByPage(param,true);
             return new PageResult<>(total, hallList);
         } catch (SQLException e) {
             throw new RuntimeException(e);

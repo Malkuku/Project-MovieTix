@@ -1,7 +1,6 @@
 package com.movietix.xiazihao.utils;
 
 import com.movietix.xiazihao.config.DataSourceConfig;
-import com.movietix.xiazihao.constants.ConstantsManager;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;

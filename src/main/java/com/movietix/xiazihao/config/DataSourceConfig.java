@@ -1,7 +1,6 @@
 package com.movietix.xiazihao.config;
 
 import com.movietix.xiazihao.constants.ConstantsManager;
-import com.movietix.xiazihao.utils.JdbcUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 

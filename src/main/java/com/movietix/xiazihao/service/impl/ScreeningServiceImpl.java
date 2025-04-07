@@ -14,14 +14,19 @@ public class ScreeningServiceImpl implements ScreeningService {
     private final ScreeningDao screeningDao = new ScreeningDaoImpl();
 
     @Override
+    public void addScreening(Screening screening) {
+       //screeningDao.addScreening(screening);
+    }
+
+    @Override
     public void deleteScreeningByIds(List<Integer> ids) throws SQLException {
-        screeningDao.deleteScreeningByIds(ids);
+        screeningDao.deleteScreeningByIds(ids,true);
     }
 
     @Override
     public PageResult<Screening> selectScreeningByPage(ScreeningQueryParam param) throws SQLException {
-        Integer total = screeningDao.selectScreeningCount(param);
-        List<Screening> screeningList = screeningDao.selectScreeningByPage(param);
+        Integer total = screeningDao.selectScreeningCount(param,true);
+        List<Screening> screeningList = screeningDao.selectScreeningByPage(param,true);
         return new PageResult<>(total, screeningList);
     }
 }
