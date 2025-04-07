@@ -32,4 +32,9 @@ public class UserServiceImpl implements UserService {
     public void addUser(User user) throws SQLException {
         userDao.addUser(user, true);
     }
+
+    @Override
+    public void updateUserPassword(User user) throws SQLException {
+        userDao.updateUserPassword(user, true);
+    }
 }

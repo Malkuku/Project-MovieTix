@@ -54,7 +54,13 @@ public class UserController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
-        if(pathInfo != null && pathInfo.matches("/status")){
+        if(pathInfo != null && pathInfo.matches("/password")){
+            try {
+                updateUserPassword(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }else if(pathInfo != null && pathInfo.matches("/status")){
 
         }else{
 
@@ -69,6 +75,15 @@ public class UserController extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //修改用户密码
+    private void updateUserPassword(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String json = ServletUtils.getRequestBody(req);
+        User user = JsonUtils.parseJson(json, User.class);
+        log.info("接收到的用户信息:{}", user);
+        userService.updateUserPassword(user);
+        ServletUtils.sendResponse(resp, Result.success());
     }
 
     //添加用户

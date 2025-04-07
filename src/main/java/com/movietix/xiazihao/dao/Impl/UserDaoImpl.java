@@ -101,4 +101,14 @@ public class UserDaoImpl implements UserDao {
                 user.getBalance()
         );
     }
+
+    @Override
+    public void updateUserPassword(User user, boolean isAutoCloseConn) throws SQLException {
+        String sql = "UPDATE users SET password_hash = COALESCE(?, password_hash) WHERE id = ?";
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+                user.getPasswordHash(),
+                user.getId()
+        );
+
+    }
 }

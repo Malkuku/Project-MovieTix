@@ -16,4 +16,7 @@ public interface UserService {
 
     //添加用户
     void addUser(User user) throws SQLException;
+
+    //修改用户密码
+    void updateUserPassword(User user) throws SQLException;
 }

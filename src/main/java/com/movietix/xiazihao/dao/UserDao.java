@@ -18,4 +18,7 @@ public interface UserDao {
 
     // 添加用户
     void addUser(User user, boolean isAutoCloseConn) throws SQLException;
+
+    // 修改用户密码
+    void updateUserPassword(User user, boolean isAutoCloseConn) throws SQLException;
 }
