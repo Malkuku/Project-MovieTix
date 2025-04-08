@@ -28,10 +28,19 @@ public class UserController extends HttpServlet {
     //post请求入口
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            addUser(req, resp);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        String pathInfo = req.getPathInfo();
+        if (pathInfo != null && pathInfo.matches("/login")) {
+            try {
+                login(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }else{
+            try {
+                addUser(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -84,6 +93,16 @@ public class UserController extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //用户登录请求
+    private void login(HttpServletRequest req,HttpServletResponse resp) throws IOException, SQLException {
+        String json = ServletUtils.getRequestBody(req);
+        User user = JsonUtils.parseJson(json, User.class);
+        log.info("接收到的用户信息:{}", user);
+        User userDB =  userService.login(user);
+        log.info("查询到的用户信息:{}", userDB);
+        ServletUtils.sendResponse(resp, Result.success(userDB));
     }
 
     //修改用户状态

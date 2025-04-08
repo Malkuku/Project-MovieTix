@@ -19,4 +19,7 @@ public class User {
     private BigDecimal balance = BigDecimal.ZERO; // 账户余额
     private LocalDateTime createdAt; // 创建时间
     private LocalDateTime updatedAt; // 更新时间
+
+    //token
+    private String token; // 用户登录后生成的token
 }

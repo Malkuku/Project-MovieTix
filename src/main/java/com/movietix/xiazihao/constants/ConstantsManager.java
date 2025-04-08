@@ -8,7 +8,7 @@ public class ConstantsManager {
     //数据库引擎
     private static final String DRIVER = "com.mysql.jdbc.Driver";
     //Jwt密钥
-    private static final String SECRET_KEY = "aXRoZWltYQ=="; // 秘钥
+    private static final String SECRET_KEY = "ProjectMovieTixKaCatIsMyLongLongSecretKeyTo256Bits"; // 秘钥
     //设置有效时间
     private static final long EXPIRATION_TIME = 12 * 60 * 60 * 1000; // 12小时
 

@@ -8,6 +8,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface UserService {
+
+    //根据username查询用户信息
+    User selectUserByUsername(String username) throws SQLException;
+
     // 条件分页查询用户信息
     PageResult<User> selectUsersByPage(UserQueryParam userQueryParam) throws SQLException;
 
@@ -28,4 +32,7 @@ public interface UserService {
 
     //根据ID查询用户信息
     User selectUserById(Integer id);
+
+    //用户登录
+    User login(User user) throws SQLException;
 }

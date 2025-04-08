@@ -14,7 +14,7 @@ public class JwtUtils {
     /**
      * 生成JWT令牌
      */
-    public static String generateToken(Map<String, Object> claims) {
+    public static String createToken(Map<String, Object> claims) {
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .addClaims(claims)

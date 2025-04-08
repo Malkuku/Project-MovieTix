@@ -30,4 +30,7 @@ public interface UserDao {
 
     // 根据ID查询用户信息
     User selectUserById(Integer id, boolean isAutoCloseConn) throws SQLException;
+
+    // 根据用户名查询用户信息
+    User selectUserByUsername(String username, boolean isAutoCloseConn) throws SQLException;
 }

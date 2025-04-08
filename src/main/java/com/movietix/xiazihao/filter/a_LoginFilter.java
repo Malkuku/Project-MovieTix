@@ -24,7 +24,7 @@ public class a_LoginFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         // 放行登录接口
-        if (httpRequest.getRequestURI().contains("/login")) {
+        if (httpRequest.getRequestURI().contains("/users/login")) {
             chain.doFilter(request, response);
             return;
         }
@@ -42,6 +42,7 @@ public class a_LoginFilter implements Filter {
             log.info("Token错误");
             httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token错误");
         }
+
         //放行请求
         log.debug("Token验证通过");
         chain.doFilter(request, response);
