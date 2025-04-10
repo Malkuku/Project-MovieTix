@@ -1,178 +1,201 @@
-<template>
-  <div class="app-container">
-    <!-- 侧边栏 -->
-    <el-container>
-      <el-aside width="200px">
-        <el-menu
-            router
-            :default-active="route.path"
-            class="el-menu-vertical"
-            background-color="#545c64"
-            text-color="#fff"
-            active-text-color="#ffd04b"
-        >
-          <div class="logo-container">
-            <h2>影院管理系统</h2>
-          </div>
-          <el-menu-item index="/hall">
-            <el-icon><icon-menu /></el-icon>
-            <span>放映厅管理</span>
-          </el-menu-item>
-          <el-menu-item index="/movie">
-            <el-icon><video-play /></el-icon>
-            <span>电影管理</span>
-          </el-menu-item>
-          <el-menu-item index="/screening">
-            <el-icon><Calendar /></el-icon>
-            <span>排片管理</span>
-          </el-menu-item>
-          <el-menu-item index="/user">
-            <el-icon><user /></el-icon>
-            <span>用户管理</span>
-          </el-menu-item>
-          <el-menu-item index="/log">
-            <el-icon><document /></el-icon>
-            <span>日志管理</span>
-          </el-menu-item>
-        </el-menu>
-      </el-aside>
+<script setup>
+import {
+  Promotion,
+  Menu,
+  HomeFilled,
+  UserFilled,
+  Tools,
+  HelpFilled,
+  Avatar,
+  Histogram,
+  InfoFilled,
+  Share,
+  Document,
+  EditPen,
+  SwitchButton,
+  Film,
+  Ticket,
+  VideoCamera,
+  User
+} from '@element-plus/icons-vue'
+</script>
 
-      <!-- 主内容区 -->
-      <el-container>
-        <el-header>
-          <div class="header-right">
+<template>
+  <div class="common-layout">
+    <el-container class="layout-container">
+      <!-- 顶部导航栏 -->
+      <el-header class="header">
+        <div class="header-content">
+          <div class="logo">
+            <span class="title">🎬 影院管理系统</span>
+            <span class="subtitle">专业影院运营平台</span>
+          </div>
+          <div class="right_tool">
             <el-dropdown>
-              <span class="el-dropdown-link">
-                <el-avatar :size="30" :src="userAvatar" />
-                <span style="margin-left: 8px">{{ username }}</span>
-                <el-icon class="el-icon--right">
-                  <arrow-down />
-                </el-icon>
+              <span class="user-actions">
+                <el-avatar :size="32" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" />
+                <span class="username">管理员</span>
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>个人中心</el-dropdown-item>
-                  <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
+                  <el-dropdown-item>
+                    <el-icon><EditPen /></el-icon> 修改密码
+                  </el-dropdown-item>
+                  <el-dropdown-item divided>
+                    <el-icon><SwitchButton /></el-icon> 退出登录
+                  </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
           </div>
-        </el-header>
+        </div>
+      </el-header>
 
-        <el-main>
-          <!-- 面包屑导航 -->
-          <el-breadcrumb separator="/" class="breadcrumb">
-            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>{{ currentRouteName }}</el-breadcrumb-item>
-          </el-breadcrumb>
+      <el-container>
+        <!-- 左侧菜单栏 -->
+        <el-aside width="220px" class="aside">
+          <el-menu
+              router
+              active-text-color="#ffd04b"
+              background-color="#2c3e50"
+              class="sidebar-menu"
+              text-color="#b8c7ce"
+          >
+            <!-- 控制台 -->
+            <el-menu-item index="/hall">
+              <el-icon><Promotion /></el-icon>
+              <span>控制台</span>
+            </el-menu-item>
 
-          <!-- 路由视图 -->
-          <router-view v-slot="{ Component }">
-            <transition name="fade" mode="out-in">
-              <component :is="Component" />
-            </transition>
-          </router-view>
+            <!-- 影片管理 -->
+            <el-sub-menu index="1">
+              <template #title>
+                <el-icon><Film /></el-icon>
+                <span>影片管理</span>
+              </template>
+              <el-menu-item index="/movie">全部影片</el-menu-item>
+            </el-sub-menu>
+
+            <!-- 用户管理 -->
+            <el-menu-item index="/user">
+              <el-icon><User /></el-icon>
+              <span>用户管理</span>
+            </el-menu-item>
+
+            <!-- 排片管理 -->
+            <el-sub-menu index="2">
+              <template #title>
+                <el-icon><VideoCamera /></el-icon>
+                <span>排片管理</span>
+              </template>
+              <el-menu-item index="/screening">排片列表</el-menu-item>
+            </el-sub-menu>
+
+            <!-- 系统日志 -->
+            <el-menu-item index="/log">
+              <el-icon><Document /></el-icon>
+              <span>系统日志</span>
+            </el-menu-item>
+          </el-menu>
+        </el-aside>
+
+        <!-- 主内容区 -->
+        <el-main class="main-content">
+          <div class="content-container">
+            <router-view v-slot="{ Component }">
+              <transition name="fade" mode="out-in">
+                <component :is="Component" />
+              </transition>
+            </router-view>
+          </div>
         </el-main>
       </el-container>
     </el-container>
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import {
-  Menu as IconMenu,
-  VideoPlay,
-  Calendar,
-  User,
-  Document,
-  ArrowDown
-} from '@element-plus/icons-vue'
-
-const router = useRouter()
-const route = useRoute()
-
-// 模拟用户数据
-const username = ref('管理员')
-const userAvatar = ref('https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png')
-
-// 获取当前路由名称用于面包屑
-const currentRouteName = computed(() => {
-  const routeMap = {
-    'hall': '放映厅管理',
-    'movie': '电影管理',
-    'user': '用户管理',
-    'screening': '排片管理',
-    'log': '日志管理'
-  }
-  return routeMap[route.name] || '首页'
-})
-
-// 退出登录
-const handleLogout = () => {
-  // 这里应该调用退出登录的API
-  router.push('/login')
-}
-</script>
-
 <style scoped>
-.app-container {
+.layout-container {
   height: 100vh;
-  overflow: hidden;
 }
 
-.el-container {
+.header {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 0 20px;
+  height: 64px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   height: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-.el-aside {
-  background-color: #545c64;
-  color: #fff;
-}
-
-.el-menu {
-  border-right: none;
-}
-
-.el-header {
-  background-color: #fff;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
-}
-
-.el-main {
-  background-color: #f0f2f5;
-  padding: 20px;
-}
-
-.logo-container {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  background-color: #434a50;
-}
-
-.breadcrumb {
-  margin-bottom: 20px;
-}
-
-.header-right {
+.logo {
   display: flex;
   align-items: center;
 }
 
-.el-dropdown-link {
+.title {
+  color: white;
+  font-size: 22px;
+  font-weight: 700;
+  margin-right: 10px;
+}
+
+.subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+}
+
+.right_tool {
+  display: flex;
+  align-items: center;
+}
+
+.user-actions {
   display: flex;
   align-items: center;
   cursor: pointer;
+  color: white;
 }
 
-/* 过渡动画 */
+.username {
+  margin-left: 10px;
+  font-weight: 500;
+}
+
+.aside {
+  background-color: #2c3e50;
+  transition: width 0.3s;
+}
+
+.sidebar-menu {
+  border-right: none;
+}
+
+.sidebar-menu:not(.el-menu--collapse) {
+  width: 220px;
+}
+
+.main-content {
+  background-color: #f5f7fa;
+  padding: 20px;
+}
+
+.content-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  min-height: calc(100vh - 104px);
+}
+
+/* 页面切换动画 */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;
@@ -181,5 +204,24 @@ const handleLogout = () => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .aside {
+    width: 64px !important;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .subtitle {
+    display: none;
+  }
+
+  .username {
+    display: none;
+  }
 }
 </style>

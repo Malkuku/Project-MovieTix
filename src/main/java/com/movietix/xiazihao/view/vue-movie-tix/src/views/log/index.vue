@@ -77,18 +77,18 @@ const search = async () => {
   }
 }
 
-// 格式化日期时间
-const formatDateTime = (dateTimeStr) => {
-  if (!dateTimeStr) return ''
-  const date = new Date(dateTimeStr)
-  return date.toLocaleString()
-}
+//批量删除日志
+
 
 // 处理选中日志变化
 const handleSelectionChange = (selection) => {
   selectedLogs.value = selection.map(item => item.id)
 }
 
+//钩子函数
+onMounted(() => {
+  search();
+})
 
 </script>
 
