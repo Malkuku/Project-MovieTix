@@ -64,7 +64,7 @@ import {
             <!-- 控制台 -->
             <el-menu-item index="/hall">
               <el-icon><Promotion /></el-icon>
-              <span>控制台</span>
+              <span>影厅管理</span>
             </el-menu-item>
 
             <!-- 影片管理 -->
