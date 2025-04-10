@@ -20,7 +20,7 @@ public class ScreeningDaoImpl implements ScreeningDao {
                 "end_time = COALESCE(?, end_time), " +
                 "price = COALESCE(?, price), " +
                 "remaining_seats = COALESCE(?, remaining_seats), " +
-                "status = COALESCE(?, status) " +
+                "status = COALESCE(?, status), " +
                 "updated_at = NOW() " +
                 "WHERE id = ?";
         JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,

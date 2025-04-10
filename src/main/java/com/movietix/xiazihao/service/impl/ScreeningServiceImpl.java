@@ -66,6 +66,20 @@ public class ScreeningServiceImpl implements ScreeningService {
     public PageResult<Screening> selectScreeningByPage(ScreeningQueryParam param) throws SQLException {
         Integer total = screeningDao.selectScreeningCount(param,true);
         List<Screening> screeningList = screeningDao.selectScreeningByPage(param,true);
+        //根据id找到电影名称
+        for (Screening screening : screeningList) {
+            Movie movie = movieDao.selectMovieById(screening.getMovieId(), true);
+            if (movie != null) {
+                screening.setMovieTitle(movie.getTitle());
+            }
+        }
+        //根据id找到影厅名称
+        for(Screening screening : screeningList) {
+            Hall hall = hallDoo.selectHallById(screening.getHallId(), true);
+            if (hall != null) {
+                screening.setHallName(hall.getName());
+            }
+        }
         return new PageResult<>(total, screeningList);
     }
 

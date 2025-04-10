@@ -57,6 +57,7 @@ public class MovieServiceImpl implements MovieService {
         Integer total = movieDao.countMovies(param,true);
         List<Movie> movies = movieDao.selectMoviesByPage(param,true);
 
+
         return new PageResult<>(total, movies);
     }
 }

@@ -105,7 +105,7 @@ public class ScreeningController extends HttpServlet {
             screeningService.updateScreening(screening);
             ServletUtils.sendResponse(resp, Result.success());
         } catch (SQLException e) {
-            ServletUtils.sendResponse(resp, Result.error("修改放映场次失败"));
+            throw new RuntimeException(e);
         }
     }
 

@@ -21,4 +21,6 @@ public class Screening {
     private Integer status = 1; // 状态:0-已取消 1-正常
     private LocalDateTime createdAt; // 创建时间
     private LocalDateTime updatedAt; // 更新时间
+    private String movieTitle; // 电影名称
+    private String hallName; // 放映厅名称
 }
