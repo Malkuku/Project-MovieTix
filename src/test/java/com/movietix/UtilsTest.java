@@ -3,6 +3,7 @@ package com.movietix;
 import com.movietix.xiazihao.entity.pojo.Movie;
 import com.movietix.xiazihao.utils.JdbcUtils;
 import com.movietix.xiazihao.utils.JsonUtils;
+import com.movietix.xiazihao.utils.OrderNoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,17 @@ import static com.movietix.xiazihao.utils.JdbcUtils.*;
 
 @Slf4j
 public class UtilsTest {
+
+    //测试订单号生成
+    @Test
+    public void testOrderNoUtils() {
+        String orderNo = OrderNoUtils.generateOrderNo();
+        log.info("生成的订单号: {}", orderNo);
+        String orderNo2 = OrderNoUtils.generateShortOrderNo();
+        log.info("生成的短订单号: {}", orderNo2);
+        String orderNo3 = OrderNoUtils.generateOrderNoByUserId(1023);
+        log.info("生成的订单号: {}", orderNo3);
+    }
 
     //测试Json封装
     @Test
