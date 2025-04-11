@@ -1,7 +1,12 @@
 package com.movietix.xiazihao.controller;
 
+import com.movietix.xiazihao.entity.pojo.Movie;
+import com.movietix.xiazihao.entity.pojo.OrderSeat;
+import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.OrderSeatService;
 import com.movietix.xiazihao.service.impl.OrderSeatServiceImpl;
+import com.movietix.xiazihao.utils.JsonUtils;
+import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletException;
@@ -11,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @Slf4j
 @WebServlet("/order_seats/*")
@@ -20,6 +26,7 @@ public class OrderSeatController extends HttpServlet {
     //post请求入口
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        addOrderSeats(req, resp);
     }
 
     //get请求入口
@@ -40,4 +47,16 @@ public class OrderSeatController extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     }
 
+    //批量添加座位
+    private void addOrderSeats(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String json = ServletUtils.getRequestBody(req);
+        List<OrderSeat> orderSeatList = JsonUtils.parseJsonToList(json, OrderSeat.class);
+        log.info("orderSeatList: {}", orderSeatList);
+        try {
+            orderSeatService.addOrderSeats(orderSeatList);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        ServletUtils.sendResponse(resp, Result.success());
+    }
 }
