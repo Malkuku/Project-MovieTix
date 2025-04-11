@@ -9,4 +9,7 @@ import java.sql.SQLException;
 public interface OrderService {
     // 分页查询订单
     PageResult<Order> selectOrdersByPage(OrderQueryParam param) throws SQLException;
+
+    //根据id查询订单
+    Order selectOrderById(Integer id) throws SQLException;
 }

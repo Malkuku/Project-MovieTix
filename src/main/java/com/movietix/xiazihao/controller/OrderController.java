@@ -35,7 +35,7 @@ public class OrderController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo != null && pathInfo.matches("/\\d+")) {
-
+            selectOrderById(req, resp);
         }else{
             try {
                 selectOrdersByPage(req, resp);
@@ -83,4 +83,21 @@ public class OrderController extends HttpServlet {
         ServletUtils.sendResponse(resp, Result.success(pageResult));
     }
 
+    //TODO 创建订单
+
+    //根据id查询订单
+    private void selectOrderById(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+        Integer id = Integer.parseInt(pathInfo.substring(1));
+        try {
+            Order order = orderService.selectOrderById(id);
+            if (order != null) {
+                ServletUtils.sendResponse(resp, Result.success(order));
+            } else {
+                ServletUtils.sendResponse(resp, Result.error("订单不存在"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

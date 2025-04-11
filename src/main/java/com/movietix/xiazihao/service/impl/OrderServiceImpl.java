@@ -19,4 +19,9 @@ public class OrderServiceImpl implements OrderService {
         List<Order> list = orderDao.selectOrdersByPage(param,true);
         return new PageResult<>(total,list);
     }
+
+    @Override
+    public Order selectOrderById(Integer id) throws SQLException {
+        return orderDao.selectOrderById(id,true);
+    }
 }

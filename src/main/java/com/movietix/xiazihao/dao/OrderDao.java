@@ -11,4 +11,6 @@ public interface OrderDao {
     Integer selectOrdersCount(OrderQueryParam param,boolean isAutoCloseConn) throws SQLException;
     // 分页查询订单
     List<Order> selectOrdersByPage(OrderQueryParam param,boolean isAutoCloseConn) throws SQLException;
+    //根据id查询订单
+    Order selectOrderById(Integer id, boolean isAutoCloseConn) throws SQLException;
 }

@@ -96,4 +96,36 @@ public class OrderDaoImpl implements OrderDao {
                 param.getPageSize(), (param.getPage() - 1) * param.getPageSize()
         );
     }
+
+    @Override
+    public Order selectOrderById(Integer id, boolean isAutoCloseConn) throws SQLException {
+        String sql = "SELECT * " +
+                "FROM orders " +
+                "WHERE id = ?";
+        List<Order> orderList = JdbcUtils.executeQuery(
+                JdbcUtils.getConnection(),
+                sql,
+                isAutoCloseConn,
+                rs -> {
+                    Order order = new Order();
+                    try {
+                        order.setId(rs.getInt("id"));
+                        order.setOrderNo(rs.getString("order_no"));
+                        order.setUserId(rs.getInt("user_id"));
+                        order.setScreeningId(rs.getInt("screening_id"));
+                        order.setTotalAmount(rs.getBigDecimal("total_amount"));
+                        order.setSeatCount(rs.getInt("seat_count"));
+                        order.setStatus(rs.getInt("status"));
+                        order.setContactPhone(rs.getString("contact_phone"));
+                        order.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                        order.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return order;
+                },
+                id
+        );
+        return !orderList.isEmpty() ? orderList.get(0) : null;
+    }
 }
