@@ -4,6 +4,7 @@ import com.movietix.xiazihao.dao.OrderSeatDao;
 import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -40,5 +41,25 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
             }
         }, screeningId,seatRow,seatCol);
         return countList.isEmpty() ? 0 : countList.get(0);
+    }
+
+    @Override
+    public OrderSeat selectOrderSeatById(Integer id,boolean isAutoCloseConn) throws SQLException {
+        String sql = "SELECT * FROM order_seats WHERE id = ?";
+        List<OrderSeat> orderSeatList = JdbcUtils.executeQuery(JdbcUtils.getConnection(),sql,isAutoCloseConn,rs -> {
+            try {
+                OrderSeat orderSeat = new OrderSeat();
+                orderSeat.setId(rs.getInt("id"));
+                orderSeat.setOrderId(rs.getInt("order_id"));
+                orderSeat.setSeatRow(rs.getInt("seat_row"));
+                orderSeat.setSeatCol(rs.getInt("seat_col"));
+                orderSeat.setSeatNo(rs.getString("seat_no"));
+                orderSeat.setPrice(BigDecimal.valueOf(rs.getDouble("price")));
+                return orderSeat;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }, id);
+        return orderSeatList.isEmpty() ? null : orderSeatList.get(0);
     }
 }

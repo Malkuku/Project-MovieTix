@@ -8,6 +8,7 @@ import com.movietix.xiazihao.entity.pojo.Order;
 import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.service.OrderSeatService;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class OrderSeatServiceImpl implements OrderSeatService {
@@ -25,5 +26,10 @@ public class OrderSeatServiceImpl implements OrderSeatService {
             }
         }
         orderSeatDao.addOrderSeat(orderSeatList,false);
+    }
+
+    @Override
+    public OrderSeat selectOrderSeatById(Integer id) throws SQLException {
+        return orderSeatDao.selectOrderSeatById(id,true);
     }
 }

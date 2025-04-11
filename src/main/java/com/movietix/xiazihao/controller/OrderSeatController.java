@@ -34,6 +34,7 @@ public class OrderSeatController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo != null && pathInfo.matches("/\\d+")) {
+            selectOrderSeatById(req, resp);
         }else {}
     }
 
@@ -45,6 +46,19 @@ public class OrderSeatController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    //根据id查询座位
+    private void selectOrderSeatById(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+        int id = Integer.parseInt(pathInfo.substring(1));
+        OrderSeat orderSeat = null;
+        try {
+            orderSeat = orderSeatService.selectOrderSeatById(id);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        ServletUtils.sendResponse(resp, Result.success(orderSeat));
     }
 
     //批量添加座位
