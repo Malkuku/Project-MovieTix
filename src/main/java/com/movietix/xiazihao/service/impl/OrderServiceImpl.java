@@ -24,4 +24,14 @@ public class OrderServiceImpl implements OrderService {
     public Order selectOrderById(Integer id) throws SQLException {
         return orderDao.selectOrderById(id,true);
     }
+
+    @Override
+    public void cancelOrder(Integer id) throws SQLException {
+        //先检查是否为待支付状态
+        Order order = orderDao.selectOrderById(id,true);
+        if(order.getStatus() != 0){
+            throw new RuntimeException("订单状态不正确，无法取消");
+        }
+        orderDao.cancelOrder(id,true);
+    }
 }

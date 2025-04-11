@@ -13,4 +13,6 @@ public interface OrderDao {
     List<Order> selectOrdersByPage(OrderQueryParam param,boolean isAutoCloseConn) throws SQLException;
     //根据id查询订单
     Order selectOrderById(Integer id, boolean isAutoCloseConn) throws SQLException;
+    // 取消订单
+    void cancelOrder(Integer id, boolean isAutoCloseConn) throws SQLException;
 }

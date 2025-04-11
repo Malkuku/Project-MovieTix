@@ -128,4 +128,12 @@ public class OrderDaoImpl implements OrderDao {
         );
         return !orderList.isEmpty() ? orderList.get(0) : null;
     }
+
+    @Override
+    public void cancelOrder(Integer id, boolean isAutoCloseConn) throws SQLException {
+        String sql = "UPDATE orders " +
+                "SET status = 2, updated_at = NOW() " +
+                "WHERE id = ?";
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn, id);
+    }
 }

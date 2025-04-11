@@ -49,8 +49,8 @@ public class OrderController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
-        if(pathInfo != null && pathInfo.matches("")){
-
+        if(pathInfo != null && pathInfo.matches("/\\d+/cancel")){
+            cancelOrder(req, resp);
         }else{
 
         }
@@ -96,6 +96,18 @@ public class OrderController extends HttpServlet {
             } else {
                 ServletUtils.sendResponse(resp, Result.error("订单不存在"));
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //取消订单
+    private void cancelOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+        Integer id = Integer.parseInt(pathInfo.substring(1, pathInfo.indexOf("/cancel")));
+        try {
+            orderService.cancelOrder(id);
+            ServletUtils.sendResponse(resp, Result.success());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

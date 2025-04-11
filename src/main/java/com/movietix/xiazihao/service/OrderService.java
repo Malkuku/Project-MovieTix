@@ -12,4 +12,7 @@ public interface OrderService {
 
     //根据id查询订单
     Order selectOrderById(Integer id) throws SQLException;
+
+    // 取消订单
+    void cancelOrder(Integer id) throws SQLException;
 }
