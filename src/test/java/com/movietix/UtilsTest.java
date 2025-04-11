@@ -22,12 +22,8 @@ public class UtilsTest {
     //测试订单号生成
     @Test
     public void testOrderNoUtils() {
-        String orderNo = OrderNoUtils.generateOrderNo();
+        String orderNo = OrderNoUtils.generateOrderNo(12234);
         log.info("生成的订单号: {}", orderNo);
-        String orderNo2 = OrderNoUtils.generateShortOrderNo();
-        log.info("生成的短订单号: {}", orderNo2);
-        String orderNo3 = OrderNoUtils.generateOrderNoByUserId(1023);
-        log.info("生成的订单号: {}", orderNo3);
     }
 
     //测试Json封装
