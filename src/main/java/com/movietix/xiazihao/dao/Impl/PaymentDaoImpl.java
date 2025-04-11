@@ -95,4 +95,77 @@ public class PaymentDaoImpl implements PaymentDao {
                 param.getPageSize(), (param.getPage() - 1) * param.getPageSize()
         );
     }
+
+    @Override
+    public void addPayment(Payment payment, boolean isAutoCloseConn) throws SQLException {
+        String sql = "INSERT INTO payments (order_id, amount, payment_method, transaction_id, status, pay_time) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+        JdbcUtils.executeUpdate(
+                JdbcUtils.getConnection(),
+                sql,
+                isAutoCloseConn,
+                payment.getOrderId(),
+                payment.getAmount(),
+                payment.getPaymentMethod(),
+                payment.getTransactionId(),
+                payment.getStatus(),
+                payment.getPayTime()
+        );
+    }
+
+    @Override
+    public void updatePayment(Payment payment, boolean isAutoCloseConn) throws SQLException {
+        String sql = "UPDATE payments SET " +
+                    "order_id = COALESCE(?, order_id), " +
+                    "amount = COALESCE(?, amount), " +
+                    "payment_method = COALESCE(?, payment_method), " +
+                    "transaction_id = COALESCE(?, transaction_id), " +
+                    "status = COALESCE(?, status), " +
+                    "pay_time = COALESCE(?, pay_time) " +
+                    "WHERE id = ?";
+        JdbcUtils.executeUpdate(
+                JdbcUtils.getConnection(),
+                sql,
+                isAutoCloseConn,
+                payment.getOrderId(),
+                payment.getAmount(),
+                payment.getPaymentMethod(),
+                payment.getTransactionId(),
+                payment.getStatus(),
+                payment.getPayTime(),
+                payment.getId()
+        );
+    }
+
+    @Override
+    public Payment selectPaymentById(Integer id, boolean isAutoCloseConn) throws SQLException {
+        String sql = "SELECT * " +
+                "FROM payments " +
+                "WHERE id = ?";
+        List<Payment> payments = JdbcUtils.executeQuery(
+                JdbcUtils.getConnection(),
+                sql,
+                isAutoCloseConn,
+                rs -> {
+                    Payment payment = new Payment();
+                    try {
+                        payment.setId(rs.getInt("id"));
+                        payment.setOrderId(rs.getInt("order_id"));
+                        payment.setAmount(rs.getBigDecimal("amount"));
+                        payment.setPaymentMethod(rs.getString("payment_method"));
+                        payment.setTransactionId(rs.getString("transaction_id"));
+                        payment.setStatus(rs.getInt("status"));
+                        payment.setPayTime(rs.getTimestamp("pay_time") != null ?
+                                rs.getTimestamp("pay_time").toLocalDateTime() : null);
+                        payment.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                        payment.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return payment;
+                },
+                id
+        );
+        return payments.isEmpty() ? null : payments.get(0);
+    }
 }

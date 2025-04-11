@@ -22,4 +22,19 @@ public class PaymentServiceImpl implements PaymentService {
                 paymentList
         );
     }
+
+    @Override
+    public void addPayment(Payment payment) throws SQLException {
+        paymentDao.addPayment(payment,true);
+    }
+
+    @Override
+    public void updatePayment(Payment payment) throws SQLException {
+        paymentDao.updatePayment(payment,true);
+    }
+
+    @Override
+    public Payment selectPaymentById(Integer id) throws SQLException {
+        return paymentDao.selectPaymentById(id,true);
+    }
 }
