@@ -23,4 +23,7 @@ public interface OrderSeatDao {
 
     //更新座位
     void updateOrderSeats(OrderSeat orderSeat, boolean isAutoCloseConn) throws SQLException;
+
+    //批量删除座位信息
+    void deleteOrderSeats(List<Integer> ids, boolean isAutoCloseConn) throws SQLException;
 }

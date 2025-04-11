@@ -119,4 +119,10 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
                orderSeat.getPrice(),
                orderSeat.getId());
     }
+
+    @Override
+    public void deleteOrderSeats(List<Integer> ids, boolean isAutoCloseConn) throws SQLException {
+        String sql = "DELETE FROM order_seats WHERE id IN (" + String.join(",", ids.stream().map(id->"?").toArray(String[]::new)) + ")";
+        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,ids.toArray());
+    }
 }

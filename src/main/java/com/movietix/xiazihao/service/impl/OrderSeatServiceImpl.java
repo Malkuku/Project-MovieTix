@@ -53,4 +53,9 @@ public class OrderSeatServiceImpl implements OrderSeatService {
 
         orderSeatDao.updateOrderSeats(orderSeat,true);
     }
+
+    @Override
+    public void deleteOrderSeats(List<Integer> ids) throws SQLException {
+        orderSeatDao.deleteOrderSeats(ids,true);
+    }
 }

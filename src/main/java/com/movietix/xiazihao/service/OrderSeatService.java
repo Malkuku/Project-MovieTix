@@ -20,4 +20,7 @@ public interface OrderSeatService {
 
     //更新座位
     void updateOrderSeats(OrderSeat orderSeat) throws Exception;
+
+    //批量删除座位信息
+    void deleteOrderSeats(List<Integer> ids) throws SQLException;
 }

@@ -54,6 +54,11 @@ public class OrderSeatController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            deleteOrderSeats(req, resp);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //根据订单批量查询
@@ -115,6 +120,14 @@ public class OrderSeatController extends HttpServlet {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        ServletUtils.sendResponse(resp, Result.success());
+    }
+
+    //批量删除座位信息
+    private void deleteOrderSeats(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+        List<Integer> ids = ServletUtils.parseReqToList(req.getParameterValues("ids"), Integer.class);
+        log.info("ids: {}", ids);
+        orderSeatService.deleteOrderSeats(ids);
         ServletUtils.sendResponse(resp, Result.success());
     }
 }
