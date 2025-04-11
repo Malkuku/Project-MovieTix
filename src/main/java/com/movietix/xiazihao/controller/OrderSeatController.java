@@ -48,6 +48,7 @@ public class OrderSeatController extends HttpServlet {
     //put请求入口
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        updateOrderSeats(req, resp);
     }
 
     //delete请求入口
@@ -98,6 +99,19 @@ public class OrderSeatController extends HttpServlet {
         log.info("orderSeatList: {}", orderSeatList);
         try {
             orderSeatService.addOrderSeats(orderSeatList);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        ServletUtils.sendResponse(resp, Result.success());
+    }
+
+    //更新座位信息
+    private void updateOrderSeats(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String json = ServletUtils.getRequestBody(req);
+        OrderSeat orderSeat = JsonUtils.parseJson(json, OrderSeat.class);
+        log.info("orderSeat: {}", orderSeat);
+        try {
+            orderSeatService.updateOrderSeats(orderSeat);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

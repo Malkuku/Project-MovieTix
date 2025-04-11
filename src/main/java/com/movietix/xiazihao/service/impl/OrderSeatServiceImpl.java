@@ -42,4 +42,15 @@ public class OrderSeatServiceImpl implements OrderSeatService {
     public List<OrderSeat> selectOrderSeatsByOrderId(Integer orderId) throws SQLException {
         return orderSeatDao.selectOrderSeatsByOrderId(orderId,true);
     }
+
+    @Override
+    public void updateOrderSeats(OrderSeat orderSeat) throws Exception {
+        //先检查座位是否已经被预定
+        OrderSeat oldOrderSeat = orderSeatDao.selectOrderSeatById(orderSeat.getId(), true);
+        Order order = orderDao.selectOrderById(oldOrderSeat.getOrderId(), true);
+        Integer count = orderSeatDao.checkSeatIsReserved(order.getScreeningId(), orderSeat.getSeatRow(), orderSeat.getSeatCol(), true);
+        if(count > 0) throw new Exception("座位已被预定");
+
+        orderSeatDao.updateOrderSeats(orderSeat,true);
+    }
 }

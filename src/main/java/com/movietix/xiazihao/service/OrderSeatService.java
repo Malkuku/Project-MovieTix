@@ -17,4 +17,7 @@ public interface OrderSeatService {
 
     //根据订单id查询座位
     List<OrderSeat> selectOrderSeatsByOrderId(Integer orderId) throws SQLException;
+
+    //更新座位
+    void updateOrderSeats(OrderSeat orderSeat) throws Exception;
 }

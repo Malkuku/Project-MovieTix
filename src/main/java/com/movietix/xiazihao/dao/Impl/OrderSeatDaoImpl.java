@@ -101,4 +101,22 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
             }
         }, orderId);
     }
+
+    @Override
+    public void updateOrderSeats(OrderSeat orderSeat, boolean isAutoCloseConn) throws SQLException {
+       String sql = "UPDATE order_seats SET " +
+                     "order_id = COALESCE(?, order_id), " +
+                     "seat_row = COALESCE(?, seat_row), " +
+                     "seat_col = COALESCE(?, seat_col), " +
+                     "seat_no = COALESCE(?, seat_no), " +
+                     "price = COALESCE(?, price) " +
+                     "WHERE id = ?";
+       JdbcUtils.executeUpdate(JdbcUtils.getConnection(),sql,isAutoCloseConn,
+               orderSeat.getOrderId(),
+               orderSeat.getSeatRow(),
+               orderSeat.getSeatCol(),
+               orderSeat.getSeatNo(),
+               orderSeat.getPrice(),
+               orderSeat.getId());
+    }
 }
