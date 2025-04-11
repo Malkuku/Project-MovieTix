@@ -62,4 +62,24 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
         }, id);
         return orderSeatList.isEmpty() ? null : orderSeatList.get(0);
     }
+
+    @Override
+    public OrderSeat selectOrderSeatsByCondition(String orderId, String seatRow, String seatCol, boolean isAutoCloseConn) throws SQLException {
+        String sql = "SELECT * FROM order_seats WHERE order_id = ? AND seat_row = ? AND seat_col = ?";
+        List<OrderSeat> orderSeatList = JdbcUtils.executeQuery(JdbcUtils.getConnection(),sql,isAutoCloseConn,rs -> {
+            try {
+                OrderSeat orderSeat = new OrderSeat();
+                orderSeat.setId(rs.getInt("id"));
+                orderSeat.setOrderId(rs.getInt("order_id"));
+                orderSeat.setSeatRow(rs.getInt("seat_row"));
+                orderSeat.setSeatCol(rs.getInt("seat_col"));
+                orderSeat.setSeatNo(rs.getString("seat_no"));
+                orderSeat.setPrice(BigDecimal.valueOf(rs.getDouble("price")));
+                return orderSeat;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }, orderId, seatRow, seatCol);
+        return orderSeatList.isEmpty() ? null : orderSeatList.get(0);
+    }
 }

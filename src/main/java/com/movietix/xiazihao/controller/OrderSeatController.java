@@ -1,6 +1,5 @@
 package com.movietix.xiazihao.controller;
 
-import com.movietix.xiazihao.entity.pojo.Movie;
 import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.OrderSeatService;
@@ -35,7 +34,13 @@ public class OrderSeatController extends HttpServlet {
         String pathInfo = req.getPathInfo();
         if (pathInfo != null && pathInfo.matches("/\\d+")) {
             selectOrderSeatById(req, resp);
-        }else {}
+        }else {
+            try {
+                selectOrderSeatsByCondition(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     //put请求入口
@@ -46,6 +51,16 @@ public class OrderSeatController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    //根据复合条件查询座位
+    private void selectOrderSeatsByCondition(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+        String orderId = req.getParameter("orderId");
+        String seatRow = req.getParameter("seatRow");
+        String seatCol = req.getParameter("seatCol");
+        OrderSeat orderSeat = orderSeatService.selectOrderSeatsByCondition(orderId, seatRow, seatCol);
+        log.info("orderSeat: {}", orderSeat);
+        ServletUtils.sendResponse(resp, Result.success(orderSeat));
     }
 
     //根据id查询座位

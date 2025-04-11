@@ -14,4 +14,7 @@ public interface OrderSeatDao {
 
     //根据id查询座位
     OrderSeat selectOrderSeatById(Integer id,boolean isAutoCloseConn) throws SQLException;
+
+    //根据复合条件查询座位
+    OrderSeat selectOrderSeatsByCondition(String orderId, String seatRow, String seatCol, boolean isAutoCloseConn) throws SQLException;
 }

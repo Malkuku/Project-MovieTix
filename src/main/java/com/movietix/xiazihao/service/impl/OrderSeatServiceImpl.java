@@ -32,4 +32,9 @@ public class OrderSeatServiceImpl implements OrderSeatService {
     public OrderSeat selectOrderSeatById(Integer id) throws SQLException {
         return orderSeatDao.selectOrderSeatById(id,true);
     }
+
+    @Override
+    public OrderSeat selectOrderSeatsByCondition(String orderId, String seatRow, String seatCol) throws SQLException {
+        return orderSeatDao.selectOrderSeatsByCondition(orderId, seatRow, seatCol,true);
+    }
 }
