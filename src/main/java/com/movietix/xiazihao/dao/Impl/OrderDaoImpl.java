@@ -1,7 +1,99 @@
 package com.movietix.xiazihao.dao.Impl;
 
 import com.movietix.xiazihao.dao.OrderDao;
+import com.movietix.xiazihao.entity.param.OrderQueryParam;
+import com.movietix.xiazihao.entity.pojo.Order;
+import com.movietix.xiazihao.utils.JdbcUtils;
+
+import java.sql.SQLException;
+import java.util.List;
 
 public class OrderDaoImpl implements OrderDao {
 
+    @Override
+    public Integer selectOrdersCount(OrderQueryParam param, boolean isAutoCloseConn) throws SQLException {
+        String sql = "SELECT COUNT(*) " +
+                "FROM orders o " +
+                "WHERE 1=1 " +
+                "    AND (? IS NULL OR o.order_no = ?) " +
+                "    AND (? IS NULL OR o.user_id = ?) " +
+                "    AND (? IS NULL OR o.screening_id = ?) " +
+                "    AND (? IS NULL OR o.status = ?) " +
+                "    AND (? IS NULL OR o.total_amount >= ?) " +
+                "    AND (? IS NULL OR o.total_amount <= ?) " +
+                "    AND (? IS NULL OR o.created_at >= ?) " +
+                "    AND (? IS NULL OR o.created_at <= ?)";
+
+        List<Integer> total = JdbcUtils.executeQuery(
+                JdbcUtils.getConnection(),
+                sql,
+                isAutoCloseConn,
+                rs -> {
+                    try {
+                        return rs.getInt(1);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                param.getOrderNo(), param.getOrderNo(),
+                param.getUserId(), param.getUserId(),
+                param.getScreeningId(), param.getScreeningId(),
+                param.getStatus(), param.getStatus(),
+                param.getMinAmount(), param.getMinAmount(),
+                param.getMaxAmount(), param.getMaxAmount(),
+                param.getStartDate(), param.getStartDate(),
+                param.getEndDate(), param.getEndDate()
+        );
+        return total.isEmpty() ? 0 : total.get(0);
+    }
+
+    @Override
+    public List<Order> selectOrdersByPage(OrderQueryParam param, boolean isAutoCloseConn) throws SQLException {
+        String sql = "SELECT o.* " +
+                "FROM orders o " +
+                "WHERE 1=1 " +
+                "    AND (? IS NULL OR o.order_no = ?) " +
+                "    AND (? IS NULL OR o.user_id = ?) " +
+                "    AND (? IS NULL OR o.screening_id = ?) " +
+                "    AND (? IS NULL OR o.status = ?) " +
+                "    AND (? IS NULL OR o.total_amount >= ?) " +
+                "    AND (? IS NULL OR o.total_amount <= ?) " +
+                "    AND (? IS NULL OR o.created_at >= ?) " +
+                "    AND (? IS NULL OR o.created_at <= ?) " +
+                "ORDER BY o.created_at DESC " +
+                "LIMIT ? OFFSET ?";
+
+        return JdbcUtils.executeQuery(
+                JdbcUtils.getConnection(),
+                sql,
+                isAutoCloseConn,
+                rs -> {
+                    Order order = new Order();
+                    try {
+                        order.setId(rs.getInt("id"));
+                        order.setOrderNo(rs.getString("order_no"));
+                        order.setUserId(rs.getInt("user_id"));
+                        order.setScreeningId(rs.getInt("screening_id"));
+                        order.setTotalAmount(rs.getBigDecimal("total_amount"));
+                        order.setSeatCount(rs.getInt("seat_count"));
+                        order.setStatus(rs.getInt("status"));
+                        order.setContactPhone(rs.getString("contact_phone"));
+                        order.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                        order.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return order;
+                },
+                param.getOrderNo(), param.getOrderNo(),
+                param.getUserId(), param.getUserId(),
+                param.getScreeningId(), param.getScreeningId(),
+                param.getStatus(), param.getStatus(),
+                param.getMinAmount(), param.getMinAmount(),
+                param.getMaxAmount(), param.getMaxAmount(),
+                param.getStartDate(), param.getStartDate(),
+                param.getEndDate(), param.getEndDate(),
+                param.getPageSize(), (param.getPage() - 1) * param.getPageSize()
+        );
+    }
 }
