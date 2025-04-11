@@ -34,6 +34,8 @@ public class OrderSeatController extends HttpServlet {
         String pathInfo = req.getPathInfo();
         if (pathInfo != null && pathInfo.matches("/\\d+")) {
             selectOrderSeatById(req, resp);
+        }else if(pathInfo != null && pathInfo.matches("/by_order/\\d+")){
+            selectOrderSeatsByOrderId(req, resp);
         }else {
             try {
                 selectOrderSeatsByCondition(req, resp);
@@ -51,6 +53,19 @@ public class OrderSeatController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    //根据订单批量查询
+    private void selectOrderSeatsByOrderId(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+        Integer orderId = Integer.parseInt(pathInfo.substring(pathInfo.indexOf("/by_order/")+"/by_order/".length()));
+        try {
+            List<OrderSeat>  orderSeatList = orderSeatService.selectOrderSeatsByOrderId(orderId);
+            log.info("orderSeatList: {}", orderSeatList);
+            ServletUtils.sendResponse(resp, Result.success(orderSeatList));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //根据复合条件查询座位

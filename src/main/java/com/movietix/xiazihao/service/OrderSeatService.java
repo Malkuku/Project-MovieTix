@@ -14,4 +14,7 @@ public interface OrderSeatService {
 
     //根据复合条件查询座位
     OrderSeat selectOrderSeatsByCondition(String orderId, String seatRow, String seatCol) throws SQLException;
+
+    //根据订单id查询座位
+    List<OrderSeat> selectOrderSeatsByOrderId(Integer orderId) throws SQLException;
 }

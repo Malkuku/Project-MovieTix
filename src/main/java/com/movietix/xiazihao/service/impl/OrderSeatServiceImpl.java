@@ -37,4 +37,9 @@ public class OrderSeatServiceImpl implements OrderSeatService {
     public OrderSeat selectOrderSeatsByCondition(String orderId, String seatRow, String seatCol) throws SQLException {
         return orderSeatDao.selectOrderSeatsByCondition(orderId, seatRow, seatCol,true);
     }
+
+    @Override
+    public List<OrderSeat> selectOrderSeatsByOrderId(Integer orderId) throws SQLException {
+        return orderSeatDao.selectOrderSeatsByOrderId(orderId,true);
+    }
 }
