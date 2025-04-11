@@ -16,7 +16,9 @@ import {
   Film,
   Ticket,
   VideoCamera,
-  User
+  User,
+  List,
+  Money
 } from '@element-plus/icons-vue'
 </script>
 
@@ -60,20 +62,48 @@ import {
               background-color="#2c3e50"
               class="sidebar-menu"
               text-color="#b8c7ce"
+              :default-active="$route.path"
           >
             <!-- 控制台 -->
+            <el-menu-item index="/dashboard">
+              <el-icon><HomeFilled /></el-icon>
+              <span>控制台</span>
+            </el-menu-item>
+
+            <!-- 影厅管理 -->
             <el-menu-item index="/hall">
               <el-icon><Promotion /></el-icon>
               <span>影厅管理</span>
             </el-menu-item>
 
             <!-- 影片管理 -->
-            <el-sub-menu index="1">
+            <el-sub-menu index="film-management">
               <template #title>
                 <el-icon><Film /></el-icon>
                 <span>影片管理</span>
               </template>
               <el-menu-item index="/movie">全部影片</el-menu-item>
+              <el-menu-item index="/movie/category">影片分类</el-menu-item>
+            </el-sub-menu>
+
+            <!-- 排片管理 -->
+            <el-sub-menu index="screening-management">
+              <template #title>
+                <el-icon><VideoCamera /></el-icon>
+                <span>排片管理</span>
+              </template>
+              <el-menu-item index="/screening">排片列表</el-menu-item>
+              <el-menu-item index="/screening/schedule">排片计划</el-menu-item>
+            </el-sub-menu>
+
+            <!-- 订单管理 -->
+            <el-sub-menu index="order-management">
+              <template #title>
+                <el-icon><List /></el-icon>
+                <span>订单管理</span>
+              </template>
+              <el-menu-item index="/order">全部订单</el-menu-item>
+              <el-menu-item index="/order/refund">退款申请</el-menu-item>
             </el-sub-menu>
 
             <!-- 用户管理 -->
@@ -82,26 +112,43 @@ import {
               <span>用户管理</span>
             </el-menu-item>
 
-            <!-- 排片管理 -->
-            <el-sub-menu index="2">
+            <!-- 财务管理 -->
+            <el-sub-menu index="finance-management">
               <template #title>
-                <el-icon><VideoCamera /></el-icon>
-                <span>排片管理</span>
+                <el-icon><Money /></el-icon>
+                <span>财务管理</span>
               </template>
-              <el-menu-item index="/screening">排片列表</el-menu-item>
+              <el-menu-item index="/finance/daily">日报表</el-menu-item>
+              <el-menu-item index="/finance/monthly">月报表</el-menu-item>
             </el-sub-menu>
 
-            <!-- 系统日志 -->
-            <el-menu-item index="/log">
-              <el-icon><Document /></el-icon>
-              <span>系统日志</span>
-            </el-menu-item>
+            <!-- 系统管理 -->
+            <el-sub-menu index="system-management">
+              <template #title>
+                <el-icon><Tools /></el-icon>
+                <span>系统管理</span>
+              </template>
+              <el-menu-item index="/system/log">系统日志</el-menu-item>
+              <el-menu-item index="/system/setting">系统设置</el-menu-item>
+              <el-menu-item index="/system/account">账号管理</el-menu-item>
+            </el-sub-menu>
           </el-menu>
         </el-aside>
 
         <!-- 主内容区 -->
         <el-main class="main-content">
           <div class="content-container">
+            <!-- 面包屑导航 -->
+            <div class="breadcrumb-container">
+              <el-breadcrumb separator="/">
+                <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
+                <el-breadcrumb-item v-for="(item, index) in $route.matched" :key="index">
+                  {{ item.meta.title || item.name }}
+                </el-breadcrumb-item>
+              </el-breadcrumb>
+            </div>
+
+            <!-- 页面内容 -->
             <router-view v-slot="{ Component }">
               <transition name="fade" mode="out-in">
                 <component :is="Component" />
@@ -176,6 +223,8 @@ import {
 
 .sidebar-menu {
   border-right: none;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
 }
 
 .sidebar-menu:not(.el-menu--collapse) {
@@ -185,6 +234,7 @@ import {
 .main-content {
   background-color: #f5f7fa;
   padding: 20px;
+  overflow-y: auto;
 }
 
 .content-container {
@@ -193,6 +243,12 @@ import {
   padding: 20px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   min-height: calc(100vh - 104px);
+}
+
+.breadcrumb-container {
+  margin-bottom: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
 }
 
 /* 页面切换动画 */
@@ -204,6 +260,25 @@ import {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 
 /* 响应式设计 */
@@ -221,6 +296,10 @@ import {
   }
 
   .username {
+    display: none;
+  }
+
+  .breadcrumb-container {
     display: none;
   }
 }
