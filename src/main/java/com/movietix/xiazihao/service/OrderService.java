@@ -15,4 +15,7 @@ public interface OrderService {
 
     // 取消订单
     void cancelOrder(Integer id) throws SQLException;
+
+    // 创建订单
+    void createOrder(Order order) throws Exception;
 }

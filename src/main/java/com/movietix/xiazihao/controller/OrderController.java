@@ -6,6 +6,7 @@ import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.OrderService;
 import com.movietix.xiazihao.service.impl.OrderServiceImpl;
+import com.movietix.xiazihao.utils.JsonUtils;
 import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +28,7 @@ public class OrderController extends HttpServlet {
     //post请求入口
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        createOrder(req, resp);
     }
 
     //get请求入口
@@ -83,7 +84,18 @@ public class OrderController extends HttpServlet {
         ServletUtils.sendResponse(resp, Result.success(pageResult));
     }
 
-    //TODO 创建订单
+    //创建订单
+    private void createOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String json = ServletUtils.getRequestBody(req);
+        Order order = JsonUtils.parseJson(json, Order.class);
+        log.info("接收到的订单信息:{}", order);
+        try {
+            orderService.createOrder(order);
+            ServletUtils.sendResponse(resp, Result.success());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     //根据id查询订单
     private void selectOrderById(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

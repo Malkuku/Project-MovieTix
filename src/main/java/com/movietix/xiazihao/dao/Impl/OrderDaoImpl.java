@@ -5,6 +5,7 @@ import com.movietix.xiazihao.entity.param.OrderQueryParam;
 import com.movietix.xiazihao.entity.pojo.Order;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -135,5 +136,20 @@ public class OrderDaoImpl implements OrderDao {
                 "SET status = 2, updated_at = NOW() " +
                 "WHERE id = ?";
         JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn, id);
+    }
+
+    @Override
+    public void createOrder(Order order, Connection conn, boolean isAutoCloseConn) throws SQLException {
+        String sql = "INSERT INTO orders (order_no, user_id, screening_id, total_amount, seat_count, status, contact_phone, created_at, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,
+                order.getOrderNo(),
+                order.getUserId(),
+                order.getScreeningId(),
+                order.getTotalAmount(),
+                order.getSeatCount(),
+                order.getStatus(),
+                order.getContactPhone()
+        );
     }
 }

@@ -7,6 +7,7 @@ import com.movietix.xiazihao.dao.OrderSeatDao;
 import com.movietix.xiazihao.entity.pojo.Order;
 import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.service.OrderSeatService;
+import com.movietix.xiazihao.utils.JdbcUtils;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,7 +26,16 @@ public class OrderSeatServiceImpl implements OrderSeatService {
                 throw new Exception("座位已被预定");
             }
         }
-        orderSeatDao.addOrderSeat(orderSeatList,false);
+        JdbcUtils.executeTransaction(conn -> {
+            try {
+                for (OrderSeat orderSeat : orderSeatList) {
+                    orderSeatDao.addOrderSeat(orderSeat, conn, false);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return null;
+        });
     }
 
     @Override

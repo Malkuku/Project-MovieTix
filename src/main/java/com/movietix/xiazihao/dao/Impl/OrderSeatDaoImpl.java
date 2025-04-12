@@ -5,23 +5,20 @@ import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 public class OrderSeatDaoImpl implements OrderSeatDao {
     @Override
-    public void addOrderSeat(List<OrderSeat> orderSeatList, boolean isAutoCloseConn) throws Exception {
+    public void addOrderSeat(OrderSeat orderSeat, Connection conn, boolean isAutoCloseConn) throws Exception {
         String sql = "INSERT INTO order_seats (order_id, seat_row, seat_col, seat_no, price) VALUES (?, ?, ?, ?, ?)";
-        JdbcUtils.executeTransaction(conn->{
-            for(OrderSeat orderSeat : orderSeatList) {
-                try {
-                    JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,orderSeat.getOrderId(), orderSeat.getSeatRow(), orderSeat.getSeatCol(), orderSeat.getSeatNo(), orderSeat.getPrice());
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return null;
-        });
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,
+                orderSeat.getOrderId(),
+                orderSeat.getSeatRow(),
+                orderSeat.getSeatCol(),
+                orderSeat.getSeatNo(),
+                orderSeat.getPrice());
     }
 
     @Override
