@@ -10,4 +10,7 @@ public interface WorkService {
 
     //用户注册操作
     void userRegister(User user) throws SQLException;
+
+    //用户充值操作
+    void userRecharge(User user) throws SQLException;
 }

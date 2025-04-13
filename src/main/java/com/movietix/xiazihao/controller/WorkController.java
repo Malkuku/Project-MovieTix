@@ -27,15 +27,26 @@ public class WorkController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
+        //用户登录
         if(pathInfo != null && pathInfo.matches("/login")) {
             try {
                 userLogin(req, resp);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-        }else if(pathInfo != null && pathInfo.matches("/register")) {
+        }
+        //用户注册
+        else if(pathInfo != null && pathInfo.matches("/register")) {
             try {
                 userRegister(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        //用户充值
+        else if(pathInfo != null && pathInfo.matches("/recharge")) {
+            try {
+                userRecharge(req, resp);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -58,6 +69,16 @@ public class WorkController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    //账户余额充值
+    private void userRecharge(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String json = ServletUtils.getRequestBody(req);
+        User user = JsonUtils.parseJson(json, User.class);
+        log.info("用户充值操作，参数：{}", user);
+        workService.userRecharge(user);
+        log.info("用户充值成功");
+        ServletUtils.sendResponse(resp, Result.success());
     }
 
     //用户登录操作
