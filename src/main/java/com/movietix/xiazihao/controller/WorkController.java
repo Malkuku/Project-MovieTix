@@ -1,5 +1,6 @@
 package com.movietix.xiazihao.controller;
 
+import com.movietix.xiazihao.entity.body.WorkOrderQueryBody;
 import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.WorkService;
@@ -51,6 +52,14 @@ public class WorkController extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        //用户购票
+        else if(pathInfo != null && pathInfo.matches("/orders")) {
+            try {
+                userBuyTicket(req, resp);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     //get请求入口
     @Override
@@ -84,6 +93,14 @@ public class WorkController extends HttpServlet {
     }
 
 
+    //用户购票操作
+    private void userBuyTicket(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        String json = ServletUtils.getRequestBody(req);
+        WorkOrderQueryBody workOrderQueryBody = JsonUtils.parseJson(json, WorkOrderQueryBody.class);
+        log.info("用户购票操作，参数：{}", workOrderQueryBody);
+        Integer orderId = workService.userBuyTicket(workOrderQueryBody);
+        ServletUtils.sendResponse(resp, Result.success(orderId));
+    }
 
     //条件分页查询放映场次信息
     private void selectScreeningByPage(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {

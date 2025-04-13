@@ -16,7 +16,7 @@ public class Order {
     private Integer userId; // 用户ID
     private Integer screeningId; // 场次ID
     private BigDecimal totalAmount = BigDecimal.valueOf(0); // 总金额
-    private Integer seatCount; // 座位数
+    private Integer seatCount = 0; // 座位数
     private Integer status = 0; // 状态:0-待支付 1-已支付 2-已取消 3-已完成 4-已退款
     private String contactPhone; // 联系电话
     private LocalDateTime createdAt; // 创建时间

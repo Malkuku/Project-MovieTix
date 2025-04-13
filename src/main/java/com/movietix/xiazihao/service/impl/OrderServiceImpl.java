@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void createOrder(Order order) throws Exception {
         //预创建OrderNo
-        Integer count = orderDao.selectOrdersCount(new OrderQueryParam(),true);
+        Integer count = orderDao.selectOrdersMaxId(true) + 1;
         String orderNo = OrderNoUtils.generateOrderNo(count);
         order.setOrderNo(orderNo);
         orderDao.createOrder(order, JdbcUtils.getConnection(),true);

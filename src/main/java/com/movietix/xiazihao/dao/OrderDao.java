@@ -20,4 +20,6 @@ public interface OrderDao {
     void createOrder(Order order, Connection conn, boolean isAutoCloseConn) throws SQLException;
     //更新订单
     void updateOrder(Order order, Connection conn, boolean isAutoCloseConn) throws SQLException;
+    //查询最大的订单id
+    Integer selectOrdersMaxId(boolean isAutoCloseConn) throws SQLException;
 }

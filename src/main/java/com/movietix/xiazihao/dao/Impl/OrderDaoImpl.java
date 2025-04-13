@@ -170,4 +170,23 @@ public class OrderDaoImpl implements OrderDao {
                 order.getId()
         );
     }
+
+    @Override
+    public Integer selectOrdersMaxId(boolean isAutoCloseConn) throws SQLException {
+        String sql = "SELECT MAX(id) " +
+                "FROM orders";
+        List<Integer> maxId = JdbcUtils.executeQuery(
+                JdbcUtils.getConnection(),
+                sql,
+                isAutoCloseConn,
+                rs -> {
+                    try {
+                        return rs.getInt(1);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+        return maxId.isEmpty() ? 0 : maxId.get(0);
+    }
 }
