@@ -1,6 +1,9 @@
 package com.movietix.xiazihao.controller;
 
+import com.movietix.xiazihao.entity.param.MovieQueryParam;
+import com.movietix.xiazihao.entity.pojo.Movie;
 import com.movietix.xiazihao.entity.pojo.User;
+import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.UserService;
 import com.movietix.xiazihao.service.WorkService;
@@ -16,12 +19,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 @Slf4j
 @WebServlet("/works/*")
 public class WorkController extends HttpServlet {
     private final WorkService workService = new WorkServiceImpl();
+    private static final MovieController movieController = new MovieController();
 
     //post请求入口
     @Override
@@ -56,8 +62,12 @@ public class WorkController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
-        if (pathInfo != null && pathInfo.matches("/\\d+")) {
-
+        if (pathInfo != null && pathInfo.matches("/movies")) {
+            try {
+                selectMoviesByPage(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }else{
 
         }
@@ -69,6 +79,11 @@ public class WorkController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    //根据条件分页查询电影信息
+    private void selectMoviesByPage(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        movieController.exposeSelectMoviesByPage(req,resp);
     }
 
     //账户余额充值

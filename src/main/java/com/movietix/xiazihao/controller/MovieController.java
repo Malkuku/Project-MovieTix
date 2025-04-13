@@ -137,7 +137,7 @@ public class MovieController extends HttpServlet {
         log.info("接收到的电影ID:{}", (Object) id_strs);
         List<Integer> ids = new ArrayList<>();
         {
-            if(id_strs != null) {
+            if (id_strs != null) {
                 String[] idArray = id_strs[0].split(",");
                 for (String id_str : idArray) {
                     log.info("处理ID:{}", id_str);
@@ -154,4 +154,8 @@ public class MovieController extends HttpServlet {
     }
 
 
+    //公共方法暴露
+    public void exposeSelectMoviesByPage(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        this.selectMoviesByPage(req, resp);
+    }
 }
