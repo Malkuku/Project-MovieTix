@@ -5,6 +5,7 @@ import com.movietix.xiazihao.entity.param.UserQueryParam;
 import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,11 +117,11 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateUserBalance(User user, boolean isAutoCloseConn) throws SQLException {
+    public void updateUserBalance(User user, Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "UPDATE users SET balance = COALESCE(?, balance), " +
                 "  updated_at = NOW() " +
                 " WHERE id = ?";
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,
                 user.getBalance(),
                 user.getId()
         );

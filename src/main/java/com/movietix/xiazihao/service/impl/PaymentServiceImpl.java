@@ -6,6 +6,7 @@ import com.movietix.xiazihao.entity.param.PaymentQueryParam;
 import com.movietix.xiazihao.entity.pojo.Payment;
 import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.service.PaymentService;
+import com.movietix.xiazihao.utils.JdbcUtils;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -30,7 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void updatePayment(Payment payment) throws SQLException {
-        paymentDao.updatePayment(payment,true);
+        paymentDao.updatePayment(payment, JdbcUtils.getConnection(),true);
     }
 
     @Override

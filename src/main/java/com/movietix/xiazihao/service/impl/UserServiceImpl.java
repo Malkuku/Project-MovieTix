@@ -6,6 +6,7 @@ import com.movietix.xiazihao.entity.param.UserQueryParam;
 import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.service.UserService;
+import com.movietix.xiazihao.utils.JdbcUtils;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -24,7 +25,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("用户不存在");
         }
         user.setBalance(userFromDb.getBalance().add(user.getBalance()));
-        userDao.updateUserBalance(user, true);
+        userDao.updateUserBalance(user, JdbcUtils.getConnection(),true);
     }
 
     @Override

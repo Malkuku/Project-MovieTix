@@ -17,4 +17,7 @@ public interface WorkService {
 
     //用户购票操作
     Integer userBuyTicket(WorkOrderQueryBody workOrderQueryBody) throws Exception;
+
+    //用户支付操作
+    void payOrder(Integer orderId, Integer userId) throws Exception;
 }

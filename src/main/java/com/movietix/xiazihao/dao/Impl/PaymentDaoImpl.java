@@ -5,6 +5,7 @@ import com.movietix.xiazihao.entity.param.PaymentQueryParam;
 import com.movietix.xiazihao.entity.pojo.Payment;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -114,7 +115,7 @@ public class PaymentDaoImpl implements PaymentDao {
     }
 
     @Override
-    public void updatePayment(Payment payment, boolean isAutoCloseConn) throws SQLException {
+    public void updatePayment(Payment payment, Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "UPDATE payments SET " +
                     "order_id = COALESCE(?, order_id), " +
                     "amount = COALESCE(?, amount), " +
@@ -124,7 +125,7 @@ public class PaymentDaoImpl implements PaymentDao {
                     "pay_time = COALESCE(?, pay_time) " +
                     "WHERE id = ?";
         JdbcUtils.executeUpdate(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 payment.getOrderId(),
@@ -167,5 +168,24 @@ public class PaymentDaoImpl implements PaymentDao {
                 id
         );
         return payments.isEmpty() ? null : payments.get(0);
+    }
+
+    @Override
+    public Integer selectPaymentsMaxId(boolean isAutoCloseConn) throws SQLException {
+        String sql = "SELECT MAX(id) " +
+                "FROM payments";
+        List<Integer> maxId = JdbcUtils.executeQuery(
+                JdbcUtils.getConnection(),
+                sql,
+                isAutoCloseConn,
+                rs -> {
+                    try {
+                        return rs.getInt(1);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+        return maxId.isEmpty() ? 0 : maxId.get(0);
     }
 }

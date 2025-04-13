@@ -3,6 +3,7 @@ package com.movietix.xiazihao.dao;
 import com.movietix.xiazihao.entity.param.UserQueryParam;
 import com.movietix.xiazihao.entity.pojo.User;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public interface UserDao {
     void updateUserPassword(User user, boolean isAutoCloseConn) throws SQLException;
 
     // 修改用户余额
-    void updateUserBalance(User user, boolean isAutoCloseConn) throws SQLException;
+    void updateUserBalance(User user, Connection conn, boolean isAutoCloseConn) throws SQLException;
 
     // 批量修改用户状态
     void updateUserStatus(List<Integer> ids, Integer status, boolean isAutoCloseConn) throws SQLException;

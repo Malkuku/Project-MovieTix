@@ -60,6 +60,14 @@ public class WorkController extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        //支付待付款订单
+        else if(pathInfo != null && pathInfo.matches("/orders/pay")) {
+            try {
+                payOrder(req, resp);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     //get请求入口
     @Override
@@ -92,6 +100,14 @@ public class WorkController extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     }
 
+    //支付待付款订单
+    private void payOrder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Integer orderId = Integer.parseInt(req.getParameter("orderId"));
+        Integer userId = Integer.parseInt(req.getParameter("userId"));
+        log.info("支付待付款订单，参数：orderId={}, userId={}", orderId, userId);
+        workService.payOrder(orderId, userId);
+        ServletUtils.sendResponse(resp,Result.success());
+    }
 
     //用户购票操作
     private void userBuyTicket(HttpServletRequest req, HttpServletResponse resp) throws Exception {
