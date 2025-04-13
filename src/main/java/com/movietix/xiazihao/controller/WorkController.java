@@ -1,8 +1,10 @@
 package com.movietix.xiazihao.controller;
 
 import com.movietix.xiazihao.entity.body.WorkOrderQueryBody;
+import com.movietix.xiazihao.entity.param.WorkOrderQueryParam;
 import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.entity.result.Result;
+import com.movietix.xiazihao.entity.result.WorkOrderResult;
 import com.movietix.xiazihao.service.WorkService;
 import com.movietix.xiazihao.service.impl.WorkServiceImpl;
 import com.movietix.xiazihao.utils.JsonUtils;
@@ -16,11 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @WebServlet("/works/*")
 public class WorkController extends HttpServlet {
-    private final WorkService workService = new WorkServiceImpl();
+    private static final WorkService workService = new WorkServiceImpl();
     private static final MovieController movieController = new MovieController();
     private static final ScreeningController screeningController = new ScreeningController();
 
@@ -89,7 +93,14 @@ public class WorkController extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
-
+        //查询用户订单列表
+        else if(pathInfo != null && pathInfo.matches("/orders")) {
+            try {
+                selectOrdersByPage(req, resp);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     //put请求入口
     @Override
@@ -98,6 +109,27 @@ public class WorkController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    //查询用户订单列表
+    private void selectOrdersByPage(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        WorkOrderQueryParam workOrderQueryParam = new WorkOrderQueryParam();
+        {
+            workOrderQueryParam.setId(
+                    req.getParameter("id") != null ? Integer.valueOf(req.getParameter("id")) : null
+            );
+            workOrderQueryParam.setMovieTitle(req.getParameter("movieTitle"));
+            workOrderQueryParam.setHallName(req.getParameter("hallName"));
+            workOrderQueryParam.setStartTime(
+                    req.getParameter("startTime") != null ? LocalDateTime.parse(req.getParameter("startTime")) : LocalDateTime.now()
+            );
+            workOrderQueryParam.setStatus(
+                    req.getParameter("status") != null ? Integer.parseInt(req.getParameter("status")) : 1
+            );
+        }
+        List<WorkOrderResult> workOrderResultList = workService.selectWorkOrders(workOrderQueryParam);
+        log.info("查询到的订单列表：{}", workOrderResultList);
+        ServletUtils.sendResponse(resp, Result.success(workOrderResultList));
     }
 
     //支付待付款订单

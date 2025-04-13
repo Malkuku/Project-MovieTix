@@ -3,28 +3,36 @@ package com.movietix.xiazihao.service.impl;
 import com.movietix.xiazihao.dao.Impl.OrderDaoImpl;
 import com.movietix.xiazihao.dao.Impl.PaymentDaoImpl;
 import com.movietix.xiazihao.dao.Impl.UserDaoImpl;
+import com.movietix.xiazihao.dao.Impl.WorkDaoImpl;
 import com.movietix.xiazihao.dao.OrderDao;
 import com.movietix.xiazihao.dao.PaymentDao;
 import com.movietix.xiazihao.dao.UserDao;
+import com.movietix.xiazihao.dao.WorkDao;
 import com.movietix.xiazihao.entity.body.WorkOrderQueryBody;
+import com.movietix.xiazihao.entity.param.WorkOrderQueryParam;
 import com.movietix.xiazihao.entity.pojo.Order;
 import com.movietix.xiazihao.entity.pojo.Payment;
 import com.movietix.xiazihao.entity.pojo.User;
+import com.movietix.xiazihao.entity.result.WorkOrderResult;
 import com.movietix.xiazihao.service.*;
 import com.movietix.xiazihao.utils.JdbcUtils;
 import com.movietix.xiazihao.utils.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class WorkServiceImpl implements WorkService {
     private static final UserService userService = new UserServiceImpl();
     private static final OrderService orderService = new OrderServiceImpl();
     private static final OrderSeatService orderSeatService = new OrderSeatServiceImpl();
     private static final PaymentService paymentService = new PaymentServiceImpl();
 
+    private static final WorkDao workDao = new WorkDaoImpl();
     private static final UserDao userDao = new UserDaoImpl();
     private static final OrderDao orderDao = new OrderDaoImpl();
     private static final PaymentDao paymentDao = new PaymentDaoImpl();
@@ -127,5 +135,16 @@ public class WorkServiceImpl implements WorkService {
             }
             return null;
         });
+    }
+
+    @Override
+    public List<WorkOrderResult> selectWorkOrders(WorkOrderQueryParam workOrderQueryParam) throws Exception {
+        List<WorkOrderResult> workOrderResultList = workDao.selectWorkOrders(workOrderQueryParam,true);
+        //查询seatList
+        for (WorkOrderResult workOrderResult : workOrderResultList) {
+            workOrderResult.setSeats(orderSeatService.selectOrderSeatsByOrderId(workOrderResult.getOrderId()));
+        }
+        log.info("查询到的订单列表:{}", workOrderResultList);
+        return workOrderResultList;
     }
 }
