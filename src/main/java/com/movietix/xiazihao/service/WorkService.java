@@ -7,4 +7,7 @@ import java.sql.SQLException;
 public interface WorkService {
     //用户登录操作
     User userLogin(User user) throws SQLException;
+
+    //用户注册操作
+    void userRegister(User user) throws SQLException;
 }

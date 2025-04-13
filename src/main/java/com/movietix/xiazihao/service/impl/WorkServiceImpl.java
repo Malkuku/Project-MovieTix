@@ -32,4 +32,15 @@ public class WorkServiceImpl implements WorkService {
         userFromDb.setToken(token);
         return userFromDb;
     }
+
+    @Override
+    public void userRegister(User user) throws SQLException {
+        //检查用户名是否已存在
+        User userFromDb = userDao.selectUserByUsername(user.getUsername(),true);
+        if(userFromDb != null){
+            throw new RuntimeException("用户名已存在");
+        }
+        //添加用户
+        userDao.addUser(user, true);
+    }
 }

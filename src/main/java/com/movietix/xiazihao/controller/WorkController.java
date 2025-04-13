@@ -33,6 +33,12 @@ public class WorkController extends HttpServlet {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        }else if(pathInfo != null && pathInfo.matches("/register")) {
+            try {
+                userRegister(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
     //get请求入口
@@ -62,5 +68,15 @@ public class WorkController extends HttpServlet {
         User userDB = workService.userLogin(user);
         log.info("用户登录成功，结果：{}", userDB);
         ServletUtils.sendResponse(resp, Result.success(userDB));
+    }
+
+    //用户注册操作
+    private void userRegister(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String json = ServletUtils.getRequestBody(req);
+        User user = JsonUtils.parseJson(json, User.class);
+        log.info("用户注册操作，参数：{}", user);
+        workService.userRegister(user);
+        log.info("用户注册成功");
+        ServletUtils.sendResponse(resp, Result.success());
     }
 }
