@@ -18,4 +18,6 @@ public interface OrderDao {
     void cancelOrder(Integer id, boolean isAutoCloseConn) throws SQLException;
     // 创建订单
     void createOrder(Order order, Connection conn, boolean isAutoCloseConn) throws SQLException;
+    //更新订单
+    void updateOrder(Order order, Connection conn, boolean isAutoCloseConn) throws SQLException;
 }

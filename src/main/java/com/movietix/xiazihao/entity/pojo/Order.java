@@ -22,5 +22,4 @@ public class Order {
     private String contactPhone; // 联系电话
     private LocalDateTime createdAt; // 创建时间
     private LocalDateTime updatedAt; // 更新时间
-
 }

@@ -152,4 +152,22 @@ public class OrderDaoImpl implements OrderDao {
                 order.getContactPhone()
         );
     }
+
+    @Override
+    public void updateOrder(Order order, Connection conn, boolean isAutoCloseConn) throws SQLException {
+      String sql = "UPDATE orders SET " +
+                 "total_amount = COALESCE(?, total_amount), " +
+                 "seat_count = COALESCE(?, seat_count), " +
+                 "status = COALESCE(?, status), " +
+                 "contact_phone = COALESCE(?, contact_phone), " +
+                 "updated_at = NOW() " +
+                 "WHERE id = ?";
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,
+                order.getTotalAmount(),
+                order.getSeatCount(),
+                order.getStatus(),
+                order.getContactPhone(),
+                order.getId()
+        );
+    }
 }
