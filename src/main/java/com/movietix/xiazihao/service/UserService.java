@@ -33,6 +33,4 @@ public interface UserService {
     //根据ID查询用户信息
     User selectUserById(Integer id);
 
-    //用户登录
-    User login(User user) throws SQLException;
 }
