@@ -1,15 +1,15 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import {onMounted, ref} from 'vue';
 import {
-  queryUsersApi,
-  deleteUsersApi,
   addUserApi,
-  updatePasswordApi,
+  deleteUsersApi,
+  queryUserByIdApi,
+  queryUsersApi,
   updateBalanceApi,
-  updateUserStatusApi,
-  queryUserByIdApi
+  updatePasswordApi,
+  updateUserStatusApi
 } from '@/api/user';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import {ElMessage, ElMessageBox} from 'element-plus';
 import dayjs from 'dayjs';
 
 // 钩子函数

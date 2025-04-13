@@ -1,13 +1,8 @@
 package com.movietix.xiazihao.controller;
 
-import com.movietix.xiazihao.entity.param.MovieQueryParam;
-import com.movietix.xiazihao.entity.pojo.Movie;
 import com.movietix.xiazihao.entity.pojo.User;
-import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.entity.result.Result;
-import com.movietix.xiazihao.service.UserService;
 import com.movietix.xiazihao.service.WorkService;
-import com.movietix.xiazihao.service.impl.UserServiceImpl;
 import com.movietix.xiazihao.service.impl.WorkServiceImpl;
 import com.movietix.xiazihao.utils.JsonUtils;
 import com.movietix.xiazihao.utils.ServletUtils;
@@ -19,15 +14,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
 @Slf4j
 @WebServlet("/works/*")
 public class WorkController extends HttpServlet {
     private final WorkService workService = new WorkServiceImpl();
     private static final MovieController movieController = new MovieController();
+    private static final ScreeningController screeningController = new ScreeningController();
 
     //post请求入口
     @Override
@@ -62,15 +56,23 @@ public class WorkController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
+        //条件分页查询电影信息
         if (pathInfo != null && pathInfo.matches("/movies")) {
             try {
                 selectMoviesByPage(req, resp);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-        }else{
-
         }
+        //条件分页查询放映场次信息
+        else if(pathInfo != null && pathInfo.matches("/screenings")) {
+            try {
+                selectScreeningByPage(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     }
     //put请求入口
     @Override
@@ -80,6 +82,15 @@ public class WorkController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     }
+
+
+
+    //条件分页查询放映场次信息
+    private void selectScreeningByPage(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        screeningController.exposeSelectScreeningsByPage(req,resp);
+    }
+
+    //TODO获取电影详细信息
 
     //根据条件分页查询电影信息
     private void selectMoviesByPage(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {

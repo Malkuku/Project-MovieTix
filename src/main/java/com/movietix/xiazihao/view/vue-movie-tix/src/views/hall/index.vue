@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
-import { queryHallsApi, deleteHallsApi, addHallApi, updateHallApi, queryHallByIdApi } from '@/api/hall';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import {onMounted, reactive, ref} from 'vue';
+import {addHallApi, deleteHallsApi, queryHallByIdApi, queryHallsApi, updateHallApi} from '@/api/hall';
+import {ElMessage, ElMessageBox} from 'element-plus';
 
 // 钩子函数
 onMounted(() => {

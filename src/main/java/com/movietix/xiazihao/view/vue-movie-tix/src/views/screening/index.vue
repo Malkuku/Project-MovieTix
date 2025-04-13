@@ -1,14 +1,14 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
+import {onMounted, reactive, ref} from 'vue';
 import {
-  queryScreeningsApi,
-  deleteScreeningsApi,
   addScreeningApi,
+  deleteScreeningsApi,
+  queryScreeningByIdApi,
+  queryScreeningsApi,
   updateScreeningApi,
-  updateStatusApi,
-  queryScreeningByIdApi
+  updateStatusApi
 } from '@/api/screening';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import {ElMessage, ElMessageBox} from 'element-plus';
 
 // 钩子函数
 onMounted(() => {

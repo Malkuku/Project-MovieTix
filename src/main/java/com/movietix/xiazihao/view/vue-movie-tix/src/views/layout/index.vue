@@ -1,24 +1,15 @@
 <script setup>
 import {
-  Promotion,
-  Menu,
-  HomeFilled,
-  UserFilled,
-  Tools,
-  HelpFilled,
-  Avatar,
-  Histogram,
-  InfoFilled,
-  Share,
-  Document,
   EditPen,
-  SwitchButton,
   Film,
-  Ticket,
-  VideoCamera,
-  User,
+  HomeFilled,
   List,
-  Money
+  Money,
+  Promotion,
+  SwitchButton,
+  Tools,
+  User,
+  VideoCamera
 } from '@element-plus/icons-vue'
 </script>
 

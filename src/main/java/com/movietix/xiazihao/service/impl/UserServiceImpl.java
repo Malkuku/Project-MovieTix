@@ -6,12 +6,9 @@ import com.movietix.xiazihao.entity.param.UserQueryParam;
 import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.service.UserService;
-import com.movietix.xiazihao.utils.JwtUtils;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class UserServiceImpl implements UserService {
     private static final UserDao userDao = new UserDaoImpl();

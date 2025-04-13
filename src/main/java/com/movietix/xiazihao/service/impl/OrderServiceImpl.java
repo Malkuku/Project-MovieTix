@@ -6,14 +6,12 @@ import com.movietix.xiazihao.dao.OrderDao;
 import com.movietix.xiazihao.dao.OrderSeatDao;
 import com.movietix.xiazihao.entity.param.OrderQueryParam;
 import com.movietix.xiazihao.entity.pojo.Order;
-import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.service.OrderService;
 import com.movietix.xiazihao.utils.JdbcUtils;
 import com.movietix.xiazihao.utils.OrderNoUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 

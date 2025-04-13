@@ -174,4 +174,10 @@ public class ScreeningController extends HttpServlet {
             ServletUtils.sendResponse(resp, Result.error("添加放映场次失败"));
         }
     }
+
+
+    //暴露方法
+    public void exposeSelectScreeningsByPage(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        this.selectScreeningByPage(req, resp);
+    }
 }

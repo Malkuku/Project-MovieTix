@@ -52,8 +52,7 @@
 
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
-import axios from 'axios'
+import {nextTick, onMounted, ref} from 'vue'
 import {queryAllApi} from "@/api/log";
 
 // 日志列表数据

@@ -140,15 +140,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import {
-  queryOrdersApi,
-  cancelOrderApi,
-  queryOrderByIdApi,
-  queryPaymentsApi
-} from '@/api/order';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import { formatDateTime } from '@/utils/date';
+import {onMounted, ref} from 'vue';
+import {cancelOrderApi, queryOrderByIdApi, queryOrdersApi, queryPaymentsApi} from '@/api/order';
+import {ElMessage, ElMessageBox} from 'element-plus';
+import {formatDateTime} from '@/utils/date';
 
 // 钩子函数
 onMounted(() => {

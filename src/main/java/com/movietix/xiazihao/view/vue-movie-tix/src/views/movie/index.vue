@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
-import { queryMoviesApi, deleteMoviesApi, addMovieApi, queryByIdApi, updateMovieApi } from '@/api/movie';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import {onMounted, reactive, ref} from 'vue';
+import {addMovieApi, deleteMoviesApi, queryByIdApi, queryMoviesApi, updateMovieApi} from '@/api/movie';
+import {ElMessage, ElMessageBox} from 'element-plus';
 
 // 分页查询参数
 const queryParams = reactive({
