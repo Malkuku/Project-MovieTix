@@ -15,4 +15,7 @@ public interface UserProfileDao {
 
     //删除用户详细信息
     void deleteUserProfileByIds(List<Integer> ids, Connection conn, boolean isAutoCloseConn) throws SQLException;
+
+    //根据用户id查询用户详细信息
+    UserProfile selectUserProfileByUserId(Integer userId, Connection conn, boolean isAutoCloseConn) throws SQLException;
 }

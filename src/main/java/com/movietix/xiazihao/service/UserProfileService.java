@@ -15,4 +15,7 @@ public interface UserProfileService {
 
     // 删除用户详细信息
     void deleteUserProfileByIds(List<Integer> ids) throws SQLException;
+
+    // 根据用户id查询用户详细信息
+    UserProfile selectUserProfileByUserId(Integer userId) throws SQLException;
 }

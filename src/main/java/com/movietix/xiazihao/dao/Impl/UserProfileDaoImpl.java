@@ -70,4 +70,36 @@ public class UserProfileDaoImpl implements UserProfileDao {
         String sql = "DELETE FROM user_profiles WHERE id IN (" + String.join(",", ids.stream().map(id->"?").toArray(String[]::new)) + ")";
         JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn, ids.toArray());
     }
+
+    @Override
+    public UserProfile selectUserProfileByUserId(Integer userId, Connection conn, boolean isAutoCloseConn) throws SQLException {
+        String sql = "SELECT * FROM user_profiles WHERE user_id = ?";
+        List<UserProfile> userProfileList = JdbcUtils.executeQuery(conn, sql, isAutoCloseConn,
+                rs -> {
+                    UserProfile userProfile = new UserProfile();
+                    try {
+                        userProfile.setId(rs.getInt("id"));
+                        userProfile.setUserId(rs.getInt("user_id"));
+                        userProfile.setNickname(rs.getString("nickname"));
+                        userProfile.setGender(rs.getInt("gender"));
+                        userProfile.setEmail(rs.getString("email"));
+                        userProfile.setBirthday(rs.getDate("birthday") != null ? rs.getDate("birthday").toLocalDate() : null);
+                        userProfile.setAvatar(rs.getString("avatar"));
+                        userProfile.setCity(rs.getString("city"));
+                        userProfile.setProvince(rs.getString("province"));
+                        userProfile.setSignature(rs.getString("signature"));
+                        userProfile.setPhone(rs.getString("phone"));
+                        userProfile.setRealName(rs.getString("real_name"));
+                        userProfile.setIdCard(rs.getString("id_card"));
+                        userProfile.setCreatedAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
+                        userProfile.setUpdatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return userProfile;
+                },
+                userId
+        );
+        return userProfileList.isEmpty() ? null : userProfileList.get(0);
+    }
 }

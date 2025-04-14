@@ -34,6 +34,14 @@ public class UserProfileController extends HttpServlet {
     //get请求入口
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+        if (pathInfo != null && pathInfo.matches("/\\d+")) {
+            try {
+                selectUserProfileByUserId(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     //put请求入口
     @Override
@@ -44,6 +52,15 @@ public class UserProfileController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         deleteUserProfile(req, resp);
+    }
+
+    //根据userID 查询用户详细信息
+    private void selectUserProfileByUserId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String pathInfo = req.getPathInfo();
+        log.info("接收到的用户ID:{}", pathInfo);
+        Integer userId = Integer.parseInt(pathInfo.substring(1));
+        UserProfile userProfile = userProfileService.selectUserProfileByUserId(userId);
+        ServletUtils.sendResponse(resp, Result.success(userProfile));
     }
 
     //删除用户详细信息
