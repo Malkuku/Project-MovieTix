@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @Slf4j
 @WebServlet("/works/*")
 public class WorkController extends HttpServlet {
@@ -68,6 +69,14 @@ public class WorkController extends HttpServlet {
         else if(pathInfo != null && pathInfo.matches("/orders/pay")) {
             try {
                 payOrder(req, resp);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        //订单取消
+        else if(pathInfo != null && pathInfo.matches("/orders/cancel")) {
+            try {
+                cancelOrder(req, resp);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -130,6 +139,13 @@ public class WorkController extends HttpServlet {
         List<WorkOrderResult> workOrderResultList = workService.selectWorkOrders(workOrderQueryParam);
         log.info("查询到的订单列表：{}", workOrderResultList);
         ServletUtils.sendResponse(resp, Result.success(workOrderResultList));
+    }
+
+    //订单取消
+    private void cancelOrder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Integer orderId = Integer.parseInt(req.getParameter("id"));
+        workService.cancelOrder(orderId);
+        ServletUtils.sendResponse(resp, Result.success());
     }
 
     //支付待付款订单

@@ -116,6 +116,7 @@ public class OrderController extends HttpServlet {
     //取消订单
     private void cancelOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
+        log.info("接收到的取消订单请求:{}", pathInfo);
         Integer id = Integer.parseInt(pathInfo.substring(1, pathInfo.indexOf("/cancel")));
         try {
             orderService.cancelOrder(id);

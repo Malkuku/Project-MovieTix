@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class OrderSeatDaoImpl implements OrderSeatDao {
+    //TODO 自动标记已完成的订单
+
     @Override
     public void addOrderSeat(OrderSeat orderSeat, Connection conn, boolean isAutoCloseConn) throws Exception {
         String sql = "INSERT INTO order_seats (order_id, seat_row, seat_col, seat_no, price) VALUES (?, ?, ?, ?, ?)";
@@ -27,7 +29,7 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
                 "FROM order_seats os\n" +
                 "JOIN orders o ON os.order_id = o.id\n" +
                 "WHERE o.screening_id = ?         \n" +
-                "  AND o.status IN (0, 1, 3)      \n" +
+                "  AND o.status IN (0, 1)      \n" +
                 "  AND os.seat_row = ?              \n" +
                 "  AND os.seat_col = ?;            ";
         List<Integer> countList = JdbcUtils.executeQuery(JdbcUtils.getConnection(),sql,isAutoCloseConn,rs -> {

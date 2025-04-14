@@ -147,4 +147,9 @@ public class WorkServiceImpl implements WorkService {
         log.info("查询到的订单列表:{}", workOrderResultList);
         return workOrderResultList;
     }
+
+    @Override
+    public void cancelOrder(Integer orderId) throws SQLException {
+        orderService.cancelOrder(orderId);
+    }
 }

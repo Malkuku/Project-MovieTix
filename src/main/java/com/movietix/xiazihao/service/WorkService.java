@@ -26,4 +26,7 @@ public interface WorkService {
 
     //条件查询订单信息
     List<WorkOrderResult> selectWorkOrders(WorkOrderQueryParam workOrderQueryParam) throws Exception;
+
+    //取消订单
+    void cancelOrder(Integer orderId) throws SQLException;
 }
