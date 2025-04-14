@@ -11,6 +11,12 @@ import {
   User,
   VideoCamera
 } from '@element-plus/icons-vue'
+import router from "@/router";
+
+// 手动路由方法
+const goToHome = () => {
+  router.push('/home');
+};
 </script>
 
 <template>
@@ -55,10 +61,10 @@ import {
               text-color="#b8c7ce"
               :default-active="$route.path"
           >
-            <!-- 控制台 -->
-            <el-menu-item index="/dashboard">
+            <!-- 首页 -->
+            <el-menu-item index="/home">
               <el-icon><HomeFilled /></el-icon>
-              <span>控制台</span>
+              <span>回到首页</span>
             </el-menu-item>
 
             <!-- 影厅管理 -->
