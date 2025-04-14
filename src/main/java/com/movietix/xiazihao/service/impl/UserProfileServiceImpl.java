@@ -15,4 +15,9 @@ public class UserProfileServiceImpl implements UserProfileService {
     public void addUserProfile(UserProfile userProfile) throws SQLException {
         userProfileDao.addUserProfile(userProfile, JdbcUtils.getConnection(),true);
     }
+
+    @Override
+    public void updateUserProfile(UserProfile userProfile) throws SQLException {
+        userProfileDao.updateUserProfile(userProfile,JdbcUtils.getConnection(),true);
+    }
 }

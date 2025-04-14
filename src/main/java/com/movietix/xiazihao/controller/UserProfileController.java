@@ -37,10 +37,23 @@ public class UserProfileController extends HttpServlet {
     //put请求入口
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        updateUserProfile(req, resp);
     }
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    //修改用户信息
+    private void updateUserProfile(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String json = ServletUtils.getRequestBody(req);
+        UserProfile userProfile = JsonUtils.parseJson(json, UserProfile.class);
+        try {
+            userProfileService.updateUserProfile(userProfile);
+            ServletUtils.sendResponse(resp, Result.success());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //添加用户信息

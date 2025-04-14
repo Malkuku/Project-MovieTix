@@ -8,4 +8,7 @@ import java.sql.SQLException;
 public interface UserProfileService {
     // 添加用户详细信息
     void addUserProfile(UserProfile userProfile) throws SQLException;
+
+    // 修改用户详细信息
+    void updateUserProfile(UserProfile userProfile) throws SQLException;
 }

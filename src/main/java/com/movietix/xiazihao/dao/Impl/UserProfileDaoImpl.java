@@ -15,7 +15,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
                 "birthday, avatar, city, province, signature) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,
                 userProfile.getUserId(),
                 userProfile.getNickname(),
                 userProfile.getRealName(),
@@ -28,6 +28,39 @@ public class UserProfileDaoImpl implements UserProfileDao {
                 userProfile.getCity(),
                 userProfile.getProvince(),
                 userProfile.getSignature()
+        );
+    }
+
+    @Override
+    public void updateUserProfile(UserProfile userProfile,Connection conn, boolean isAutoCloseConn) throws SQLException {
+        String sql = "UPDATE user_profiles SET " +
+                "nickname = COALESCE(?, nickname), " +
+                "gender = COALESCE(?, gender), " +
+                "email = COALESCE(?, email), " +
+                "birthday = COALESCE(?, birthday), " +
+                "avatar = COALESCE(?, avatar), " +
+                "city = COALESCE(?, city), " +
+                "province = COALESCE(?, province), " +
+                "signature = COALESCE(?, signature), " +
+                "phone = COALESCE(?, phone), " +
+                "real_name = COALESCE(?, real_name), " +
+                "id_card = COALESCE(?, id_card), " +
+                "updated_at = NOW() " +
+                "WHERE user_id = ?";
+
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,
+                userProfile.getNickname(),
+                userProfile.getGender(),
+                userProfile.getEmail(),
+                userProfile.getBirthday(),
+                userProfile.getAvatar(),
+                userProfile.getCity(),
+                userProfile.getProvince(),
+                userProfile.getSignature(),
+                userProfile.getPhone(),
+                userProfile.getRealName(),
+                userProfile.getIdCard(),
+                userProfile.getUserId()
         );
     }
 }
