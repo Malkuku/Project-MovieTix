@@ -1,7 +1,11 @@
 package com.movietix.xiazihao.controller;
 
+import com.movietix.xiazihao.entity.pojo.UserProfile;
+import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.UserProfileService;
 import com.movietix.xiazihao.service.impl.UserProfileServiceImpl;
+import com.movietix.xiazihao.utils.JsonUtils;
+import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletException;
@@ -20,6 +24,11 @@ public class UserProfileController extends HttpServlet {
     //post请求入口
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            addUserProfile(req, resp);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
     //get请求入口
     @Override
@@ -32,5 +41,14 @@ public class UserProfileController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    //添加用户信息
+    private void addUserProfile(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String json = ServletUtils.getRequestBody(req);
+        UserProfile userProfile = JsonUtils.parseJson(json, UserProfile.class);
+        log.info("接收到的用户信息:{}", userProfile);
+        userProfileService.addUserProfile(userProfile);
+        ServletUtils.sendResponse(resp, Result.success());
     }
 }
