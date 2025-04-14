@@ -28,6 +28,7 @@ public class WorkController extends HttpServlet {
     private static final WorkService workService = new WorkServiceImpl();
     private static final MovieController movieController = new MovieController();
     private static final ScreeningController screeningController = new ScreeningController();
+    private static final UserController userController = new UserController();
 
     //post请求入口
     @Override
@@ -81,6 +82,14 @@ public class WorkController extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        //用户修改密码
+        else if(pathInfo != null && pathInfo.matches("/users/password")) {
+            try {
+                updateUserPassword(req,resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     //get请求入口
     @Override
@@ -119,6 +128,13 @@ public class WorkController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     }
+
+    //修改用户密码
+    private void updateUserPassword(HttpServletRequest req,HttpServletResponse resp) throws SQLException, IOException {
+       userController.exposeUpdateUserPassword(req, resp);
+    }
+
+    //TODO 订单退款
 
     //查询用户订单列表
     private void selectOrdersByPage(HttpServletRequest req, HttpServletResponse resp) throws Exception {

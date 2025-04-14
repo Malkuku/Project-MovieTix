@@ -170,5 +170,8 @@ public class UserController extends HttpServlet {
         ServletUtils.sendResponse(resp, Result.success(pageResult));
     }
 
-    //TODO在更新用户状态时，先检查是不是管理员
+    //暴露方法
+    public void exposeUpdateUserPassword(HttpServletRequest req, HttpServletResponse resp) throws  IOException, SQLException{
+        this.updateUserPassword(req, resp);
+    }
 }

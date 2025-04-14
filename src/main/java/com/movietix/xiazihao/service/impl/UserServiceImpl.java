@@ -7,10 +7,12 @@ import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.service.UserService;
 import com.movietix.xiazihao.utils.JdbcUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.util.List;
 
+@Slf4j
 public class UserServiceImpl implements UserService {
     private static final UserDao userDao = new UserDaoImpl();
 
@@ -69,6 +71,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserPassword(User user) throws SQLException {
+        //检查原密码
+        User userDB = userDao.selectUserById(user.getId(),true);
+        log.info(String.valueOf(userDB));
+        if(!user.getOldPasswordHash().equals(userDB.getPasswordHash())){
+            throw new RuntimeException("原密码不匹配");
+        }
         userDao.updateUserPassword(user, true);
+        //TODO 将token过期然后要求重新登录？
     }
 }
