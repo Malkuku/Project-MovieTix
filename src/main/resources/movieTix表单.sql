@@ -1,4 +1,5 @@
 -- DBName： movie_tix
+use movie_tix;
 
 -- 用户基础信息表
 CREATE TABLE users (
@@ -23,7 +24,7 @@ CREATE TABLE user_profiles (
   `id_card` varchar(18) DEFAULT NULL COMMENT '身份证号',
   `phone` varchar(20) DEFAULT NULL COMMENT '手机号',
   `gender` tinyint(1) DEFAULT NULL COMMENT '性别:0-未知 1-男 2-女',
-  `email` varchar(100) NOT NULL COMMENT '邮箱',
+  `email` varchar(100) DEFAULT NULL COMMENT '邮箱',
   `birthday` date DEFAULT NULL COMMENT '出生日期',
   `avatar` varchar(255) DEFAULT NULL COMMENT '头像URL',
   `city` varchar(50) DEFAULT NULL COMMENT '城市',

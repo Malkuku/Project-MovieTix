@@ -1,18 +1,13 @@
 package com.movietix.xiazihao.service.impl;
 
-import com.movietix.xiazihao.dao.Impl.OrderDaoImpl;
-import com.movietix.xiazihao.dao.Impl.PaymentDaoImpl;
-import com.movietix.xiazihao.dao.Impl.UserDaoImpl;
-import com.movietix.xiazihao.dao.Impl.WorkDaoImpl;
-import com.movietix.xiazihao.dao.OrderDao;
-import com.movietix.xiazihao.dao.PaymentDao;
-import com.movietix.xiazihao.dao.UserDao;
-import com.movietix.xiazihao.dao.WorkDao;
+import com.movietix.xiazihao.dao.*;
+import com.movietix.xiazihao.dao.Impl.*;
 import com.movietix.xiazihao.entity.body.WorkOrderQueryBody;
 import com.movietix.xiazihao.entity.param.WorkOrderQueryParam;
 import com.movietix.xiazihao.entity.pojo.Order;
 import com.movietix.xiazihao.entity.pojo.Payment;
 import com.movietix.xiazihao.entity.pojo.User;
+import com.movietix.xiazihao.entity.pojo.UserProfile;
 import com.movietix.xiazihao.entity.result.WorkOrderResult;
 import com.movietix.xiazihao.service.*;
 import com.movietix.xiazihao.utils.JdbcUtils;
@@ -36,6 +31,7 @@ public class WorkServiceImpl implements WorkService {
     private static final UserDao userDao = new UserDaoImpl();
     private static final OrderDao orderDao = new OrderDaoImpl();
     private static final PaymentDao paymentDao = new PaymentDaoImpl();
+    private static final UserProfileDao userProfileDao = new UserProfileDaoImpl();
 
     @Override
     public User userLogin(User user) throws SQLException {
@@ -64,8 +60,14 @@ public class WorkServiceImpl implements WorkService {
         if(userFromDb != null){
             throw new RuntimeException("用户名已存在");
         }
+        //TODO lock
         //添加用户
         userDao.addUser(user, true);
+        //添加用户详细信息表
+        UserProfile userProfile = new UserProfile();
+        userFromDb = userDao.selectUserByUsername(user.getUsername(),true);
+        userProfile.setUserId(userFromDb.getId());
+        userProfileDao.addUserProfile(userProfile, JdbcUtils.getConnection(),true);
     }
 
     @Override
