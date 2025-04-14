@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @Slf4j
 @WebServlet("/user_profiles/*")
@@ -42,6 +43,18 @@ public class UserProfileController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        deleteUserProfile(req, resp);
+    }
+
+    //删除用户详细信息
+    private void deleteUserProfile(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        List<Integer> ids = ServletUtils.parseReqToList(req.getParameterValues("ids"), Integer.class);
+        try {
+            userProfileService.deleteUserProfileByIds(ids);
+            ServletUtils.sendResponse(resp, Result.success());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //修改用户信息

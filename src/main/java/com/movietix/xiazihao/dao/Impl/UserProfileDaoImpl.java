@@ -6,6 +6,7 @@ import com.movietix.xiazihao.utils.JdbcUtils;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 public class UserProfileDaoImpl implements UserProfileDao {
     @Override
@@ -62,5 +63,11 @@ public class UserProfileDaoImpl implements UserProfileDao {
                 userProfile.getIdCard(),
                 userProfile.getUserId()
         );
+    }
+
+    @Override
+    public void deleteUserProfileByIds(List<Integer> ids, Connection conn, boolean isAutoCloseConn) throws SQLException {
+        String sql = "DELETE FROM user_profiles WHERE id IN (" + String.join(",", ids.stream().map(id->"?").toArray(String[]::new)) + ")";
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn, ids.toArray());
     }
 }

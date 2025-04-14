@@ -7,6 +7,7 @@ import com.movietix.xiazihao.service.UserProfileService;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class UserProfileServiceImpl implements UserProfileService {
     private static final UserProfileDao userProfileDao = new UserProfileDaoImpl();
@@ -19,5 +20,10 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public void updateUserProfile(UserProfile userProfile) throws SQLException {
         userProfileDao.updateUserProfile(userProfile,JdbcUtils.getConnection(),true);
+    }
+
+    @Override
+    public void deleteUserProfileByIds(List<Integer> ids) throws SQLException {
+        userProfileDao.deleteUserProfileByIds(ids,JdbcUtils.getConnection(),true);
     }
 }
