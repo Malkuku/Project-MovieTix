@@ -58,7 +58,7 @@ public class UserProfileController extends HttpServlet {
     private void selectUserProfileByUserId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
         String pathInfo = req.getPathInfo();
         log.info("接收到的用户ID:{}", pathInfo);
-        Integer userId = Integer.parseInt(pathInfo.substring(1));
+        Integer userId = Integer.parseInt(pathInfo.replaceAll("\\D", ""));
         UserProfile userProfile = userProfileService.selectUserProfileByUserId(userId);
         ServletUtils.sendResponse(resp, Result.success(userProfile));
     }
@@ -93,5 +93,13 @@ public class UserProfileController extends HttpServlet {
         log.info("接收到的用户信息:{}", userProfile);
         userProfileService.addUserProfile(userProfile);
         ServletUtils.sendResponse(resp, Result.success());
+    }
+
+    //暴露方法
+    public void exposeSelectUserProfileByUserId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        this.selectUserProfileByUserId(req,resp);
+    }
+    public void exposeUpdateUserProfile(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        this.updateUserProfile(req,resp);
     }
 }

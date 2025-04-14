@@ -29,6 +29,7 @@ public class WorkController extends HttpServlet {
     private static final MovieController movieController = new MovieController();
     private static final ScreeningController screeningController = new ScreeningController();
     private static final UserController userController = new UserController();
+    private static final UserProfileController userProfileController = new UserProfileController();
 
     //post请求入口
     @Override
@@ -119,14 +120,36 @@ public class WorkController extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        //查询用户信息详情
+        else if (pathInfo != null && pathInfo.matches("/user_profiles/\\d+")){
+            try {
+                selectUserProfileByUserId(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     //put请求入口
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+        if(pathInfo != null && pathInfo.matches("/user_profiles")){
+            updateUserProfile(req, resp);
+        }
     }
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    //修改用户详细信息
+    private void updateUserProfile(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        userProfileController.exposeUpdateUserProfile(req, resp);
+    }
+
+    //查询用户详细信息
+    private void selectUserProfileByUserId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        userProfileController.exposeSelectUserProfileByUserId(req, resp);
     }
 
     //修改用户密码
