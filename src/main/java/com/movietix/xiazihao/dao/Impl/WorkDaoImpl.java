@@ -2,9 +2,12 @@ package com.movietix.xiazihao.dao.Impl;
 
 import com.movietix.xiazihao.dao.WorkDao;
 import com.movietix.xiazihao.entity.param.WorkOrderQueryParam;
+import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.entity.result.WorkOrderResult;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
+import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -52,6 +55,36 @@ public class WorkDaoImpl implements WorkDao {
                 param.getStatus(), param.getStatus()
 
         );
+    }
+
+    @Override
+    public List<OrderSeat> selectSeatsByScreeningId(Integer screeningId, Connection conn, boolean isAutoCloseConn) throws SQLException {
+        String sql = "SELECT \n" +
+                "    os.seat_row,\n" +
+                "    os.seat_col,\n" +
+                "    os.seat_no,\n" +
+                "    os.price\n" +
+                "FROM \n" +
+                "    order_seats os\n" +
+                "JOIN \n" +
+                "    orders o ON os.order_id = o.id\n" +
+                "WHERE \n" +
+                "    o.screening_id = ?\n" +
+                "    AND o.status IN (0,1)\n" +
+                "ORDER BY \n" +
+                "    os.seat_row, os.seat_col";
+        return JdbcUtils.executeQuery(conn, sql, isAutoCloseConn, rs -> {
+            OrderSeat orderSeat = new OrderSeat();
+            try {
+                orderSeat.setSeatRow(rs.getInt("seat_row"));
+                orderSeat.setSeatCol(rs.getInt("seat_col"));
+                orderSeat.setSeatNo(rs.getString("seat_no"));
+                orderSeat.setPrice(BigDecimal.valueOf(rs.getDouble("price")));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            return orderSeat;
+        }, screeningId);
     }
 
 }

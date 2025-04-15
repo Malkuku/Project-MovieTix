@@ -2,6 +2,7 @@ package com.movietix.xiazihao.service;
 
 import com.movietix.xiazihao.entity.body.WorkOrderQueryBody;
 import com.movietix.xiazihao.entity.param.WorkOrderQueryParam;
+import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.entity.result.WorkOrderResult;
 
@@ -29,4 +30,7 @@ public interface WorkService {
 
     //取消订单
     void cancelOrder(Integer orderId) throws SQLException;
+
+    //查询放映场次信息的座位信息
+    List<OrderSeat> selectSeatsByScreeningId(Integer screeningId) throws SQLException;
 }

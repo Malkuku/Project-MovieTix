@@ -4,10 +4,7 @@ import com.movietix.xiazihao.dao.*;
 import com.movietix.xiazihao.dao.Impl.*;
 import com.movietix.xiazihao.entity.body.WorkOrderQueryBody;
 import com.movietix.xiazihao.entity.param.WorkOrderQueryParam;
-import com.movietix.xiazihao.entity.pojo.Order;
-import com.movietix.xiazihao.entity.pojo.Payment;
-import com.movietix.xiazihao.entity.pojo.User;
-import com.movietix.xiazihao.entity.pojo.UserProfile;
+import com.movietix.xiazihao.entity.pojo.*;
 import com.movietix.xiazihao.entity.result.WorkOrderResult;
 import com.movietix.xiazihao.service.*;
 import com.movietix.xiazihao.utils.JdbcUtils;
@@ -158,5 +155,10 @@ public class WorkServiceImpl implements WorkService {
     @Override
     public void cancelOrder(Integer orderId) throws SQLException {
         orderService.cancelOrder(orderId);
+    }
+
+    @Override
+    public List<OrderSeat> selectSeatsByScreeningId(Integer screeningId) throws SQLException {
+        return workDao.selectSeatsByScreeningId(screeningId,JdbcUtils.getConnection(),true);
     }
 }

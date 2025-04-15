@@ -2,11 +2,13 @@ package com.movietix.xiazihao.controller;
 
 import com.movietix.xiazihao.entity.body.WorkOrderQueryBody;
 import com.movietix.xiazihao.entity.param.WorkOrderQueryParam;
+import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.entity.result.WorkOrderResult;
 import com.movietix.xiazihao.service.WorkService;
 import com.movietix.xiazihao.service.impl.WorkServiceImpl;
+import com.movietix.xiazihao.utils.JdbcUtils;
 import com.movietix.xiazihao.utils.JsonUtils;
 import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -128,6 +130,14 @@ public class WorkController extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        //查询座位信息
+        else if(pathInfo != null && pathInfo.matches("/seats")){
+            try {
+                selectSeatsByScreeningId(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     //put请求入口
     @Override
@@ -140,6 +150,13 @@ public class WorkController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    //查询放映场次信息的座位信息
+    private void selectSeatsByScreeningId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        Integer screeningId = Integer.parseInt(req.getParameter("id"));
+        List<OrderSeat> seats = workService.selectSeatsByScreeningId(screeningId);
+        ServletUtils.sendResponse(resp, Result.success(seats));
     }
 
     //修改用户详细信息
