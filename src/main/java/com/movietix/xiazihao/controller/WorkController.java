@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -221,8 +222,9 @@ public class WorkController extends HttpServlet {
         WorkOrderQueryBody workOrderQueryBody = JsonUtils.parseJson(json, WorkOrderQueryBody.class);
         log.info("用户购票操作，参数：{}", workOrderQueryBody);
         Integer orderId = workService.userBuyTicket(workOrderQueryBody);
-        log.info("用户购票操作成功，返回订单ID：{}", orderId);
-        ServletUtils.sendResponse(resp, Result.success(orderId));
+        HashMap<String,Integer> data = new HashMap<>();
+        data.put("orderId", orderId);
+        ServletUtils.sendResponse(resp, Result.success(data));
     }
 
     //条件分页查询放映场次信息

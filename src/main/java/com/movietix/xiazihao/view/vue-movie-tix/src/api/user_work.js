@@ -44,7 +44,7 @@ export const getMoviesApi = (params) => {
     return request.get('/works/movies', { params });
 }
 
-// 查询电影详情
+// 查询电影详情 //TODO
 export const getMovieDetailApi = (id) => {
     return request.get(`/works/movies_detail/${id}`);
 }
@@ -76,7 +76,12 @@ export const cancelOrderApi = (id) => {
     return request.post('/works/orders/cancel', null, { params: { id } });
 }
 
-// 申请退款
+// 申请退款 //TODO
 export const refundOrderApi = (data) => {
     return request.post('/works/refunds', data);
+}
+
+// 查询座位信息
+export const getSeatsApi = (screeningId) => {
+    return request.get('/works/seats', { params: { id: screeningId } });
 }

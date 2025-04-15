@@ -189,7 +189,7 @@
   </div>
 </template>
 
-<script setup lang = "ts">
+<script setup>
 import { ref, onMounted } from 'vue';
 import { ElMessage} from 'element-plus';
 import { Plus } from '@element-plus/icons-vue';
@@ -405,7 +405,7 @@ const handleRecharge = async () => {
 // 获取用户信息
 const fetchUserProfile = async () => {
   try {
-    const result : ApiResponse<UserProfile> = await getUserProfileApi(userStore.id);
+    const result = await getUserProfileApi(userStore.id);
     if (result.code === 1) {
       profileForm.value = {
         ...result.data,

@@ -20,6 +20,3 @@ export const updateUserStatusApi = (ids, status) => request.put('/users/status',
 
 // 根据ID查询用户
 export const queryUserByIdApi = (id) => request.get(`/users/${id}`);
-
-// 用户登录
-export const loginApi = (data) => request.post('/users/login', data);
