@@ -2,19 +2,19 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useUserStore = defineStore('user', () => {
-    const userId = ref(null);
+    const id = ref(null);
     const username = ref('');
     const token = ref('');
 
     const setUserInfo = (userInfo) => {
-        userId.value = userInfo.id;
+        id.value = userInfo.id;
         username.value = userInfo.username;
         token.value = userInfo.token;
         localStorage.setItem('token', token.value);
     };
 
     const clearUserInfo = () => {
-        userId.value = null;
+        id.value = null;
         username.value = '';
         token.value = '';
         localStorage.removeItem('token');
@@ -25,7 +25,7 @@ export const useUserStore = defineStore('user', () => {
     };
 
     return {
-        userId,
+        id,
         username,
         token,
         setUserInfo,

@@ -2,6 +2,7 @@ import axios from 'axios'
 import {ElMessage} from "element-plus";
 import {useUserStore} from "@/store/user";
 
+
 //创建axios实例对象
 const request = axios.create({
   baseURL: '/api',

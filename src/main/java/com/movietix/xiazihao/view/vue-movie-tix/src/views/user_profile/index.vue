@@ -55,7 +55,7 @@
             <el-form-item label="出生日期" prop="birthday">
               <el-date-picker
                   v-model="profileForm.birthday"
-                  type="date"
+                  type="Date"
                   placeholder="选择日期"
                   value-format="YYYY-MM-DD"
               />
@@ -105,7 +105,7 @@
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
           >
-            <img v-if="profileForm.avatar" :src="profileForm.avatar" class="avatar" />
+            <img v-if="profileForm.avatar" :src="profileForm.avatar" class="avatar"  alt="加载失败"/>
             <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
           </el-upload>
         </el-form-item>
@@ -189,9 +189,9 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang = "ts">
 import { ref, onMounted } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage} from 'element-plus';
 import { Plus } from '@element-plus/icons-vue';
 import {
   getUserProfileApi,
@@ -204,19 +204,19 @@ import { useUserStore } from '@/store/user';
 const userStore = useUserStore();
 
 const profileForm = ref({
-  userId: '',
-  username: '',
-  nickname: '',
-  realName: '',
-  idCard: '',
-  phone: '',
+  userId: null,
+  username: null,
+  nickname: null,
+  realName: null,
+  idCard: null,
+  phone: null,
   gender: 0,
-  email: '',
-  birthday: '',
-  avatar: '',
-  city: '',
-  province: '',
-  signature: ''
+  email: null,
+  birthday: null,
+  avatar: null,
+  city: null,
+  province: null,
+  signature: null
 });
 
 const profileRules = ref({
@@ -262,7 +262,7 @@ const handleSave = async () => {
     if (result.code === 1) {
       ElMessage.success('保存成功');
       isEditing.value = false;
-      fetchUserProfile();
+      await fetchUserProfile();
     } else {
       ElMessage.error(result.msg || '保存失败');
     }
@@ -393,7 +393,7 @@ const handleRecharge = async () => {
     if (result.code === 1) {
       ElMessage.success('充值成功');
       rechargeDialogVisible.value = false;
-      fetchUserProfile();
+      await fetchUserProfile();
     } else {
       ElMessage.error(result.msg || '充值失败');
     }
@@ -405,11 +405,11 @@ const handleRecharge = async () => {
 // 获取用户信息
 const fetchUserProfile = async () => {
   try {
-    const result = await getUserProfileApi(userStore.userId);
+    const result : ApiResponse<UserProfile> = await getUserProfileApi(userStore.id);
     if (result.code === 1) {
       profileForm.value = {
         ...result.data,
-        userId: result.data.id
+        id: result.data.id
       };
     } else {
       ElMessage.error(result.msg || '获取用户信息失败');
