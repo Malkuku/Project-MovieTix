@@ -10,7 +10,7 @@ import java.io.IOException;
 
 @Slf4j
 //@WebFilter(urlPatterns = {"/*"})
-public class a_LoginFilter implements Filter {
+public class b_LoginFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         log.debug("过滤器初始化");
