@@ -1,244 +1,3 @@
-<template>
-  <div class="home-container">
-    <!-- 顶部导航栏 -->
-    <el-header class="header">
-      <div class="logo">
-        <h1>MovieTix</h1>
-        <p>您的专属电影购票平台</p>
-      </div>
-      <div class="nav">
-        <el-menu
-            :default-active="activeIndex"
-            class="el-menu-demo"
-            mode="horizontal"
-            @select="handleSelect"
-        >
-          <el-menu-item index="1">首页</el-menu-item>
-          <el-menu-item index="2">正在热映</el-menu-item>
-          <el-menu-item index="3">即将上映</el-menu-item>
-          <el-menu-item index="4">排行榜</el-menu-item>
-        </el-menu>
-      </div>
-      <div class="search">
-        <el-input
-            v-model="searchQuery"
-            placeholder="搜索电影..."
-            class="search-input"
-            @keyup.enter="handleSearch"
-        >
-          <template #append>
-            <el-button :icon="Search" @click="handleSearch"/>
-          </template>
-        </el-input>
-      </div>
-      <div class="user-actions">
-        <el-dropdown>
-          <span class="el-dropdown-link">
-            <el-avatar :size="40" :src="userStore.avatar"/>
-            <span class="username">{{ userStore.username }}</span>
-          </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item @click="goToProfile">个人中心</el-dropdown-item>
-              <el-dropdown-item @click="goToOrders">我的订单</el-dropdown-item>
-              <el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-      </div>
-    </el-header>
-    <el-button @click="goToLayout">
-      <el-icon>管理员入口</el-icon>
-    </el-button>
-
-    <!-- 主内容区 -->
-    <div class="main-content">
-      <!-- 轮播图 -->
-      <el-carousel :interval="5000" arrow="always" height="400px" class="carousel">
-        <el-carousel-item v-for="movie in featuredMovies" :key="movie.id">
-          <div
-              class="carousel-item"
-              :style="{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${movie.poster})` }"
-              @click="goToMovieDetail(movie.id)"
-          >
-            <div class="carousel-content">
-              <h2>{{ movie.title }}</h2>
-              <p>{{ movie.description }}</p>
-              <el-button type="primary" round @click.stop="goToBooking(movie.id)">立即购票</el-button>
-            </div>
-          </div>
-        </el-carousel-item>
-      </el-carousel>
-
-      <!-- 分类筛选 -->
-      <div class="filter-section">
-        <div class="filter-tabs">
-          <el-tabs v-model="activeFilter" @tab-change="handleFilterChange">
-            <el-tab-pane label="全部" name="all"></el-tab-pane>
-            <el-tab-pane label="动作" name="action"></el-tab-pane>
-            <el-tab-pane label="喜剧" name="comedy"></el-tab-pane>
-            <el-tab-pane label="爱情" name="romance"></el-tab-pane>
-            <el-tab-pane label="科幻" name="sci-fi"></el-tab-pane>
-            <el-tab-pane label="恐怖" name="horror"></el-tab-pane>
-            <el-tab-pane label="动画" name="animation"></el-tab-pane>
-          </el-tabs>
-        </div>
-        <div class="sort-options">
-          <el-select v-model="sortBy" placeholder="排序方式" @change="handleSortChange">
-            <el-option label="热门排序" value="popular"></el-option>
-            <el-option label="评分最高" value="rating"></el-option>
-            <el-option label="最新上映" value="newest"></el-option>
-            <el-option label="价格最低" value="price-low"></el-option>
-            <el-option label="价格最高" value="price-high"></el-option>
-          </el-select>
-        </div>
-      </div>
-
-      <!-- 电影列表 -->
-      <div class="movie-list">
-        <h2 class="section-title">正在热映</h2>
-        <el-row :gutter="20">
-          <el-col
-              v-for="movie in filteredMovies"
-              :key="movie.id"
-              :xs="12"
-              :sm="8"
-              :md="6"
-              :lg="4"
-              :xl="4"
-          >
-            <el-card
-                class="movie-card"
-                :body-style="{ padding: '0px' }"
-                shadow="hover"
-                @click="goToMovieDetail(movie.id)"
-            >
-              <div class="movie-poster" :style="{ backgroundImage: `url(${movie.poster})` }">
-                <div class="movie-rating">
-                  <el-rate
-                      v-model="movie.rating"
-                      disabled
-                      show-score
-                      text-color="#ff9900"
-                      score-template="{value}"
-                  />
-                </div>
-              </div>
-              <div class="movie-info">
-                <h3 class="movie-title">{{ movie.title }}</h3>
-                <p class="movie-genre">{{ movie.genre.join(' / ') }}</p>
-                <div class="movie-footer">
-                  <span class="price">¥{{ movie.price }}</span>
-                  <el-button
-                      type="primary"
-                      size="small"
-                      round
-                      @click.stop="goToBooking(movie.id)"
-                  >
-                    购票
-                  </el-button>
-                </div>
-              </div>
-            </el-card>
-          </el-col>
-        </el-row>
-      </div>
-
-      <!-- 即将上映 -->
-      <div class="coming-soon">
-        <h2 class="section-title">即将上映</h2>
-        <el-row :gutter="20">
-          <el-col
-              v-for="movie in comingSoonMovies"
-              :key="movie.id"
-              :xs="12"
-              :sm="8"
-              :md="6"
-              :lg="4"
-              :xl="4"
-          >
-            <el-card
-                class="coming-soon-card"
-                :body-style="{ padding: '0px' }"
-                shadow="hover"
-                @click="goToMovieDetail(movie.id)"
-            >
-              <div class="coming-soon-poster" :style="{ backgroundImage: `url(${movie.poster})` }">
-                <div class="release-date">
-                  {{ movie.releaseDate }} 上映
-                </div>
-              </div>
-              <div class="coming-soon-info">
-                <h3 class="movie-title">{{ movie.title }}</h3>
-                <p class="movie-genre">{{ movie.genre.join(' / ') }}</p>
-                <el-button
-                    type="info"
-                    size="small"
-                    round
-                    disabled
-                >
-                  预售未开始
-                </el-button>
-              </div>
-            </el-card>
-          </el-col>
-        </el-row>
-      </div>
-
-      <!-- 底部推荐 -->
-      <div class="recommendations">
-        <h2 class="section-title">为您推荐</h2>
-        <el-row :gutter="20">
-          <el-col
-              v-for="movie in recommendedMovies"
-              :key="movie.id"
-              :xs="12"
-              :sm="8"
-              :md="6"
-              :lg="4"
-              :xl="4"
-          >
-            <el-card
-                class="recommendation-card"
-                :body-style="{ padding: '0px' }"
-                shadow="hover"
-                @click="goToMovieDetail(movie.id)"
-            >
-              <div class="recommendation-poster" :style="{ backgroundImage: `url(${movie.poster})` }">
-                <div class="recommendation-tag">
-                  <el-tag type="warning" effect="dark">推荐</el-tag>
-                </div>
-              </div>
-              <div class="recommendation-info">
-                <h3 class="movie-title">{{ movie.title }}</h3>
-                <p class="movie-genre">{{ movie.genre.join(' / ') }}</p>
-                <div class="movie-footer">
-                  <span class="price">¥{{ movie.price }}</span>
-                  <el-button
-                      type="primary"
-                      size="small"
-                      round
-                      @click.stop="goToBooking(movie.id)"
-                  >
-                    购票
-                  </el-button>
-                </div>
-              </div>
-            </el-card>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
-
-    <!-- 底部页脚 -->
-    <el-footer class="footer">
-      <div class="copyright">
-        <p>© 2025 MovieTix ka-cat制作</p>
-      </div>
-    </el-footer>
-  </div>
-</template>
-
 <script setup>
 import {ref, computed, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
@@ -435,17 +194,264 @@ const goToLayout = () => {
 };
 
 
-const logout = () => {
-  userStore.clearUserInfo();
-  ElMessage.success('已退出登录');
-  router.push('/login');
+const toggleLoginState = () => {
+  if (userStore.isAuthenticated) {
+    userStore.clearUserInfo();
+    ElMessage({
+      message: '退出登录成功',
+      type: 'success'
+    })
+  }
+  router.push('/login')
 };
-
 // 生命周期钩子
 onMounted(() => {
   fetchMovies();
 });
 </script>
+
+<template>
+  <div class="home-container">
+    <!-- 顶部导航栏 -->
+    <el-header class="header">
+      <div class="logo">
+        <h1>MovieTix</h1>
+        <p>您的专属电影购票平台</p>
+      </div>
+      <div class="nav">
+        <el-menu
+            :default-active="activeIndex"
+            class="el-menu-demo"
+            mode="horizontal"
+            @select="handleSelect"
+        >
+          <el-menu-item index="1">首页</el-menu-item>
+          <el-menu-item index="2">正在热映</el-menu-item>
+          <el-menu-item index="3">即将上映</el-menu-item>
+          <el-menu-item index="4">排行榜</el-menu-item>
+        </el-menu>
+      </div>
+      <div class="search">
+        <el-input
+            v-model="searchQuery"
+            placeholder="搜索电影..."
+            class="search-input"
+            @keyup.enter="handleSearch"
+        >
+          <template #append>
+            <el-button :icon='Search' @click="handleSearch"/>
+          </template>
+        </el-input>
+      </div>
+      <div class="user-actions">
+        <el-dropdown>
+          <span class="el-dropdown-link">
+            <el-avatar :size="40" :src="userStore.avatar"/>
+            <span class="username">{{ userStore.username }}</span>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="goToProfile">个人中心</el-dropdown-item>
+              <el-dropdown-item @click="goToOrders">我的订单</el-dropdown-item>
+              <el-dropdown-item divided @click="toggleLoginState">
+                {{ userStore.isAuthenticated() ? '退出登录' : '登录' }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+    </el-header>
+    <el-button @click="goToLayout">
+      <el-icon>管理员入口</el-icon>
+    </el-button>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+      <!-- 轮播图 -->
+      <el-carousel :interval="5000" arrow="always" height="400px" class="carousel">
+        <el-carousel-item v-for="movie in featuredMovies" :key="movie.id">
+          <div
+              class="carousel-item"
+              :style="{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${movie.poster})` }"
+              @click="goToMovieDetail(movie.id)"
+          >
+            <div class="carousel-content">
+              <h2>{{ movie.title }}</h2>
+              <p>{{ movie.description }}</p>
+              <el-button type="primary" round @click.stop="goToBooking(movie.id)">立即购票</el-button>
+            </div>
+          </div>
+        </el-carousel-item>
+      </el-carousel>
+
+      <!-- 分类筛选 -->
+      <div class="filter-section">
+        <div class="filter-tabs">
+          <el-tabs v-model="activeFilter" @tab-change="handleFilterChange">
+            <el-tab-pane label="全部" name="all"></el-tab-pane>
+            <el-tab-pane label="动作" name="action"></el-tab-pane>
+            <el-tab-pane label="喜剧" name="comedy"></el-tab-pane>
+            <el-tab-pane label="爱情" name="romance"></el-tab-pane>
+            <el-tab-pane label="科幻" name="sci-fi"></el-tab-pane>
+            <el-tab-pane label="恐怖" name="horror"></el-tab-pane>
+            <el-tab-pane label="动画" name="animation"></el-tab-pane>
+          </el-tabs>
+        </div>
+        <div class="sort-options">
+          <el-select v-model="sortBy" placeholder="排序方式" @change="handleSortChange">
+            <el-option label="热门排序" value="popular"></el-option>
+            <el-option label="评分最高" value="rating"></el-option>
+            <el-option label="最新上映" value="newest"></el-option>
+            <el-option label="价格最低" value="price-low"></el-option>
+            <el-option label="价格最高" value="price-high"></el-option>
+          </el-select>
+        </div>
+      </div>
+
+      <!-- 电影列表 -->
+      <div class="movie-list">
+        <h2 class="section-title">正在热映</h2>
+        <el-row :gutter="20">
+          <el-col
+              v-for="movie in filteredMovies"
+              :key="movie.id"
+              :xs="12"
+              :sm="8"
+              :md="6"
+              :lg="4"
+              :xl="4"
+          >
+            <el-card
+                class="movie-card"
+                :body-style="{ padding: '0px' }"
+                shadow="hover"
+                @click="goToMovieDetail(movie.id)"
+            >
+              <div class="movie-poster" :style="{ backgroundImage: `url(${movie.poster})` }">
+                <div class="movie-rating">
+                  <el-rate
+                      v-model="movie.rating"
+                      disabled
+                      show-score
+                      text-color="#ff9900"
+                      score-template="{value}"
+                  />
+                </div>
+              </div>
+              <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <p class="movie-genre">{{ movie.genre.join(' / ') }}</p>
+                <div class="movie-footer">
+                  <span class="price">¥{{ movie.price }}</span>
+                  <el-button
+                      type="primary"
+                      size="small"
+                      round
+                      @click.stop="goToBooking(movie.id)"
+                  >
+                    购票
+                  </el-button>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
+
+      <!-- 即将上映 -->
+      <div class="coming-soon">
+        <h2 class="section-title">即将上映</h2>
+        <el-row :gutter="20">
+          <el-col
+              v-for="movie in comingSoonMovies"
+              :key="movie.id"
+              :xs="12"
+              :sm="8"
+              :md="6"
+              :lg="4"
+              :xl="4"
+          >
+            <el-card
+                class="coming-soon-card"
+                :body-style="{ padding: '0px' }"
+                shadow="hover"
+                @click="goToMovieDetail(movie.id)"
+            >
+              <div class="coming-soon-poster" :style="{ backgroundImage: `url(${movie.poster})` }">
+                <div class="release-date">
+                  {{ movie.releaseDate }} 上映
+                </div>
+              </div>
+              <div class="coming-soon-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <p class="movie-genre">{{ movie.genre.join(' / ') }}</p>
+                <el-button
+                    type="info"
+                    size="small"
+                    round
+                    disabled
+                >
+                  预售未开始
+                </el-button>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
+
+      <!-- 底部推荐 -->
+      <div class="recommendations">
+        <h2 class="section-title">为您推荐</h2>
+        <el-row :gutter="20">
+          <el-col
+              v-for="movie in recommendedMovies"
+              :key="movie.id"
+              :xs="12"
+              :sm="8"
+              :md="6"
+              :lg="4"
+              :xl="4"
+          >
+            <el-card
+                class="recommendation-card"
+                :body-style="{ padding: '0px' }"
+                shadow="hover"
+                @click="goToMovieDetail(movie.id)"
+            >
+              <div class="recommendation-poster" :style="{ backgroundImage: `url(${movie.poster})` }">
+                <div class="recommendation-tag">
+                  <el-tag type="warning" effect="dark">推荐</el-tag>
+                </div>
+              </div>
+              <div class="recommendation-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <p class="movie-genre">{{ movie.genre.join(' / ') }}</p>
+                <div class="movie-footer">
+                  <span class="price">¥{{ movie.price }}</span>
+                  <el-button
+                      type="primary"
+                      size="small"
+                      round
+                      @click.stop="goToBooking(movie.id)"
+                  >
+                    购票
+                  </el-button>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
+    </div>
+
+    <!-- 底部页脚 -->
+    <el-footer class="footer">
+      <div class="copyright">
+        <p>© 2025 MovieTix ka-cat制作</p>
+      </div>
+    </el-footer>
+  </div>
+</template>
 
 <style scoped>
 .home-container {
