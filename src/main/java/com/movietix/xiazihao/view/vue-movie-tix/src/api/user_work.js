@@ -22,7 +22,7 @@ export const rechargeApi = (userId, amount) => {
 export const updatePasswordApi = (userId, oldPassword, newPassword) => {
     const oldPasswordHash = sha256(oldPassword);
     const newPasswordHash = sha256(newPassword);
-    return request.post('/works/password', {
+    return request.post('/works/users/password', {
         id: userId,
         oldPasswordHash,
         passwordHash: newPasswordHash
