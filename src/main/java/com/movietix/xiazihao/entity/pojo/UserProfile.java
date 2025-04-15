@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class UserProfile {
     private Integer id; // 主键ID
     private Integer userId; // 关联users表的id
+    private String username; // 用户名
     private String nickname = "神秘来客"; // 用户昵称
     private Integer gender = 0; // 性别:0-未知 1-男 2-女
     private String email; // 邮箱
