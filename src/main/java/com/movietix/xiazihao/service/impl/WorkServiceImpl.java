@@ -6,6 +6,7 @@ import com.movietix.xiazihao.entity.body.WorkOrderQueryBody;
 import com.movietix.xiazihao.entity.param.WorkOrderQueryParam;
 import com.movietix.xiazihao.entity.pojo.*;
 import com.movietix.xiazihao.entity.result.WorkOrderResult;
+import com.movietix.xiazihao.entity.result.WorkSeatResult;
 import com.movietix.xiazihao.service.*;
 import com.movietix.xiazihao.utils.JdbcUtils;
 import com.movietix.xiazihao.utils.JwtUtils;
@@ -23,6 +24,8 @@ public class WorkServiceImpl implements WorkService {
     private static final OrderService orderService = new OrderServiceImpl();
     private static final OrderSeatService orderSeatService = new OrderSeatServiceImpl();
     private static final PaymentService paymentService = new PaymentServiceImpl();
+    private static final HallService hallService = new HallServiceImpl();
+    private static final ScreeningService screeningService = new ScreeningServiceImpl();
 
     private static final WorkDao workDao = new WorkDaoImpl();
     private static final UserDao userDao = new UserDaoImpl();
@@ -158,7 +161,9 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
-    public List<OrderSeat> selectSeatsByScreeningId(Integer screeningId) throws SQLException {
-        return workDao.selectSeatsByScreeningId(screeningId,JdbcUtils.getConnection(),true);
+    public WorkSeatResult selectSeatsByScreeningId(Integer screeningId) throws SQLException {
+        List<OrderSeat> seats = workDao.selectSeatsByScreeningId(screeningId,JdbcUtils.getConnection(),true);
+        Hall hall = hallService.selectHallById(screeningService.selectScreeningById(screeningId).getHallId());
+        return new WorkSeatResult(hall.getRows(), hall.getCols(), seats);
     }
 }

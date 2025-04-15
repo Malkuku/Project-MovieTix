@@ -5,6 +5,7 @@ import com.movietix.xiazihao.entity.param.WorkOrderQueryParam;
 import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.entity.result.WorkOrderResult;
+import com.movietix.xiazihao.entity.result.WorkSeatResult;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -32,5 +33,5 @@ public interface WorkService {
     void cancelOrder(Integer orderId) throws SQLException;
 
     //查询放映场次信息的座位信息
-    List<OrderSeat> selectSeatsByScreeningId(Integer screeningId) throws SQLException;
+    WorkSeatResult selectSeatsByScreeningId(Integer screeningId) throws SQLException;
 }

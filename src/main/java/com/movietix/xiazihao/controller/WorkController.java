@@ -6,6 +6,7 @@ import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.entity.result.WorkOrderResult;
+import com.movietix.xiazihao.entity.result.WorkSeatResult;
 import com.movietix.xiazihao.service.WorkService;
 import com.movietix.xiazihao.service.impl.WorkServiceImpl;
 import com.movietix.xiazihao.utils.JdbcUtils;
@@ -155,8 +156,9 @@ public class WorkController extends HttpServlet {
     //查询放映场次信息的座位信息
     private void selectSeatsByScreeningId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
         Integer screeningId = Integer.parseInt(req.getParameter("id"));
-        List<OrderSeat> seats = workService.selectSeatsByScreeningId(screeningId);
-        ServletUtils.sendResponse(resp, Result.success(seats));
+        WorkSeatResult workSeatResult = workService.selectSeatsByScreeningId(screeningId);
+        log.info("查询放映场次信息的座位信息成功,结果:{}", workSeatResult);
+        ServletUtils.sendResponse(resp, Result.success(workSeatResult));
     }
 
     //修改用户详细信息
@@ -219,6 +221,7 @@ public class WorkController extends HttpServlet {
         WorkOrderQueryBody workOrderQueryBody = JsonUtils.parseJson(json, WorkOrderQueryBody.class);
         log.info("用户购票操作，参数：{}", workOrderQueryBody);
         Integer orderId = workService.userBuyTicket(workOrderQueryBody);
+        log.info("用户购票操作成功，返回订单ID：{}", orderId);
         ServletUtils.sendResponse(resp, Result.success(orderId));
     }
 
