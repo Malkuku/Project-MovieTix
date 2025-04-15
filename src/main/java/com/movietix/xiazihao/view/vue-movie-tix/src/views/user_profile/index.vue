@@ -199,7 +199,7 @@ import {
   updatePasswordApi,
   rechargeApi
 } from '@/api/user_work';
-import { useUserStore } from '@/store/user';
+import { useUserStore } from '@/stores/user';
 
 const userStore = useUserStore();
 

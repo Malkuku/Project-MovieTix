@@ -27,14 +27,14 @@
             @keyup.enter="handleSearch"
         >
           <template #append>
-            <el-button :icon="Search" @click="handleSearch" />
+            <el-button :icon="Search" @click="handleSearch"/>
           </template>
         </el-input>
       </div>
       <div class="user-actions">
         <el-dropdown>
           <span class="el-dropdown-link">
-            <el-avatar :size="40" :src="userStore.avatar" />
+            <el-avatar :size="40" :src="userStore.avatar"/>
             <span class="username">{{ userStore.username }}</span>
           </span>
           <template #dropdown>
@@ -240,12 +240,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useUserStore } from '@/store/user';
-import { ElMessage } from 'element-plus';
-import { Search, ChatDotRound, Platform, VideoCamera } from '@element-plus/icons-vue';
-import { getMoviesApi } from '@/api/user_work';
+import {ref, computed, onMounted} from 'vue';
+import {useRouter} from 'vue-router';
+import {useUserStore} from '@/stores/user';
+import {ElMessage} from 'element-plus';
+import {Search, ChatDotRound, Platform, VideoCamera} from '@element-plus/icons-vue';
+import {getMoviesApi} from '@/api/user_work';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -431,7 +431,7 @@ const goToOrders = () => {
 };
 
 const goToLayout = () => {
-    router.push('/layout');
+  router.push('/layout');
 };
 
 
