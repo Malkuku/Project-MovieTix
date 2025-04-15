@@ -50,6 +50,11 @@ public class WorkServiceImpl implements WorkService {
         claims.put("username", userFromDb.getUsername());
         String token = JwtUtils.createToken(claims);
         userFromDb.setToken(token);
+        //如果是管理员，生成管理员token
+        if(userFromDb.getIsAdmin() == 1){
+            String adminToken = JwtUtils.createAdminToken(claims);
+            userFromDb.setAdminToken(adminToken);
+        }
         return userFromDb;
     }
 

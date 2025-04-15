@@ -59,7 +59,7 @@ const router = createRouter({
     ]
 })
 
-// 路由守卫
+// 路由守卫 //TODO配置对管理员入口的验证
 router.beforeEach((to, from, next) => {
     const userStore = useUserStore()
     const isAuthenticated = userStore.isAuthenticated()

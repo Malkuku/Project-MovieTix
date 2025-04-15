@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class JwtUtils {
     private static final String SECRET_KEY = ConstantsManager.getInstance().getSecretKey(); // 秘钥
+    private static final String ADMIN_SECRET_KEY = ConstantsManager.getInstance().getAdminSecretKey();
     private static final long EXPIRATION_TIME = ConstantsManager.getInstance().getExpirationTime(); // 12小时
 
     /**
@@ -18,6 +19,13 @@ public class JwtUtils {
     public static String createToken(Map<String, Object> claims) {
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .addClaims(claims)
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .compact();
+    }
+    public static String createAdminToken(Map<String, Object> claims) {
+        return Jwts.builder()
+                .signWith(SignatureAlgorithm.HS256, ADMIN_SECRET_KEY)
                 .addClaims(claims)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .compact();
@@ -32,5 +40,12 @@ public class JwtUtils {
                         .build()
                         .parseClaimsJws(token)
                         .getBody();
+    }
+    public static Claims parseAdminToken(String token) throws Exception {
+        return Jwts.parserBuilder()
+                .setSigningKey(ADMIN_SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

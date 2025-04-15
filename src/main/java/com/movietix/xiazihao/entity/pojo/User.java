@@ -22,6 +22,7 @@ public class User {
 
     //token
     private String token; // 用户登录后生成的token
+    private String adminToken; // 管理员登录后生成的token
 
     private String oldPasswordHash; //用户旧密码
 }

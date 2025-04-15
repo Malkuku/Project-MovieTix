@@ -9,6 +9,8 @@ public class ConstantsManager {
     private static final String DRIVER = "com.mysql.jdbc.Driver";
     //Jwt密钥
     private static final String SECRET_KEY = "ProjectMovieTixKaCatIsMyLongLongSecretKeyTo256Bits"; // 秘钥
+    //管理员Jwt密钥
+    private static final String ADMIN_SECRET_KEY = "ProjectMovieTixKaCatIsMyLongLongSecretKeyTo256BitsUsingByAdmin";
     //设置有效时间
     private static final long EXPIRATION_TIME = 12 * 60 * 60 * 1000; // 12小时
 
@@ -40,6 +42,9 @@ public class ConstantsManager {
     //获取Jwt密钥
     public String getSecretKey() {
         return SECRET_KEY;
+    }
+    public String getAdminSecretKey() {
+        return ADMIN_SECRET_KEY;
     }
     //获取Jwt有效时间
     public long getExpirationTime() {

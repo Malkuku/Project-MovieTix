@@ -5,13 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
 @WebFilter(urlPatterns = {"/*"})
-public class b_LoginFilter implements Filter {
+public class c_AdminFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         log.debug("过滤器初始化");
@@ -21,20 +22,21 @@ public class b_LoginFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        // 放行登录接口
-        if (httpRequest.getRequestURI().contains("/login")) {
+        // 放行登录接口和普通用户接口
+        if (httpRequest.getRequestURI().contains("/login")
+        || httpRequest.getRequestURI().contains("/works")) {
             chain.doFilter(request, response);
             return;
         }
-        //获取请求头的Token
-        String token = httpRequest.getHeader("token");
-        log.info("Token:{}", token);
+        //获取请求头的AdminToken
+        String adminToken = httpRequest.getHeader("adminToken");
+        log.info("adminToken:{}", adminToken);
         //验证Token
-        if (token == null || token.isEmpty()) {
-            throw new ServletException("Token不能为空");
+        if (adminToken == null || adminToken.isEmpty()) {
+            throw new ServletException("你没有管理员权限");
         }
         try {
-            JwtUtils.parseToken(token);
+            JwtUtils.parseAdminToken(adminToken);
         } catch (Exception e) {
             throw new ServletException("Token错误");
         }
