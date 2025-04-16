@@ -6,7 +6,6 @@ import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.entity.result.WorkOrderResult;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -42,7 +41,7 @@ public class WorkDaoImpl implements WorkDao {
                         result.setStartTime(rs.getTimestamp("start_time").toLocalDateTime());
                         result.setStatus(rs.getInt("status"));
                         result.setContactPhone(rs.getString("contact_phone"));
-                        result.setTotalAmount(rs.getBigDecimal("total_amount"));
+                        result.setTotalAmount(rs.getDouble("total_amount"));
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -59,27 +58,28 @@ public class WorkDaoImpl implements WorkDao {
 
     @Override
     public List<OrderSeat> selectSeatsByScreeningId(Integer screeningId, Connection conn, boolean isAutoCloseConn) throws SQLException {
-        String sql = "SELECT \n" +
-                "    os.seat_row,\n" +
-                "    os.seat_col,\n" +
-                "    os.seat_no,\n" +
-                "    os.price\n" +
-                "FROM \n" +
-                "    order_seats os\n" +
-                "JOIN \n" +
-                "    orders o ON os.order_id = o.id\n" +
-                "WHERE \n" +
-                "    o.screening_id = ?\n" +
-                "    AND o.status IN (0,1)\n" +
-                "ORDER BY \n" +
-                "    os.seat_row, os.seat_col";
+        String sql = """
+                SELECT\s
+                    os.seat_row,
+                    os.seat_col,
+                    os.seat_no,
+                    os.price
+                FROM\s
+                    order_seats os
+                JOIN\s
+                    orders o ON os.order_id = o.id
+                WHERE\s
+                    o.screening_id = ?
+                    AND o.status IN (0,1)
+                ORDER BY\s
+                    os.seat_row, os.seat_col""";
         return JdbcUtils.executeQuery(conn, sql, isAutoCloseConn, rs -> {
             OrderSeat orderSeat = new OrderSeat();
             try {
                 orderSeat.setSeatRow(rs.getInt("seat_row"));
                 orderSeat.setSeatCol(rs.getInt("seat_col"));
                 orderSeat.setSeatNo(rs.getString("seat_no"));
-                orderSeat.setPrice(BigDecimal.valueOf(rs.getDouble("price")));
+                orderSeat.setPrice(rs.getDouble("price"));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

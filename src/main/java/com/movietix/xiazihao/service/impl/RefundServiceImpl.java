@@ -55,7 +55,7 @@ public class RefundServiceImpl implements RefundService {
                         order.setStatus(4);
                         orderDao.updateOrder(order, conn, false);
                         User user = userDao.selectUserById(order.getUserId(),conn,false);
-                        user.setBalance(user.getBalance().add(refund.getRefundAmount()));
+                        user.setBalance(user.getBalance()+refund.getRefundAmount());
                         userDao.updateUserBalance(user, conn, false);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);

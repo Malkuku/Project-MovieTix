@@ -75,7 +75,7 @@ public class OrderDaoImpl implements OrderDao {
                         order.setOrderNo(rs.getString("order_no"));
                         order.setUserId(rs.getInt("user_id"));
                         order.setScreeningId(rs.getInt("screening_id"));
-                        order.setTotalAmount(rs.getBigDecimal("total_amount"));
+                        order.setTotalAmount(rs.getDouble("total_amount"));
                         order.setSeatCount(rs.getInt("seat_count"));
                         order.setStatus(rs.getInt("status"));
                         order.setContactPhone(rs.getString("contact_phone"));
@@ -114,7 +114,7 @@ public class OrderDaoImpl implements OrderDao {
                         order.setOrderNo(rs.getString("order_no"));
                         order.setUserId(rs.getInt("user_id"));
                         order.setScreeningId(rs.getInt("screening_id"));
-                        order.setTotalAmount(rs.getBigDecimal("total_amount"));
+                        order.setTotalAmount(rs.getDouble("total_amount"));
                         order.setSeatCount(rs.getInt("seat_count"));
                         order.setStatus(rs.getInt("status"));
                         order.setContactPhone(rs.getString("contact_phone"));

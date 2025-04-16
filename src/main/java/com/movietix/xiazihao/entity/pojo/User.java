@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -16,7 +15,7 @@ public class User {
     private String passwordHash; // 加密后的密码
     private Integer isAdmin = 0; // 管理员标识：0-普通用户, 1-管理员
     private Integer isBlocked = 0; // 拉黑标识：0-正常, 1-已拉黑
-    private BigDecimal balance = BigDecimal.ZERO; // 账户余额
+    private Double balance = 0.0; // 账户余额
     private LocalDateTime createdAt; // 创建时间
     private LocalDateTime updatedAt; // 更新时间
 

@@ -72,7 +72,7 @@ public class PaymentDaoImpl implements PaymentDao {
                     try {
                         payment.setId(rs.getInt("id"));
                         payment.setOrderId(rs.getInt("order_id"));
-                        payment.setAmount(rs.getBigDecimal("amount"));
+                        payment.setAmount(rs.getDouble("amount"));
                         payment.setPaymentMethod(rs.getString("payment_method"));
                         payment.setTransactionId(rs.getString("transaction_id"));
                         payment.setStatus(rs.getInt("status"));
@@ -152,7 +152,7 @@ public class PaymentDaoImpl implements PaymentDao {
                     try {
                         payment.setId(rs.getInt("id"));
                         payment.setOrderId(rs.getInt("order_id"));
-                        payment.setAmount(rs.getBigDecimal("amount"));
+                        payment.setAmount(rs.getDouble("amount"));
                         payment.setPaymentMethod(rs.getString("payment_method"));
                         payment.setTransactionId(rs.getString("transaction_id"));
                         payment.setStatus(rs.getInt("status"));

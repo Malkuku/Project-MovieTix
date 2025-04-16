@@ -7,7 +7,6 @@ import com.movietix.xiazihao.utils.OrderNoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,7 +28,7 @@ public class UtilsTest {
     //测试Json封装
     @Test
     public void testToJson() {
-        Movie movie = new Movie(1, "Example Title", "http://example.com/poster.jpg", LocalDate.parse("2023-10-01"), 120, "Action", BigDecimal.valueOf(8.5), 1, LocalDateTime.now(), LocalDateTime.now());
+        Movie movie = new Movie(1, "Example Title", "http://example.com/poster.jpg", LocalDate.parse("2023-10-01"), 120, "Action", 8.5, 1, LocalDateTime.now(), LocalDateTime.now());
         String json = JsonUtils.toJson(movie);
         log.info(json);
     }
@@ -37,58 +36,60 @@ public class UtilsTest {
     //测试Json解析
     @Test
     public void testParseJson() {
-        String json = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"title\": \"Example Title\",\n" +
-                "  \"poster_url\": \"http://example.com/poster.jpg\",\n" +
-                "  \"release_date\": \"2023-10-01\",\n" +
-                "  \"duration\": 120,\n" +
-                "  \"genre\": \"Action\",\n" +
-                "  \"rating\": 8.5,\n" +
-                "  \"status\": 1,\n" +
-                "  \"created_at\": \"2023-10-01T12:00:00\",\n" +
-                "  \"updated_at\": \"2023-10-01T12:00:00\"\n" +
-                "}";
+        String json = """
+                {
+                  "id": 1,
+                  "title": "Example Title",
+                  "poster_url": "http://example.com/poster.jpg",
+                  "release_date": "2023-10-01",
+                  "duration": 120,
+                  "genre": "Action",
+                  "rating": 8.5,
+                  "status": 1,
+                  "created_at": "2023-10-01T12:00:00",
+                  "updated_at": "2023-10-01T12:00:00"
+                }""";
         Movie movie = JsonUtils.parseJson(json, Movie.class);
         log.info(movie.toString());
-            json = "[\n" +
-                    "    {\n" +
-                    "        \"id\": 1,\n" +
-                    "        \"title\": \"Example Title 1\",\n" +
-                    "        \"poster_url\": \"http://example.com/poster1.jpg\",\n" +
-                    "        \"release_date\": \"2023-10-01\",\n" +
-                    "        \"duration\": 120,\n" +
-                    "        \"genre\": \"Action\",\n" +
-                    "        \"rating\": 8.5,\n" +
-                    "        \"status\": 1,\n" +
-                    "        \"created_at\": \"2023-10-01T12:00:00\",\n" +
-                    "        \"updated_at\": \"2023-10-01T12:00:00\"\n" +
-                    "    },\n" +
-                    "    {\n" +
-                    "        \"id\": 2,\n" +
-                    "        \"title\": \"Example Title 2\",\n" +
-                    "        \"poster_url\": \"http://example.com/poster2.jpg\",\n" +
-                    "        \"release_date\": \"2023-10-02\",\n" +
-                    "        \"duration\": 130,\n" +
-                    "        \"genre\": \"Comedy\",\n" +
-                    "        \"rating\": 7.5,\n" +
-                    "        \"status\": 1,\n" +
-                    "        \"created_at\": \"2023-10-02T12:00:00\",\n" +
-                    "        \"updated_at\": \"2023-10-02T12:00:00\"\n" +
-                    "    },\n" +
-                    "    {\n" +
-                    "        \"id\": 3,\n" +
-                    "        \"title\": \"Example Title 3\",\n" +
-                    "        \"poster_url\": \"http://example.com/poster3.jpg\",\n" +
-                    "        \"release_date\": \"2023-10-03\",\n" +
-                    "        \"duration\": 140,\n" +
-                    "        \"genre\": \"Drama\",\n" +
-                    "        \"rating\": 9.0,\n" +
-                    "        \"status\": 1,\n" +
-                    "        \"created_at\": \"2023-10-03T12:00:00\",\n" +
-                    "        \"updated_at\": \"2023-10-03T12:00:00\"\n" +
-                    "    }\n" +
-                    "]";
+            json = """
+                    [
+                        {
+                            "id": 1,
+                            "title": "Example Title 1",
+                            "poster_url": "http://example.com/poster1.jpg",
+                            "release_date": "2023-10-01",
+                            "duration": 120,
+                            "genre": "Action",
+                            "rating": 8.5,
+                            "status": 1,
+                            "created_at": "2023-10-01T12:00:00",
+                            "updated_at": "2023-10-01T12:00:00"
+                        },
+                        {
+                            "id": 2,
+                            "title": "Example Title 2",
+                            "poster_url": "http://example.com/poster2.jpg",
+                            "release_date": "2023-10-02",
+                            "duration": 130,
+                            "genre": "Comedy",
+                            "rating": 7.5,
+                            "status": 1,
+                            "created_at": "2023-10-02T12:00:00",
+                            "updated_at": "2023-10-02T12:00:00"
+                        },
+                        {
+                            "id": 3,
+                            "title": "Example Title 3",
+                            "poster_url": "http://example.com/poster3.jpg",
+                            "release_date": "2023-10-03",
+                            "duration": 140,
+                            "genre": "Drama",
+                            "rating": 9.0,
+                            "status": 1,
+                            "created_at": "2023-10-03T12:00:00",
+                            "updated_at": "2023-10-03T12:00:00"
+                        }
+                    ]""";
         List<Movie> movies = JsonUtils.parseJsonToList(json, Movie.class);
         log.info(movies.toString());
     }
@@ -104,7 +105,7 @@ public class UtilsTest {
                 throw new RuntimeException(e);
             }
             String sql = "select id from movies where title like ?";
-            List<Integer> id = null;
+            List<Integer> id;
             try {
                 id = JdbcUtils.executeQuery(conn,sql,true, resultSet -> {
                     Movie movie = new Movie();
@@ -135,7 +136,7 @@ public class UtilsTest {
                 //从结果集获取内容
                 movie.setId(resultSet.getInt("id"));
                 movie.setTitle(resultSet.getString("title"));
-                movie.setRating(resultSet.getBigDecimal("rating"));
+                movie.setRating(resultSet.getDouble("rating"));
                 movie.setGenre(resultSet.getString("genre"));
                 movie.setDuration(resultSet.getInt("duration"));
                 movie.setStatus(resultSet.getInt("status"));

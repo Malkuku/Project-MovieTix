@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,8 +14,8 @@ public class OrderQueryParam {
     private Integer userId;              // 用户ID
     private Integer screeningId;        // 场次ID
     private Integer status;              // 订单状态(0-待支付 1-已支付 2-已取消 3-已完成 4-已退款)
-    private BigDecimal minAmount;        // 最小金额
-    private BigDecimal maxAmount;        // 最大金额
+    private Double minAmount;        // 最小金额
+    private Double maxAmount;        // 最大金额
     private LocalDateTime startDate;            // 创建开始日期(YYYY-MM-DD HH:mm:ss)
     private LocalDateTime endDate;             // 创建结束日期
     private Integer page = 1;           // 页码(默认1)

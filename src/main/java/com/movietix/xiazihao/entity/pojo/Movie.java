@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -18,7 +17,7 @@ public class Movie {
     private LocalDate releaseDate; // 上映日期
     private Integer duration; // 时长(分钟)
     private String genre; // 类型
-    private BigDecimal rating; // 评分
+    private Double rating; // 评分
     private Integer status = 1; // 状态:0-下架 1-上映
     private LocalDateTime createdAt; // 创建时间
     private LocalDateTime updatedAt; // 更新时间

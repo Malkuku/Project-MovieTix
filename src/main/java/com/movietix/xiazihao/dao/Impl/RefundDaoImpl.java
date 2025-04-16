@@ -64,7 +64,7 @@ public class RefundDaoImpl implements RefundDao {
                         refund.setStatus(rs.getInt("status"));
                         refund.setAdminId(rs.getObject("admin_id") == null ? null : rs.getInt("admin_id"));
                         refund.setProcessedAt(rs.getObject("processed_at") == null ? null : rs.getTimestamp("processed_at").toLocalDateTime());
-                        refund.setRefundAmount(rs.getBigDecimal("refund_amount"));
+                        refund.setRefundAmount(rs.getDouble("refund_amount"));
                        refund.setCreatedAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
                        refund.setUpdatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null);
                     } catch (SQLException e) {
@@ -115,7 +115,7 @@ public class RefundDaoImpl implements RefundDao {
                         refund.setStatus(rs.getInt("status"));
                         refund.setAdminId(rs.getObject("admin_id") == null ? null : rs.getInt("admin_id"));
                         refund.setProcessedAt(rs.getObject("processed_at") == null ? null : rs.getTimestamp("processed_at").toLocalDateTime());
-                        refund.setRefundAmount(rs.getBigDecimal("refund_amount"));
+                        refund.setRefundAmount(rs.getDouble("refund_amount"));
                        refund.setCreatedAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
                        refund.setUpdatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null);
                     } catch (Exception e) {
@@ -172,7 +172,7 @@ public class RefundDaoImpl implements RefundDao {
                         refund.setStatus(rs.getInt("status"));
                         refund.setAdminId(rs.getObject("admin_id") == null ? null : rs.getInt("admin_id"));
                         refund.setProcessedAt(rs.getObject("processed_at") == null ? null : rs.getTimestamp("processed_at").toLocalDateTime());
-                        refund.setRefundAmount(rs.getBigDecimal("refund_amount"));
+                        refund.setRefundAmount(rs.getDouble("refund_amount"));
                         refund.setOrderNo(rs.getString("order_no"));
                         refund.setAdminName(rs.getObject("admin_name") == null ? null : rs.getString("admin_name"));
                         refund.setCreatedAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,6 +19,6 @@ public class WorkOrderResult {
     private LocalDateTime startTime; // 开始时间
     private Integer status; // 状态（0-待支付，1-已支付，2-已取消，3-已完成，4-已退款）
     private String contactPhone; // 联系电话
-    private BigDecimal totalAmount; // 总金额
+    private Double totalAmount; // 总金额
     private List<OrderSeat> seats; // 座位号列表
 }

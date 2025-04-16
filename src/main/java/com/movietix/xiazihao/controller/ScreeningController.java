@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -90,8 +89,7 @@ public class ScreeningController extends HttpServlet {
     private void selectScreeningById(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
         String pathInfo = req.getPathInfo();
         int id = Integer.parseInt(pathInfo.substring(1));
-        Screening screening = null;
-        screening = screeningService.selectScreeningById(id);
+        Screening screening = screeningService.selectScreeningById(id);
         log.info("查询到的放映场次信息:{}", screening);
         ServletUtils.sendResponse(resp, Result.success(screening));
     }
@@ -128,10 +126,10 @@ public class ScreeningController extends HttpServlet {
                     req.getParameter("startTimeTo") != null ? LocalDateTime.parse(req.getParameter("startTimeTo")) : null
             );
             param.setMinPrice(
-                    req.getParameter("minPrice") != null ? new BigDecimal(req.getParameter("minPrice")) : null
+                    req.getParameter("minPrice") != null ? Double.valueOf(req.getParameter("minPrice")) : null
             );
             param.setMaxPrice(
-                    req.getParameter("maxPrice") != null ? new BigDecimal(req.getParameter("maxPrice")) : null
+                    req.getParameter("maxPrice") != null ? Double.valueOf(req.getParameter("maxPrice")) : null
             );
             param.setMinSeats(
                     req.getParameter("minSeats") != null ? Integer.parseInt(req.getParameter("minSeats")) : null
@@ -147,8 +145,7 @@ public class ScreeningController extends HttpServlet {
             );
         }
         log.info("接收到的查询参数:{}", param);
-        PageResult<Screening> pageResult = null;
-        pageResult = screeningService.selectScreeningByPage(param);
+        PageResult<Screening> pageResult = screeningService.selectScreeningByPage(param);
         log.info("查询到的放映场次信息:{}", pageResult);
         ServletUtils.sendResponse(resp, Result.success(pageResult));
     }

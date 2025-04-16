@@ -19,14 +19,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserBalance(User user) throws SQLException {
         //单次充值金额不能大于1e5
-        if(user.getBalance().compareTo(new java.math.BigDecimal("100000")) > 0){
+        if(user.getBalance() > 1e5){
             throw new RuntimeException("单次充值金额不能大于1万");
         }
         User userFromDb = userDao.selectUserById(user.getId(),JdbcUtils.getConnection(), true);
         if(userFromDb == null){
             throw new RuntimeException("用户不存在");
         }
-        user.setBalance(userFromDb.getBalance().add(user.getBalance()));
+        user.setBalance(userFromDb.getBalance()+user.getBalance());
         userDao.updateUserBalance(user, JdbcUtils.getConnection(),true);
     }
 

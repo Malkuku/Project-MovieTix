@@ -29,7 +29,7 @@ public class MovieDaoImpl implements MovieDao {
                         movie.setPosterUrl(rs.getString("poster_url"));
                         movie.setDuration(rs.getInt("duration"));
                         movie.setGenre(rs.getString("genre"));
-                        movie.setRating(rs.getBigDecimal("rating"));
+                        movie.setRating(rs.getDouble("rating"));
                         movie.setStatus(rs.getInt("status"));
                         movie.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                         movie.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
@@ -159,7 +159,7 @@ public class MovieDaoImpl implements MovieDao {
                         movie.setPosterUrl(rs.getString("poster_url"));
                         movie.setDuration(rs.getInt("duration"));
                         movie.setGenre(rs.getString("genre"));
-                        movie.setRating(rs.getBigDecimal("rating"));
+                        movie.setRating(rs.getDouble("rating"));
                         movie.setStatus(rs.getInt("status"));
                         movie.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                         movie.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());

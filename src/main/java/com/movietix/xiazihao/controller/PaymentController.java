@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 
 @Slf4j
@@ -107,10 +106,10 @@ public class PaymentController extends HttpServlet {
             param.setStartDate(req.getParameter("startDate"));
             param.setEndDate(req.getParameter("endDate"));
             param.setMinAmount(
-                    req.getParameter("minAmount") != null ? new BigDecimal(req.getParameter("minAmount")) : null
+                    req.getParameter("minAmount") != null ? Double.valueOf(req.getParameter("minAmount")) : null
             );
             param.setMaxAmount(
-                    req.getParameter("maxAmount") != null ? new BigDecimal(req.getParameter("maxAmount")) : null
+                    req.getParameter("maxAmount") != null ? Double.valueOf(req.getParameter("maxAmount")) : null
             );
             param.setPage(
                     req.getParameter("page") != null ? Integer.parseInt(req.getParameter("page")) : 1

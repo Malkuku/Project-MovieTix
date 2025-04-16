@@ -12,7 +12,6 @@ import com.movietix.xiazihao.utils.JdbcUtils;
 import com.movietix.xiazihao.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -106,9 +105,9 @@ public class WorkServiceImpl implements WorkService {
             throw new RuntimeException("订单状态不正确");
         }
         //计算余额
-        BigDecimal totalAmount = new BigDecimal(0);
+        Double totalAmount = 0.0;
         for(OrderSeat orderSeat : workPaymentQueryBody.getSeats()){
-            totalAmount = totalAmount.add(orderSeat.getPrice());
+            totalAmount += orderSeat.getPrice();
         }
         order.setTotalAmount(totalAmount);
         //补充手机号
@@ -131,7 +130,7 @@ public class WorkServiceImpl implements WorkService {
         //扣除用户余额->更新支付记录状态->更新订单状态->添加座位
         JdbcUtils.executeTransaction(conn->{
             try {
-                user.setBalance(user.getBalance().subtract(order.getTotalAmount()));
+                user.setBalance(user.getBalance() - order.getTotalAmount());
                 payment.setStatus(1);
                 payment.setPayTime(LocalDateTime.now());
                 payment.setTransactionId("模拟支付No114514");

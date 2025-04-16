@@ -4,7 +4,6 @@ import com.movietix.xiazihao.dao.OrderSeatDao;
 import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -53,7 +52,7 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
                 orderSeat.setSeatRow(rs.getInt("seat_row"));
                 orderSeat.setSeatCol(rs.getInt("seat_col"));
                 orderSeat.setSeatNo(rs.getString("seat_no"));
-                orderSeat.setPrice(BigDecimal.valueOf(rs.getDouble("price")));
+                orderSeat.setPrice(rs.getDouble("price"));
                 return orderSeat;
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -73,7 +72,7 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
                 orderSeat.setSeatRow(rs.getInt("seat_row"));
                 orderSeat.setSeatCol(rs.getInt("seat_col"));
                 orderSeat.setSeatNo(rs.getString("seat_no"));
-                orderSeat.setPrice(BigDecimal.valueOf(rs.getDouble("price")));
+                orderSeat.setPrice(rs.getDouble("price"));
                 return orderSeat;
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -93,7 +92,7 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
                 orderSeat.setSeatRow(rs.getInt("seat_row"));
                 orderSeat.setSeatCol(rs.getInt("seat_col"));
                 orderSeat.setSeatNo(rs.getString("seat_no"));
-                orderSeat.setPrice(BigDecimal.valueOf(rs.getDouble("price")));
+                orderSeat.setPrice(rs.getDouble("price"));
                 return orderSeat;
             } catch (SQLException e) {
                 throw new RuntimeException(e);

@@ -9,7 +9,6 @@ import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.service.OrderSeatService;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -29,14 +28,14 @@ public class OrderSeatServiceImpl implements OrderSeatService {
         }
         JdbcUtils.executeTransaction(conn -> {
             try {
-                BigDecimal totalPrice = BigDecimal.ZERO;
+                Double totalPrice = 0.0;
                 for (OrderSeat orderSeat : orderSeatList) {
                     orderSeatDao.addOrderSeat(orderSeat, conn, false);
-                    totalPrice = totalPrice.add(orderSeat.getPrice());
+                    totalPrice += orderSeat.getPrice();
                 }
                 //更新订单金额和数量
                 Order order = orderDao.selectOrderById(orderSeatList.get(0).getOrderId(), conn,false);
-                order.setTotalAmount(order.getTotalAmount().add(totalPrice));
+                order.setTotalAmount(order.getTotalAmount()+totalPrice);
                 order.setSeatCount(order.getSeatCount() + orderSeatList.size());
                 orderDao.updateOrder(order, conn, false);
             } catch (Exception e) {

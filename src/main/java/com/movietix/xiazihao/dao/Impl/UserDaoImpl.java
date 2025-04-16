@@ -67,7 +67,7 @@ public class UserDaoImpl implements UserDao {
                         user.setPasswordHash(rs.getString("password_hash"));
                         user.setIsAdmin(rs.getInt("is_admin"));
                         user.setIsBlocked(rs.getInt("is_blocked"));
-                        user.setBalance(rs.getBigDecimal("balance"));
+                        user.setBalance(rs.getDouble("balance"));
                         user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                         user.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
                     } catch (SQLException e) {
@@ -156,7 +156,7 @@ public class UserDaoImpl implements UserDao {
                         user.setPasswordHash(rs.getString("password_hash"));
                         user.setIsAdmin(rs.getInt("is_admin"));
                         user.setIsBlocked(rs.getInt("is_blocked"));
-                        user.setBalance(rs.getBigDecimal("balance"));
+                        user.setBalance(rs.getDouble("balance"));
                         user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                         user.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
                     } catch (SQLException e) {
@@ -184,7 +184,7 @@ public class UserDaoImpl implements UserDao {
                         user.setPasswordHash(rs.getString("password_hash"));
                         user.setIsAdmin(rs.getInt("is_admin"));
                         user.setIsBlocked(rs.getInt("is_blocked"));
-                        user.setBalance(rs.getBigDecimal("balance"));
+                        user.setBalance(rs.getDouble("balance"));
                         user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                         user.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
                     } catch (SQLException e) {

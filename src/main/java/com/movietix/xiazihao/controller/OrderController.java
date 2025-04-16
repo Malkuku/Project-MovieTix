@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
@@ -52,8 +51,6 @@ public class OrderController extends HttpServlet {
         String pathInfo = req.getPathInfo();
         if(pathInfo != null && pathInfo.matches("/\\d+/cancel")){
             cancelOrder(req, resp);
-        }else{
-
         }
     }
 
@@ -64,15 +61,15 @@ public class OrderController extends HttpServlet {
     }
 
     //分页查询订单数据
-    private void selectOrdersByPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+    private void selectOrdersByPage(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
         OrderQueryParam param = new OrderQueryParam();
         {
             param.setOrderNo(req.getParameter("orderNo"));
             param.setUserId(req.getParameter("userId") != null ? Integer.parseInt(req.getParameter("userId")) : null);
             param.setScreeningId(req.getParameter("screeningId") != null ? Integer.parseInt(req.getParameter("screeningId")) : null);
             param.setStatus(req.getParameter("status") != null ? Integer.parseInt(req.getParameter("status")) : null);
-            param.setMinAmount(req.getParameter("minAmount") != null ? new BigDecimal(req.getParameter("minAmount")) : null);
-            param.setMaxAmount(req.getParameter("maxAmount") != null ? new BigDecimal(req.getParameter("maxAmount")) : null);
+            param.setMinAmount(req.getParameter("minAmount") != null ? Double.valueOf(req.getParameter("minAmount")) : null);
+            param.setMaxAmount(req.getParameter("maxAmount") != null ? Double.valueOf(req.getParameter("maxAmount")) : null);
             param.setStartDate(req.getParameter("startDate") != null ? LocalDateTime.parse(req.getParameter("startDate")) : null);
             param.setEndDate(req.getParameter("endDate") != null ? LocalDateTime.parse(req.getParameter("endDate")) : null);
             param.setPage(req.getParameter("page") != null ? Integer.parseInt(req.getParameter("page")) : 1);
@@ -85,7 +82,7 @@ public class OrderController extends HttpServlet {
     }
 
     //创建订单
-    private void createOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void createOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String json = ServletUtils.getRequestBody(req);
         Order order = JsonUtils.parseJson(json, Order.class);
         log.info("接收到的订单信息:{}", order);
@@ -98,7 +95,7 @@ public class OrderController extends HttpServlet {
     }
 
     //根据id查询订单
-    private void selectOrderById(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void selectOrderById(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
         String pathInfo = req.getPathInfo();
         Integer id = Integer.parseInt(pathInfo.substring(1));
         try {
@@ -114,7 +111,7 @@ public class OrderController extends HttpServlet {
     }
 
     //取消订单
-    private void cancelOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void cancelOrder(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
         String pathInfo = req.getPathInfo();
         log.info("接收到的取消订单请求:{}", pathInfo);
         Integer id = Integer.parseInt(pathInfo.substring(1, pathInfo.indexOf("/cancel")));

@@ -50,7 +50,7 @@ public class ScreeningDaoImpl implements ScreeningDao {
                         screening.setHallId(rs.getInt("hall_id"));
                         screening.setStartTime(rs.getTimestamp("start_time").toLocalDateTime());
                         screening.setEndTime(rs.getTimestamp("end_time").toLocalDateTime());
-                        screening.setPrice(rs.getBigDecimal("price"));
+                        screening.setPrice(rs.getDouble("price"));
                         screening.setRemainingSeats(rs.getInt("remaining_seats"));
                         screening.setStatus(rs.getInt("status"));
                         screening.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
@@ -170,7 +170,7 @@ public class ScreeningDaoImpl implements ScreeningDao {
                         screening.setHallId(rs.getInt("hall_id"));
                         screening.setStartTime(rs.getTimestamp("start_time").toLocalDateTime());
                         screening.setEndTime(rs.getTimestamp("end_time").toLocalDateTime());
-                        screening.setPrice(rs.getBigDecimal("price"));
+                        screening.setPrice(rs.getDouble("price"));
                         screening.setRemainingSeats(rs.getInt("remaining_seats"));
                         screening.setStatus(rs.getInt("status"));
                         screening.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());

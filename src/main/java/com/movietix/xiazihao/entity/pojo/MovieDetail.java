@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -23,8 +22,8 @@ public class MovieDetail {
     private String producer; // 制片人
     private String screenwriter; // 编剧
     private String filmLocation; // 拍摄地
-    private BigDecimal budget; // 预算
-    private BigDecimal boxOffice; // 票房
+    private Double budget; // 预算
+    private Double boxOffice; // 票房
     private String tags; // 标签
     private LocalDateTime createdAt; // 创建时间
     private LocalDateTime updatedAt; // 更新时间

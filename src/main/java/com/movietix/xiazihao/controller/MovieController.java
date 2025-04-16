@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -105,10 +104,10 @@ public class MovieController extends HttpServlet {
                     req.getParameter("maxDuration") != null ? Integer.parseInt(req.getParameter("maxDuration")) : null
             );
             param.setMinRating(
-                    req.getParameter("minRating") != null ? new BigDecimal(req.getParameter("minRating")) : null
+                   req.getParameter("minRating") != null ? Double.valueOf(req.getParameter("minRating")) : null
             );
             param.setMaxRating(
-                    req.getParameter("maxRating") != null ? new BigDecimal(req.getParameter("maxRating")) : null
+                    req.getParameter("maxRating") != null ? Double.valueOf(req.getParameter("maxRating")) : null
             );
             param.setStatus(
                     req.getParameter("status") != null ? Integer.parseInt(req.getParameter("status")) : null
@@ -121,7 +120,7 @@ public class MovieController extends HttpServlet {
             );
         }
         log.info("接收到的电影查询参数:{}", param);
-        PageResult<Movie> pageResult = null;
+        PageResult<Movie> pageResult;
         try {
             pageResult = movieService.selectMoviesByPage(param);
         } catch (SQLException e) {
