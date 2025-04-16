@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -20,4 +21,8 @@ public class Payment {
     private LocalDateTime payTime; // 支付时间
     private LocalDateTime createdAt; // 创建时间
     private LocalDateTime updatedAt; // 更新时间
+
+    private String contactPhone; // 联系电话
+    private BigDecimal totalAmount; // 总金额
+    private List<OrderSeat> seats; // 座位号列表
 }

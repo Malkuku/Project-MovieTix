@@ -2,7 +2,7 @@ package com.movietix.xiazihao.service.impl;
 
 import com.movietix.xiazihao.dao.*;
 import com.movietix.xiazihao.dao.Impl.*;
-import com.movietix.xiazihao.entity.body.WorkOrderQueryBody;
+import com.movietix.xiazihao.entity.body.WorkPaymentQueryBody;
 import com.movietix.xiazihao.entity.param.WorkOrderQueryParam;
 import com.movietix.xiazihao.entity.pojo.*;
 import com.movietix.xiazihao.entity.result.WorkOrderResult;
@@ -12,6 +12,7 @@ import com.movietix.xiazihao.utils.JdbcUtils;
 import com.movietix.xiazihao.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ public class WorkServiceImpl implements WorkService {
     private static final OrderDao orderDao = new OrderDaoImpl();
     private static final PaymentDao paymentDao = new PaymentDaoImpl();
     private static final UserProfileDao userProfileDao = new UserProfileDaoImpl();
+    private static final OrderSeatDao orderSeatDao = new OrderSeatDaoImpl();
 
     @Override
     public User userLogin(User user) throws SQLException {
@@ -81,36 +83,37 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
-    public Integer userBuyTicket(WorkOrderQueryBody workOrderQueryBody) throws Exception {
+    public Integer userBuyTicket(Integer screeningId,Integer userId) throws Exception {
         //先创建订单
         Order order = new Order();
-        order.setUserId(workOrderQueryBody.getUserId());
-        order.setScreeningId(workOrderQueryBody.getScreeningId());
-        order.setContactPhone(workOrderQueryBody.getContactPhone());
-        //TODO: 这个地方会在高并发时出现问题，需要加锁
+        order.setUserId(screeningId);
+        order.setScreeningId(userId);
+        //TODO need to lock
         //转交给OrderServiceImpl处理
         orderService.createOrder(order);
         //获取订单ID
-        Integer orderId = orderDao.selectOrdersMaxId(true);
-        //补充座位信息
-        for(int i = 0; i < workOrderQueryBody.getSeats().size(); i++){
-            workOrderQueryBody.getSeats().get(i).setOrderId(orderId);
-        }
-        //添加订单座位
-        orderSeatService.addOrderSeats(workOrderQueryBody.getSeats());
-        return orderId;
+        return orderDao.selectOrdersMaxId(true);
     }
 
     @Override
-    public void payOrder(Integer orderId, Integer userId) throws Exception {
+    public void payOrder(WorkPaymentQueryBody workPaymentQueryBody) throws Exception {
         //获取订单信息
-        Order order = orderService.selectOrderById(orderId);
+        Order order = orderService.selectOrderById(workPaymentQueryBody.getOrderId());
         if(order == null){
             throw new RuntimeException("订单不存在");
         }
         if(order.getStatus() != 0){
             throw new RuntimeException("订单状态不正确");
         }
+        //计算余额
+        BigDecimal totalAmount = new BigDecimal(0);
+        for(OrderSeat orderSeat : workPaymentQueryBody.getSeats()){
+            totalAmount = totalAmount.add(orderSeat.getPrice());
+        }
+        order.setTotalAmount(totalAmount);
+        //补充手机号
+        order.setContactPhone(workPaymentQueryBody.getContactPhone());
+
         //创建支付记录表 //TODO 需要加锁
         Payment payment = new Payment();
         payment.setOrderId(order.getId());
@@ -118,14 +121,14 @@ public class WorkServiceImpl implements WorkService {
         paymentService.addPayment(payment);
         payment.setId(paymentDao.selectPaymentsMaxId(true));
         //检查用户余额是否足够
-        User user = userService.selectUserById(userId);
+        User user = userService.selectUserById(workPaymentQueryBody.getUserId());
         if(user.getBalance().compareTo(order.getTotalAmount()) < 0){
             //更新支付记录状态
             payment.setStatus(2);
             paymentDao.updatePayment(payment, JdbcUtils.getConnection(),true);
             throw new RuntimeException("余额不足");
         }
-        //扣除用户余额->更新支付记录状态->更新订单状态
+        //扣除用户余额->更新支付记录状态->更新订单状态->添加座位
         JdbcUtils.executeTransaction(conn->{
             try {
                 user.setBalance(user.getBalance().subtract(order.getTotalAmount()));
@@ -137,7 +140,18 @@ public class WorkServiceImpl implements WorkService {
                 userDao.updateUserBalance(user, conn,false);
                 paymentDao.updatePayment(payment, conn,false);
                 orderDao.updateOrder(order, conn,false);
-            } catch (SQLException e) {
+                for(OrderSeat orderSeat : workPaymentQueryBody.getSeats()){
+                    orderSeat.setOrderId(order.getId());
+                    orderSeatDao.addOrderSeat(orderSeat, conn, false);
+                }
+            } catch (Exception e) {
+                //更新支付记录状态
+                payment.setStatus(2);
+                try {
+                    paymentDao.updatePayment(payment, JdbcUtils.getConnection(),true);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
                 throw new RuntimeException(e);
             }
             return null;

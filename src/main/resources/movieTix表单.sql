@@ -124,7 +124,7 @@ CREATE TABLE orders (
   `total_amount` decimal(10,2) NOT NULL COMMENT '总金额',
   `seat_count` int unsigned NOT NULL COMMENT '座位数',
   `status` tinyint(2) NOT NULL DEFAULT 0 COMMENT '状态:0-待支付 1-已支付 2-已取消 3-已完成 4-已退款',
-  `contact_phone` varchar(20) NOT NULL COMMENT '联系电话',
+  `contact_phone` varchar(20) DEFAULT NULL COMMENT '联系电话',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),

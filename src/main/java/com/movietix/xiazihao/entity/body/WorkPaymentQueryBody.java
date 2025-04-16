@@ -10,8 +10,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkOrderQueryBody {
-    private Integer screeningId;
+public class WorkPaymentQueryBody {
+    private Integer orderId;
     private Integer userId;
     private String contactPhone;
     private List<OrderSeat> seats;

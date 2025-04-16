@@ -1,8 +1,7 @@
 package com.movietix.xiazihao.service;
 
-import com.movietix.xiazihao.entity.body.WorkOrderQueryBody;
+import com.movietix.xiazihao.entity.body.WorkPaymentQueryBody;
 import com.movietix.xiazihao.entity.param.WorkOrderQueryParam;
-import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.entity.result.WorkOrderResult;
 import com.movietix.xiazihao.entity.result.WorkSeatResult;
@@ -21,10 +20,10 @@ public interface WorkService {
     void userRecharge(User user) throws SQLException;
 
     //用户购票操作
-    Integer userBuyTicket(WorkOrderQueryBody workOrderQueryBody) throws Exception;
+    Integer userBuyTicket(Integer screeningId,Integer userId) throws Exception;
 
     //用户支付操作
-    void payOrder(Integer orderId, Integer userId) throws Exception;
+    void payOrder(WorkPaymentQueryBody workOrderQueryBody) throws Exception;
 
     //条件查询订单信息
     List<WorkOrderResult> selectWorkOrders(WorkOrderQueryParam workOrderQueryParam) throws Exception;

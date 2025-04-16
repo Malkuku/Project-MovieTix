@@ -1,15 +1,13 @@
 package com.movietix.xiazihao.controller;
 
-import com.movietix.xiazihao.entity.body.WorkOrderQueryBody;
+import com.movietix.xiazihao.entity.body.WorkPaymentQueryBody;
 import com.movietix.xiazihao.entity.param.WorkOrderQueryParam;
-import com.movietix.xiazihao.entity.pojo.OrderSeat;
 import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.entity.result.WorkOrderResult;
 import com.movietix.xiazihao.entity.result.WorkSeatResult;
 import com.movietix.xiazihao.service.WorkService;
 import com.movietix.xiazihao.service.impl.WorkServiceImpl;
-import com.movietix.xiazihao.utils.JdbcUtils;
 import com.movietix.xiazihao.utils.JsonUtils;
 import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +22,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
-
 
 @Slf4j
 @WebServlet("/works/*")
@@ -209,19 +206,17 @@ public class WorkController extends HttpServlet {
 
     //支付待付款订单
     private void payOrder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        Integer orderId = Integer.parseInt(req.getParameter("orderId"));
-        Integer userId = Integer.parseInt(req.getParameter("userId"));
-        log.info("支付待付款订单，参数：orderId={}, userId={}", orderId, userId);
-        workService.payOrder(orderId, userId);
+        String json = ServletUtils.getRequestBody(req);
+        WorkPaymentQueryBody workOrderQueryBody = JsonUtils.parseJson(json, WorkPaymentQueryBody.class);
+        workService.payOrder(workOrderQueryBody);
         ServletUtils.sendResponse(resp,Result.success());
     }
 
     //用户购票操作
     private void userBuyTicket(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        String json = ServletUtils.getRequestBody(req);
-        WorkOrderQueryBody workOrderQueryBody = JsonUtils.parseJson(json, WorkOrderQueryBody.class);
-        log.info("用户购票操作，参数：{}", workOrderQueryBody);
-        Integer orderId = workService.userBuyTicket(workOrderQueryBody);
+        Integer ScreeningId = Integer.parseInt(req.getParameter("screeningId"));
+        Integer userId = Integer.parseInt(req.getParameter("userId"));
+        Integer orderId = workService.userBuyTicket(ScreeningId,userId);
         HashMap<String,Integer> data = new HashMap<>();
         data.put("orderId", orderId);
         ServletUtils.sendResponse(resp, Result.success(data));

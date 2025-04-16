@@ -13,7 +13,6 @@ public class ConstantsManager {
     private static final String ADMIN_SECRET_KEY = "ProjectMovieTixKaCatIsMyLongLongSecretKeyTo256BitsUsingByAdmin";
     //设置有效时间
     private static final long EXPIRATION_TIME = 12 * 60 * 60 * 1000; // 12小时
-
     //控制过滤器的开关
     private static final boolean FILTER_SWITCH = true;
 
@@ -55,6 +54,6 @@ public class ConstantsManager {
     }
     //控制过滤器的开关
     public boolean getFilterSwitch() {
-        return FILTER_SWITCH;
+        return !FILTER_SWITCH;
     }
 }
