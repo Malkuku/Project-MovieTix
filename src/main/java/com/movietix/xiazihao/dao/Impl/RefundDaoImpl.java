@@ -65,8 +65,8 @@ public class RefundDaoImpl implements RefundDao {
                         refund.setAdminId(rs.getObject("admin_id") == null ? null : rs.getInt("admin_id"));
                         refund.setProcessedAt(rs.getObject("processed_at") == null ? null : rs.getTimestamp("processed_at").toLocalDateTime());
                         refund.setRefundAmount(rs.getBigDecimal("refund_amount"));
-                        refund.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-                        refund.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                       refund.setCreatedAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
+                       refund.setUpdatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -117,8 +117,8 @@ public class RefundDaoImpl implements RefundDao {
                         refund.setAdminId(rs.getObject("admin_id") == null ? null : rs.getInt("admin_id"));
                         refund.setProcessedAt(rs.getObject("processed_at") == null ? null : rs.getTimestamp("processed_at").toLocalDateTime());
                         refund.setRefundAmount(rs.getBigDecimal("refund_amount"));
-                        refund.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-                        refund.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                       refund.setCreatedAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
+                       refund.setUpdatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
