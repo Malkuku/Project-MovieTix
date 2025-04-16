@@ -211,7 +211,7 @@ public class WorkController extends HttpServlet {
             workOrderQueryParam.setMovieTitle(req.getParameter("movieTitle"));
             workOrderQueryParam.setHallName(req.getParameter("hallName"));
             workOrderQueryParam.setStartTime(
-                    req.getParameter("startTime") != null ? LocalDateTime.parse(req.getParameter("startTime")) : LocalDateTime.now()
+                    req.getParameter("startTime") != null ? LocalDateTime.parse(req.getParameter("startTime")) : null
             );
             workOrderQueryParam.setStatus(
                     req.getParameter("status") != null ? Integer.parseInt(req.getParameter("status")) : 1

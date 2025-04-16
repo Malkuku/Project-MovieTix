@@ -51,7 +51,7 @@ public class RefundDaoImpl implements RefundDao {
                 "LIMIT ? OFFSET ?";
 
         return JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -81,8 +81,8 @@ public class RefundDaoImpl implements RefundDao {
 
     @Override
     public void createRefund(Refund refund, Connection conn, boolean isAutoCloseConn) throws SQLException {
-        String sql = "INSERT INTO refunds(order_id, user_id, reason, status, created_at, updated_at) " +
-                "VALUES(?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO refunds(order_id, user_id, reason, status, refund_amount) " +
+                "VALUES(?, ?, ?, ?, ?)";
         JdbcUtils.executeUpdate(
                 conn,
                 sql,
@@ -91,8 +91,7 @@ public class RefundDaoImpl implements RefundDao {
                 refund.getUserId(),
                 refund.getReason(),
                 refund.getStatus(),
-                refund.getCreatedAt(),
-                refund.getUpdatedAt()
+                refund.getRefundAmount()
         );
     }
 
@@ -176,8 +175,8 @@ public class RefundDaoImpl implements RefundDao {
                         refund.setRefundAmount(rs.getBigDecimal("refund_amount"));
                         refund.setOrderNo(rs.getString("order_no"));
                         refund.setAdminName(rs.getObject("admin_name") == null ? null : rs.getString("admin_name"));
-                        refund.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-                        refund.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                        refund.setCreatedAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
+                        refund.setUpdatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
