@@ -115,8 +115,16 @@ public class RefundController extends HttpServlet {
    //查询指定用户的所有退票申请
     private void selectRefundsByUserId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
         String pathInfo = req.getPathInfo();
-        Integer userId = Integer.parseInt(pathInfo.substring(1));
+        Integer userId = Integer.parseInt(pathInfo.replaceAll("\\D",""));
         List<Refund> refunds = refundService.selectRefundsByUserId(userId);
         ServletUtils.sendResponse(resp, Result.success(refunds));
+    }
+
+    //暴露方法
+    public void exposeCreateRefund(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        this.createRefund(req, resp);
+    }
+    public void exposeSelectRefundsByUserId(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
+        this.selectRefundsByUserId(req, resp);
     }
 }

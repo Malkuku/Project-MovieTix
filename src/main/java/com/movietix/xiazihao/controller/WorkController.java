@@ -31,6 +31,7 @@ public class WorkController extends HttpServlet {
     private static final ScreeningController screeningController = new ScreeningController();
     private static final UserController userController = new UserController();
     private static final UserProfileController userProfileController = new UserProfileController();
+    private static final RefundController refundController = new RefundController();
 
     //post请求入口
     @Override
@@ -92,6 +93,14 @@ public class WorkController extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        //退款订单
+        else if(pathInfo != null && pathInfo.matches("/refunds")) {
+            try {
+                refundOrder(req, resp);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     //get请求入口
     @Override
@@ -137,6 +146,14 @@ public class WorkController extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        //查询退款列表
+        else if(pathInfo != null && pathInfo.matches("/refunds/\\d+")) {
+            try {
+                selectRefundsByUserId(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     //put请求入口
     @Override
@@ -174,7 +191,15 @@ public class WorkController extends HttpServlet {
        userController.exposeUpdateUserPassword(req, resp);
     }
 
-    //TODO 订单退款
+    //申请订单退款
+    private void refundOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        refundController.exposeCreateRefund(req, resp);
+    }
+
+    //查询退款申请
+    private void selectRefundsByUserId(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
+        refundController.exposeSelectRefundsByUserId(req, resp);
+    }
 
     //查询用户订单列表
     private void selectOrdersByPage(HttpServletRequest req, HttpServletResponse resp) throws Exception {
