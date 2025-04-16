@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @Slf4j
 @WebServlet("/refunds/*")
@@ -47,6 +48,11 @@ public class RefundController extends HttpServlet {
     //put请求入口
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            processRefund(req, resp);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //delete请求入口
@@ -91,5 +97,14 @@ public class RefundController extends HttpServlet {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+   }
+
+   // 退票申请处理
+    private void processRefund(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        List<Integer> ids = ServletUtils.parseReqToList(req.getParameterValues("ids"), Integer.class);
+        Integer adminId = Integer.parseInt(req.getParameter("adminId"));
+        Integer status = Integer.parseInt(req.getParameter("status"));
+        refundService.processRefunds(ids, adminId, status);
+        ServletUtils.sendResponse(resp, Result.success());
    }
 }

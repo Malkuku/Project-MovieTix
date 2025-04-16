@@ -15,4 +15,10 @@ public interface RefundDao {
 
     // 创建退票记录
     void createRefund(Refund refund, Connection conn, boolean isAutoCloseConn) throws SQLException;
+
+    // 批量查询未处理的退票记录
+    List<Refund> selectUnprocessRefundsByIds(List<Integer> ids, Connection conn, boolean isAutoCloseConn) throws SQLException;
+
+    // 更新退票记录
+    void updateRefund(Refund refund, Connection conn, boolean isAutoCloseConn) throws SQLException;
 }

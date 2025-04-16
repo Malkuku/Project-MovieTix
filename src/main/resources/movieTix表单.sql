@@ -173,7 +173,7 @@ CREATE TABLE refunds (
   `status` tinyint(1) DEFAULT 0 COMMENT '状态:0-待处理 1-已同意 2-已拒绝',
   `admin_id` int unsigned COMMENT '处理管理员ID',
   `processed_at` datetime COMMENT '处理时间',
-  `refund_amount` decimal(10,2) COMMENT '退款金额',
+  `refund_amount` decimal(10,2) DEFAULT 0 COMMENT '退款金额',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
