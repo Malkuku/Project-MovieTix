@@ -1,5 +1,6 @@
 package com.movietix.xiazihao.filter;
 
+import com.movietix.xiazihao.constants.ConstantsManager;
 import com.movietix.xiazihao.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +22,11 @@ public class b_LoginFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+        if(!ConstantsManager.getInstance().getFilterSwitch()){
+            chain.doFilter(request, response);
+            return;
+        }
+
         // 放行登录接口
         if (httpRequest.getRequestURI().contains("/login")) {
             chain.doFilter(request, response);
