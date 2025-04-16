@@ -9,19 +9,19 @@ import java.util.List;
 
 public interface PaymentDao {
     // 查询支付记录总数
-    Integer selectPaymentsCount(PaymentQueryParam param,boolean isAutoCloseConn) throws SQLException;
+    Integer selectPaymentsCount(PaymentQueryParam param,Connection conn, boolean isAutoCloseConn) throws SQLException;
     // 条件分页查询支付记录
-    List<Payment> selectPaymentsByPage(PaymentQueryParam param,boolean isAutoCloseConn) throws SQLException;
+    List<Payment> selectPaymentsByPage(PaymentQueryParam param,Connection conn,boolean isAutoCloseConn) throws SQLException;
 
     //添加支付记录
-    void addPayment(Payment payment,boolean isAutoCloseConn) throws SQLException;
+    void addPayment(Payment payment,Connection conn,boolean isAutoCloseConn) throws SQLException;
 
     // 更新支付记录
     void updatePayment(Payment payment, Connection conn, boolean isAutoCloseConn) throws SQLException;
 
     //通过ID查询支付记录
-    Payment selectPaymentById(Integer id, boolean isAutoCloseConn) throws SQLException;
+    Payment selectPaymentById(Integer id,Connection conn, boolean isAutoCloseConn) throws SQLException;
 
     //获取支付记录最大ID
-    Integer selectPaymentsMaxId(boolean isAutoCloseConn) throws SQLException;
+    Integer selectPaymentsMaxId(Connection conn,boolean isAutoCloseConn) throws SQLException;
 }

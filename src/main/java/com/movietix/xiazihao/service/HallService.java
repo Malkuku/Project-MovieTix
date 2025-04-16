@@ -4,6 +4,7 @@ import com.movietix.xiazihao.entity.param.HallQueryParam;
 import com.movietix.xiazihao.entity.pojo.Hall;
 import com.movietix.xiazihao.entity.result.PageResult;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface HallService {
@@ -14,7 +15,7 @@ public interface HallService {
     void addHall(Hall hall);
 
     // 批量删除影厅
-    void deleteHallsByIds(List<Integer> ids);
+    void deleteHallsByIds(List<Integer> ids) throws SQLException;
 
     // 更新影厅信息
     void updateHall(Hall hall);

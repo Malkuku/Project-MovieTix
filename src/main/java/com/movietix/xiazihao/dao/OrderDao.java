@@ -9,17 +9,17 @@ import java.util.List;
 
 public interface OrderDao {
     // 查询订单数量
-    Integer selectOrdersCount(OrderQueryParam param,boolean isAutoCloseConn) throws SQLException;
+    Integer selectOrdersCount(OrderQueryParam param,Connection conn, boolean isAutoCloseConn) throws SQLException;
     // 分页查询订单
-    List<Order> selectOrdersByPage(OrderQueryParam param,boolean isAutoCloseConn) throws SQLException;
+    List<Order> selectOrdersByPage(OrderQueryParam param,Connection conn,boolean isAutoCloseConn) throws SQLException;
     //根据id查询订单
-    Order selectOrderById(Integer id, boolean isAutoCloseConn) throws SQLException;
+    Order selectOrderById(Integer id,Connection conn, boolean isAutoCloseConn) throws SQLException;
     // 取消订单
-    void cancelOrder(Integer id, boolean isAutoCloseConn) throws SQLException;
+    void cancelOrder(Integer id,Connection conn, boolean isAutoCloseConn) throws SQLException;
     // 创建订单
     void createOrder(Order order, Connection conn, boolean isAutoCloseConn) throws SQLException;
     //更新订单
     void updateOrder(Order order, Connection conn, boolean isAutoCloseConn) throws SQLException;
     //查询最大的订单id
-    Integer selectOrdersMaxId(boolean isAutoCloseConn) throws SQLException;
+    Integer selectOrdersMaxId(Connection conn,boolean isAutoCloseConn) throws SQLException;
 }

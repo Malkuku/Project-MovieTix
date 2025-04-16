@@ -51,10 +51,10 @@ public class RefundServiceImpl implements RefundService {
                 //如果退款成功，更新订单状态，将资金返还给用户
                 if(status == 1) {
                     try {
-                        Order order = orderDao.selectOrderById(refund.getOrderId(), true);
+                        Order order = orderDao.selectOrderById(refund.getOrderId(), conn,false);
                         order.setStatus(4);
                         orderDao.updateOrder(order, conn, false);
-                        User user = userDao.selectUserById(order.getUserId(), true);
+                        User user = userDao.selectUserById(order.getUserId(),conn,false);
                         user.setBalance(user.getBalance().add(refund.getRefundAmount()));
                         userDao.updateUserBalance(user, conn, false);
                     } catch (SQLException e) {

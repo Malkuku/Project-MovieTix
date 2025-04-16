@@ -9,29 +9,29 @@ import java.util.List;
 
 public interface UserDao {
     // 条件查询用户总数
-    Integer selectUsersCount(UserQueryParam param,boolean isAutoCloseConn) throws SQLException;
+    Integer selectUsersCount(UserQueryParam param,Connection conn, boolean isAutoCloseConn) throws SQLException;
 
     // 条件分页查询用户信息
-    List<User> selectUsersByPage(UserQueryParam param,boolean isAutoCloseConn) throws SQLException;
+    List<User> selectUsersByPage(UserQueryParam param,Connection conn,boolean isAutoCloseConn) throws SQLException;
 
     // 批量删除用户信息
-    void deleteUsersByIds(List<Integer> ids, boolean isAutoCloseConn) throws SQLException;
+    void deleteUsersByIds(List<Integer> ids, Connection conn,boolean isAutoCloseConn) throws SQLException;
 
     // 添加用户
-    void addUser(User user, boolean isAutoCloseConn) throws SQLException;
+    void addUser(User user,Connection conn, boolean isAutoCloseConn) throws SQLException;
 
     // 修改用户密码
-    void updateUserPassword(User user, boolean isAutoCloseConn) throws SQLException;
+    void updateUserPassword(User user,Connection conn, boolean isAutoCloseConn) throws SQLException;
 
     // 修改用户余额
     void updateUserBalance(User user, Connection conn, boolean isAutoCloseConn) throws SQLException;
 
     // 批量修改用户状态
-    void updateUserStatus(List<Integer> ids, Integer status, boolean isAutoCloseConn) throws SQLException;
+    void updateUserStatus(List<Integer> ids, Integer status,Connection conn, boolean isAutoCloseConn) throws SQLException;
 
     // 根据ID查询用户信息
-    User selectUserById(Integer id, boolean isAutoCloseConn) throws SQLException;
+    User selectUserById(Integer id,Connection conn, boolean isAutoCloseConn) throws SQLException;
 
     // 根据用户名查询用户信息
-    User selectUserByUsername(String username, boolean isAutoCloseConn) throws SQLException;
+    User selectUserByUsername(String username,Connection conn, boolean isAutoCloseConn) throws SQLException;
 }

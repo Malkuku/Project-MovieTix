@@ -12,7 +12,7 @@ import java.util.List;
 public class OrderDaoImpl implements OrderDao {
 
     @Override
-    public Integer selectOrdersCount(OrderQueryParam param, boolean isAutoCloseConn) throws SQLException {
+    public Integer selectOrdersCount(OrderQueryParam param,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT COUNT(*) " +
                 "FROM orders o " +
                 "WHERE 1=1 " +
@@ -26,7 +26,7 @@ public class OrderDaoImpl implements OrderDao {
                 "    AND (? IS NULL OR o.created_at <= ?)";
 
         List<Integer> total = JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -49,7 +49,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> selectOrdersByPage(OrderQueryParam param, boolean isAutoCloseConn) throws SQLException {
+    public List<Order> selectOrdersByPage(OrderQueryParam param,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT o.* " +
                 "FROM orders o " +
                 "WHERE 1=1 " +
@@ -65,7 +65,7 @@ public class OrderDaoImpl implements OrderDao {
                 "LIMIT ? OFFSET ?";
 
         return JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -99,12 +99,12 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public Order selectOrderById(Integer id, boolean isAutoCloseConn) throws SQLException {
+    public Order selectOrderById(Integer id, Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * " +
                 "FROM orders " +
                 "WHERE id = ?";
         List<Order> orderList = JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -131,11 +131,11 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public void cancelOrder(Integer id, boolean isAutoCloseConn) throws SQLException {
+    public void cancelOrder(Integer id, Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql = "UPDATE orders " +
                 "SET status = 2, updated_at = NOW() " +
                 "WHERE id = ?";
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn, id);
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn, id);
     }
 
     @Override
@@ -172,11 +172,11 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public Integer selectOrdersMaxId(boolean isAutoCloseConn) throws SQLException {
+    public Integer selectOrdersMaxId(Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT MAX(id) " +
                 "FROM orders";
         List<Integer> maxId = JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {

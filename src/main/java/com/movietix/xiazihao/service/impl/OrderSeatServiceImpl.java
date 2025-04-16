@@ -21,8 +21,8 @@ public class OrderSeatServiceImpl implements OrderSeatService {
     public void addOrderSeats(List<OrderSeat> orderSeatList) throws Exception {
         //先检查座位是否已经被预定
         for (OrderSeat orderSeat : orderSeatList) {
-            Order order = orderDao.selectOrderById(orderSeat.getOrderId(), true);
-            Integer count = orderSeatDao.checkSeatIsReserved(order.getScreeningId(), orderSeat.getSeatRow(), orderSeat.getSeatCol(), true);
+            Order order = orderDao.selectOrderById(orderSeat.getOrderId(), JdbcUtils.getConnection(),true);
+            Integer count = orderSeatDao.checkSeatIsReserved(order.getScreeningId(), orderSeat.getSeatRow(), orderSeat.getSeatCol(), JdbcUtils.getConnection(),true);
             if(count > 0){
                 throw new Exception("座位已被预定");
             }
@@ -35,7 +35,7 @@ public class OrderSeatServiceImpl implements OrderSeatService {
                     totalPrice = totalPrice.add(orderSeat.getPrice());
                 }
                 //更新订单金额和数量
-                Order order = orderDao.selectOrderById(orderSeatList.get(0).getOrderId(), true);
+                Order order = orderDao.selectOrderById(orderSeatList.get(0).getOrderId(), conn,false);
                 order.setTotalAmount(order.getTotalAmount().add(totalPrice));
                 order.setSeatCount(order.getSeatCount() + orderSeatList.size());
                 orderDao.updateOrder(order, conn, false);
@@ -48,32 +48,32 @@ public class OrderSeatServiceImpl implements OrderSeatService {
 
     @Override
     public OrderSeat selectOrderSeatById(Integer id) throws SQLException {
-        return orderSeatDao.selectOrderSeatById(id,true);
+        return orderSeatDao.selectOrderSeatById(id,JdbcUtils.getConnection(),true);
     }
 
     @Override
     public OrderSeat selectOrderSeatsByCondition(String orderId, String seatRow, String seatCol) throws SQLException {
-        return orderSeatDao.selectOrderSeatsByCondition(orderId, seatRow, seatCol,true);
+        return orderSeatDao.selectOrderSeatsByCondition(orderId, seatRow, seatCol,JdbcUtils.getConnection(),true);
     }
 
     @Override
     public List<OrderSeat> selectOrderSeatsByOrderId(Integer orderId) throws SQLException {
-        return orderSeatDao.selectOrderSeatsByOrderId(orderId,true);
+        return orderSeatDao.selectOrderSeatsByOrderId(orderId,JdbcUtils.getConnection(),true);
     }
 
     @Override
     public void updateOrderSeats(OrderSeat orderSeat) throws Exception {
         //先检查座位是否已经被预定
-        OrderSeat oldOrderSeat = orderSeatDao.selectOrderSeatById(orderSeat.getId(), true);
-        Order order = orderDao.selectOrderById(oldOrderSeat.getOrderId(), true);
-        Integer count = orderSeatDao.checkSeatIsReserved(order.getScreeningId(), orderSeat.getSeatRow(), orderSeat.getSeatCol(), true);
+        OrderSeat oldOrderSeat = orderSeatDao.selectOrderSeatById(orderSeat.getId(),JdbcUtils.getConnection(), true);
+        Order order = orderDao.selectOrderById(oldOrderSeat.getOrderId(), JdbcUtils.getConnection(),true);
+        Integer count = orderSeatDao.checkSeatIsReserved(order.getScreeningId(), orderSeat.getSeatRow(), orderSeat.getSeatCol(),JdbcUtils.getConnection(), true);
         if(count > 0) throw new Exception("座位已被预定");
 
-        orderSeatDao.updateOrderSeats(orderSeat,true);
+        orderSeatDao.updateOrderSeats(orderSeat,JdbcUtils.getConnection(),true);
     }
 
     @Override
     public void deleteOrderSeats(List<Integer> ids) throws SQLException {
-        orderSeatDao.deleteOrderSeats(ids,true);
+        orderSeatDao.deleteOrderSeats(ids,JdbcUtils.getConnection(),true);
     }
 }

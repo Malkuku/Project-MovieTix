@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface WorkDao {
     // 查询订单列表
-    List<WorkOrderResult> selectWorkOrders(WorkOrderQueryParam workOrderQueryParam, boolean isAutoCloseConn) throws Exception;
+    List<WorkOrderResult> selectWorkOrders(WorkOrderQueryParam workOrderQueryParam,Connection connection, boolean isAutoCloseConn) throws Exception;
 
     //根据场次id查询座位
     List<OrderSeat> selectSeatsByScreeningId(Integer screeningId, Connection connection, boolean isAutoCloseConn) throws SQLException;

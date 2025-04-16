@@ -16,8 +16,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PageResult<Payment> selectPaymentsByPage(PaymentQueryParam param) throws SQLException {
-        Integer total = paymentDao.selectPaymentsCount(param,true);
-        List<Payment> paymentList = paymentDao.selectPaymentsByPage(param,true);
+        Integer total = paymentDao.selectPaymentsCount(param,JdbcUtils.getConnection(),true);
+        List<Payment> paymentList = paymentDao.selectPaymentsByPage(param,JdbcUtils.getConnection(),true);
         return new PageResult<>(
                 total,
                 paymentList
@@ -26,7 +26,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void addPayment(Payment payment) throws SQLException {
-        paymentDao.addPayment(payment,true);
+        paymentDao.addPayment(payment,JdbcUtils.getConnection(),true);
     }
 
     @Override
@@ -36,6 +36,6 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment selectPaymentById(Integer id) throws SQLException {
-        return paymentDao.selectPaymentById(id,true);
+        return paymentDao.selectPaymentById(id,JdbcUtils.getConnection(),true);
     }
 }

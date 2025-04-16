@@ -6,6 +6,7 @@ import com.movietix.xiazihao.entity.param.MovieQueryParam;
 import com.movietix.xiazihao.entity.pojo.Movie;
 import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.service.MovieService;
+import com.movietix.xiazihao.utils.JdbcUtils;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -16,7 +17,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie selectMovieById(Integer id) {
         try {
-            return movieDao.selectMovieById(id,true);
+            return movieDao.selectMovieById(id, JdbcUtils.getConnection(),true);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -25,7 +26,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public void updateMovie(Movie movie) {
         try {
-            movieDao.updateMovie(movie,true);
+            movieDao.updateMovie(movie, JdbcUtils.getConnection(),true);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -34,7 +35,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public void addMovie(Movie movie) {
         try {
-            movieDao.addMovie(movie,true);
+            movieDao.addMovie(movie, JdbcUtils.getConnection(),true);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -46,7 +47,7 @@ public class MovieServiceImpl implements MovieService {
            if(ids == null || ids.isEmpty()) {
                 return;
            }
-           movieDao.deleteMoviesByIds(ids,true);
+           movieDao.deleteMoviesByIds(ids, JdbcUtils.getConnection(),true);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -54,8 +55,8 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public PageResult<Movie> selectMoviesByPage(MovieQueryParam param) throws SQLException {
-        Integer total = movieDao.countMovies(param,true);
-        List<Movie> movies = movieDao.selectMoviesByPage(param,true);
+        Integer total = movieDao.countMovies(param, JdbcUtils.getConnection(),true);
+        List<Movie> movies = movieDao.selectMoviesByPage(param, JdbcUtils.getConnection(),true);
 
 
         return new PageResult<>(total, movies);

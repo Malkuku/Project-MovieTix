@@ -38,7 +38,7 @@ public class WorkServiceImpl implements WorkService {
     @Override
     public User userLogin(User user) throws SQLException {
         //检查用户名和密码是否正确
-        User userFromDb = userDao.selectUserByUsername(user.getUsername(),true);
+        User userFromDb = userDao.selectUserByUsername(user.getUsername(),JdbcUtils.getConnection(), true);
         if(userFromDb == null){
             throw new RuntimeException("用户不存在");
         }if(userFromDb.getIsBlocked() == 1){
@@ -63,16 +63,16 @@ public class WorkServiceImpl implements WorkService {
     @Override
     public void userRegister(User user) throws SQLException {
         //检查用户名是否已存在
-        User userFromDb = userDao.selectUserByUsername(user.getUsername(),true);
+        User userFromDb = userDao.selectUserByUsername(user.getUsername(),JdbcUtils.getConnection(), true);
         if(userFromDb != null){
             throw new RuntimeException("用户名已存在");
         }
         //TODO lock
         //添加用户
-        userDao.addUser(user, true);
+        userDao.addUser(user, JdbcUtils.getConnection(), true);
         //添加用户详细信息表
         UserProfile userProfile = new UserProfile();
-        userFromDb = userDao.selectUserByUsername(user.getUsername(),true);
+        userFromDb = userDao.selectUserByUsername(user.getUsername(),JdbcUtils.getConnection(), true);
         userProfile.setUserId(userFromDb.getId());
         userProfileDao.addUserProfile(userProfile, JdbcUtils.getConnection(),true);
     }
@@ -92,7 +92,7 @@ public class WorkServiceImpl implements WorkService {
         //转交给OrderServiceImpl处理
         orderService.createOrder(order);
         //获取订单ID
-        return orderDao.selectOrdersMaxId(true);
+        return orderDao.selectOrdersMaxId(JdbcUtils.getConnection(),true);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class WorkServiceImpl implements WorkService {
         payment.setOrderId(order.getId());
         payment.setAmount(order.getTotalAmount());
         paymentService.addPayment(payment);
-        payment.setId(paymentDao.selectPaymentsMaxId(true));
+        payment.setId(paymentDao.selectPaymentsMaxId(JdbcUtils.getConnection(),true));
         //检查用户余额是否足够
         User user = userService.selectUserById(workPaymentQueryBody.getUserId());
         if(user.getBalance().compareTo(order.getTotalAmount()) < 0){
@@ -160,7 +160,7 @@ public class WorkServiceImpl implements WorkService {
 
     @Override
     public List<WorkOrderResult> selectWorkOrders(WorkOrderQueryParam workOrderQueryParam) throws Exception {
-        List<WorkOrderResult> workOrderResultList = workDao.selectWorkOrders(workOrderQueryParam,true);
+        List<WorkOrderResult> workOrderResultList = workDao.selectWorkOrders(workOrderQueryParam,JdbcUtils.getConnection(), true);
         //查询seatList
         for (WorkOrderResult workOrderResult : workOrderResultList) {
             workOrderResult.setSeats(orderSeatService.selectOrderSeatsByOrderId(workOrderResult.getOrderId()));

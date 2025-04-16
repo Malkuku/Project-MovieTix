@@ -22,30 +22,30 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public PageResult<Order> selectOrdersByPage(OrderQueryParam param) throws SQLException {
-        Integer total = orderDao.selectOrdersCount(param,true);
-        List<Order> list = orderDao.selectOrdersByPage(param,true);
+        Integer total = orderDao.selectOrdersCount(param,JdbcUtils.getConnection(),true);
+        List<Order> list = orderDao.selectOrdersByPage(param,JdbcUtils.getConnection(),true);
         return new PageResult<>(total,list);
     }
 
     @Override
     public Order selectOrderById(Integer id) throws SQLException {
-        return orderDao.selectOrderById(id,true);
+        return orderDao.selectOrderById(id,JdbcUtils.getConnection(),true);
     }
 
     @Override
     public void cancelOrder(Integer id) throws SQLException {
         //先检查是否为待支付状态
-        Order order = orderDao.selectOrderById(id,true);
+        Order order = orderDao.selectOrderById(id,JdbcUtils.getConnection(),true);
         if(order.getStatus() != 0){
             throw new RuntimeException("订单状态不正确，无法取消");
         }
-        orderDao.cancelOrder(id,true);
+        orderDao.cancelOrder(id,JdbcUtils.getConnection(),true);
     }
 
     @Override
     public void createOrder(Order order) throws Exception {
         //预创建OrderNo
-        Integer count = orderDao.selectOrdersMaxId(true) + 1;
+        Integer count = orderDao.selectOrdersMaxId(JdbcUtils.getConnection(),true) + 1;
         String orderNo = OrderNoUtils.generateOrderNo(count);
         order.setOrderNo(orderNo);
         orderDao.createOrder(order, JdbcUtils.getConnection(),true);

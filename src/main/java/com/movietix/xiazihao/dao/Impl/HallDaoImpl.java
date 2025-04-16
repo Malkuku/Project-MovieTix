@@ -5,16 +5,17 @@ import com.movietix.xiazihao.entity.param.HallQueryParam;
 import com.movietix.xiazihao.entity.pojo.Hall;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 public class HallDaoImpl implements HallDao {
 
     @Override
-    public Hall selectHallById(Integer id,boolean isAutoCloseConn) throws SQLException {
+    public Hall selectHallById(Integer id,Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * FROM halls WHERE id = ?";
         List<Hall> hallList = JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -40,7 +41,7 @@ public class HallDaoImpl implements HallDao {
     }
 
     @Override
-    public void updateHall(Hall hall,boolean isAutoCloseConn) throws SQLException {
+    public void updateHall(Hall hall,Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql = "UPDATE halls SET " +
                 "name = COALESCE(?, name), " +
                 "capacity = COALESCE(?, capacity), " +
@@ -51,7 +52,7 @@ public class HallDaoImpl implements HallDao {
                 "updated_at = NOW() " +
                 "WHERE id = ?";
         JdbcUtils.executeUpdate(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 hall.getName(),
@@ -65,20 +66,20 @@ public class HallDaoImpl implements HallDao {
     }
 
     @Override
-    public void deleteHallByIds(List<Integer> ids,boolean isAutoCloseConn) {
+    public void deleteHallByIds(List<Integer> ids,Connection conn,boolean isAutoCloseConn) {
         String sql = "DELETE FROM halls WHERE id IN (" + String.join(",",ids.stream().map(id -> "?").toArray(String[]::new)) + ")";
         try {
-            JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn, ids.toArray());
+            JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn, ids.toArray());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void addHall(Hall hall,boolean isAutoCloseConn) throws SQLException {
+    public void addHall(Hall hall,Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql = "INSERT INTO halls (name, capacity, `rows`, `cols`, facilities, status) VALUES (?, ?, ?, ?, ?, ?)";
         JdbcUtils.executeUpdate(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 hall.getName(),
@@ -91,7 +92,7 @@ public class HallDaoImpl implements HallDao {
     }
 
     @Override
-    public List<Hall> selectHallsByPage(HallQueryParam param,boolean isAutoCloseConn) throws SQLException, SQLException {
+    public List<Hall> selectHallsByPage(HallQueryParam param,Connection conn,boolean isAutoCloseConn) throws SQLException, SQLException {
         String sql = "SELECT *\n" +
                 "FROM halls\n" +
                 "WHERE 1=1 \n" +
@@ -106,7 +107,7 @@ public class HallDaoImpl implements HallDao {
                 "LIMIT ? OFFSET ?";
 
         return JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -138,7 +139,7 @@ public class HallDaoImpl implements HallDao {
     }
 
     @Override
-    public Integer countHalls(HallQueryParam param,boolean isAutoCloseConn) throws SQLException{
+    public Integer countHalls(HallQueryParam param, Connection conn,boolean isAutoCloseConn) throws SQLException{
         String sql = "SELECT COUNT(*)\n" +
                 "FROM halls\n" +
                 "WHERE 1=1 \n" +
@@ -151,7 +152,7 @@ public class HallDaoImpl implements HallDao {
                 "    AND (? IS NULL OR status = ?)";
 
         List<Integer> total = JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {

@@ -14,7 +14,7 @@ import java.util.List;
 public class WorkDaoImpl implements WorkDao {
 
     @Override
-    public List<WorkOrderResult> selectWorkOrders(WorkOrderQueryParam param, boolean isAutoCloseConn) throws SQLException {
+    public List<WorkOrderResult> selectWorkOrders(WorkOrderQueryParam param,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT o.id AS order_id, o.order_no, m.title AS movie_title, h.name AS hall_name, " +
                 "s.start_time, o.status, o.contact_phone, o.total_amount " +
                 "FROM orders o " +
@@ -29,7 +29,7 @@ public class WorkDaoImpl implements WorkDao {
                 "ORDER BY s.start_time DESC ";
 
         return JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {

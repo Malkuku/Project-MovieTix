@@ -5,24 +5,25 @@ import com.movietix.xiazihao.entity.pojo.Log;
 import com.movietix.xiazihao.utils.JdbcUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 @Slf4j
 public class LogDaoImpl implements LogDao {
     @Override
-    public void deleteLogByIds(List<Integer> ids,boolean isAutoCloseConn) throws SQLException {
+    public void deleteLogByIds(List<Integer> ids, Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "DELETE FROM logs WHERE id IN (" +
                 String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) +
                 ")";
         log.info("Executing SQL: {}", sql);
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,ids.toArray());
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,ids.toArray());
     }
 
     @Override
-    public List<Log> selectAllLogs(boolean isAutoCloseConn) throws SQLException {
+    public List<Log> selectAllLogs(Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * FROM logs";
-        List<Log> logList = JdbcUtils.executeQuery(JdbcUtils.getConnection(), sql,isAutoCloseConn, rs -> {
+        List<Log> logList = JdbcUtils.executeQuery(conn, sql,isAutoCloseConn, rs -> {
             Log log = new Log();
             try {
                 log.setId(rs.getInt("id"));

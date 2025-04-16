@@ -24,7 +24,7 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
     }
 
     @Override
-    public Integer checkSeatIsReserved(Integer screeningId, Integer seatRow, Integer seatCol,boolean isAutoCloseConn) throws SQLException {
+    public Integer checkSeatIsReserved(Integer screeningId, Integer seatRow, Integer seatCol,Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql =  "SELECT COUNT(*) \n" +
                 "FROM order_seats os\n" +
                 "JOIN orders o ON os.order_id = o.id\n" +
@@ -32,7 +32,7 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
                 "  AND o.status IN (0, 1)      \n" +
                 "  AND os.seat_row = ?              \n" +
                 "  AND os.seat_col = ?;            ";
-        List<Integer> countList = JdbcUtils.executeQuery(JdbcUtils.getConnection(),sql,isAutoCloseConn,rs -> {
+        List<Integer> countList = JdbcUtils.executeQuery(conn,sql,isAutoCloseConn,rs -> {
             try {
                 return rs.getInt(1);
             } catch (SQLException e) {
@@ -43,9 +43,9 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
     }
 
     @Override
-    public OrderSeat selectOrderSeatById(Integer id,boolean isAutoCloseConn) throws SQLException {
+    public OrderSeat selectOrderSeatById(Integer id,Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * FROM order_seats WHERE id = ?";
-        List<OrderSeat> orderSeatList = JdbcUtils.executeQuery(JdbcUtils.getConnection(),sql,isAutoCloseConn,rs -> {
+        List<OrderSeat> orderSeatList = JdbcUtils.executeQuery(conn,sql,isAutoCloseConn,rs -> {
             try {
                 OrderSeat orderSeat = new OrderSeat();
                 orderSeat.setId(rs.getInt("id"));
@@ -63,9 +63,9 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
     }
 
     @Override
-    public OrderSeat selectOrderSeatsByCondition(String orderId, String seatRow, String seatCol, boolean isAutoCloseConn) throws SQLException {
+    public OrderSeat selectOrderSeatsByCondition(String orderId, String seatRow, String seatCol,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * FROM order_seats WHERE order_id = ? AND seat_row = ? AND seat_col = ?";
-        List<OrderSeat> orderSeatList = JdbcUtils.executeQuery(JdbcUtils.getConnection(),sql,isAutoCloseConn,rs -> {
+        List<OrderSeat> orderSeatList = JdbcUtils.executeQuery(conn,sql,isAutoCloseConn,rs -> {
             try {
                 OrderSeat orderSeat = new OrderSeat();
                 orderSeat.setId(rs.getInt("id"));
@@ -83,9 +83,9 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
     }
 
     @Override
-    public List<OrderSeat> selectOrderSeatsByOrderId(Integer orderId, boolean isAutoCloseConn) throws SQLException {
+    public List<OrderSeat> selectOrderSeatsByOrderId(Integer orderId,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * FROM order_seats WHERE order_id = ?";
-        return JdbcUtils.executeQuery(JdbcUtils.getConnection(),sql,isAutoCloseConn,rs -> {
+        return JdbcUtils.executeQuery(conn,sql,isAutoCloseConn,rs -> {
             try {
                 OrderSeat orderSeat = new OrderSeat();
                 orderSeat.setId(rs.getInt("id"));
@@ -102,7 +102,7 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
     }
 
     @Override
-    public void updateOrderSeats(OrderSeat orderSeat, boolean isAutoCloseConn) throws SQLException {
+    public void updateOrderSeats(OrderSeat orderSeat,Connection conn, boolean isAutoCloseConn) throws SQLException {
        String sql = "UPDATE order_seats SET " +
                      "order_id = COALESCE(?, order_id), " +
                      "seat_row = COALESCE(?, seat_row), " +
@@ -110,7 +110,7 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
                      "seat_no = COALESCE(?, seat_no), " +
                      "price = COALESCE(?, price) " +
                      "WHERE id = ?";
-       JdbcUtils.executeUpdate(JdbcUtils.getConnection(),sql,isAutoCloseConn,
+       JdbcUtils.executeUpdate(conn,sql,isAutoCloseConn,
                orderSeat.getOrderId(),
                orderSeat.getSeatRow(),
                orderSeat.getSeatCol(),
@@ -120,8 +120,8 @@ public class OrderSeatDaoImpl implements OrderSeatDao {
     }
 
     @Override
-    public void deleteOrderSeats(List<Integer> ids, boolean isAutoCloseConn) throws SQLException {
+    public void deleteOrderSeats(List<Integer> ids,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "DELETE FROM order_seats WHERE id IN (" + String.join(",", ids.stream().map(id->"?").toArray(String[]::new)) + ")";
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,ids.toArray());
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,ids.toArray());
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class PaymentDaoImpl implements PaymentDao {
     @Override
-    public Integer selectPaymentsCount(PaymentQueryParam param, boolean isAutoCloseConn) throws SQLException {
+    public Integer selectPaymentsCount(PaymentQueryParam param,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT COUNT(*) " +
                 "FROM payments " +
                 "WHERE 1=1 " +
@@ -25,7 +25,7 @@ public class PaymentDaoImpl implements PaymentDao {
                 "    AND (? IS NULL OR amount <= ?)";
 
         List<Integer> total = JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -48,7 +48,7 @@ public class PaymentDaoImpl implements PaymentDao {
     }
 
     @Override
-    public List<Payment> selectPaymentsByPage(PaymentQueryParam param, boolean isAutoCloseConn) throws SQLException {
+    public List<Payment> selectPaymentsByPage(PaymentQueryParam param,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * " +
                 "FROM payments " +
                 "WHERE 1=1 " +
@@ -64,7 +64,7 @@ public class PaymentDaoImpl implements PaymentDao {
                 "LIMIT ? OFFSET ?";
 
         return JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -98,11 +98,11 @@ public class PaymentDaoImpl implements PaymentDao {
     }
 
     @Override
-    public void addPayment(Payment payment, boolean isAutoCloseConn) throws SQLException {
+    public void addPayment(Payment payment,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "INSERT INTO payments (order_id, amount, payment_method, transaction_id, status, pay_time) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
         JdbcUtils.executeUpdate(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 payment.getOrderId(),
@@ -139,12 +139,12 @@ public class PaymentDaoImpl implements PaymentDao {
     }
 
     @Override
-    public Payment selectPaymentById(Integer id, boolean isAutoCloseConn) throws SQLException {
+    public Payment selectPaymentById(Integer id,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * " +
                 "FROM payments " +
                 "WHERE id = ?";
         List<Payment> payments = JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -171,11 +171,11 @@ public class PaymentDaoImpl implements PaymentDao {
     }
 
     @Override
-    public Integer selectPaymentsMaxId(boolean isAutoCloseConn) throws SQLException {
+    public Integer selectPaymentsMaxId(Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT MAX(id) " +
                 "FROM payments";
         List<Integer> maxId = JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {

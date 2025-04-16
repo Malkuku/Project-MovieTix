@@ -12,7 +12,7 @@ import java.util.List;
 
 public class UserDaoImpl implements UserDao {
     @Override
-    public Integer selectUsersCount(UserQueryParam param, boolean isAutoCloseConn) throws SQLException {
+    public Integer selectUsersCount(UserQueryParam param,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT COUNT(*) " +
                 "FROM users " +
                 "WHERE 1=1 " +
@@ -23,7 +23,7 @@ public class UserDaoImpl implements UserDao {
                 "    AND (? IS NULL OR created_at <= ?)";
 
         List<Integer> total = JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -43,7 +43,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> selectUsersByPage(UserQueryParam param, boolean isAutoCloseConn) throws SQLException {
+    public List<User> selectUsersByPage(UserQueryParam param,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * " +
                 "FROM users " +
                 "WHERE 1=1 " +
@@ -56,7 +56,7 @@ public class UserDaoImpl implements UserDao {
                 "LIMIT ? OFFSET ?";
 
         return JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -85,17 +85,17 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void deleteUsersByIds(List<Integer> ids, boolean isAutoCloseConn) throws SQLException {
+    public void deleteUsersByIds(List<Integer> ids,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "DELETE FROM users WHERE id IN (" +
                 String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) + ")";
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn, ids.toArray());
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn, ids.toArray());
     }
 
     @Override
-    public void addUser(User user, boolean isAutoCloseConn) throws SQLException {
+    public void addUser(User user,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "INSERT INTO users (username, password_hash, is_admin, is_blocked, balance) " +
                 "VALUES (?, ?, ?, ?, ?)";
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,
                 user.getUsername(),
                 user.getPasswordHash(),
                 user.getIsAdmin(),
@@ -105,11 +105,11 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateUserPassword(User user, boolean isAutoCloseConn) throws SQLException {
+    public void updateUserPassword(User user,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "UPDATE users SET password_hash = COALESCE(?, password_hash), " +
                 "   updated_at = NOW()" +
                 "  WHERE id = ?";
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,
                 user.getPasswordHash(),
                 user.getId()
         );
@@ -128,7 +128,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateUserStatus(List<Integer> ids, Integer status, boolean isAutoCloseConn) throws SQLException {
+    public void updateUserStatus(List<Integer> ids, Integer status,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "UPDATE users SET is_blocked = ? , " +
                 " updated_at = NOW() " +
                 " WHERE id IN (" +
@@ -136,16 +136,16 @@ public class UserDaoImpl implements UserDao {
         List<Object> list = new ArrayList<>();
         list.add(status);
         list.addAll(ids);
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,
                 list.toArray()
         );
     }
 
     @Override
-    public User selectUserById(Integer id, boolean isAutoCloseConn) throws SQLException {
+    public User selectUserById(Integer id,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * FROM users WHERE id = ?";
         List<User> users = JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -170,10 +170,10 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User selectUserByUsername(String username, boolean isAutoCloseConn) throws SQLException {
+    public User selectUserByUsername(String username,Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * FROM users WHERE username = ?";
         List<User> users = JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {

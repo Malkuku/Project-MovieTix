@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +48,11 @@ public class HallController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        deleteHallsByIds(req, resp);
+        try {
+            deleteHallsByIds(req, resp);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //TODO 批量更新放映厅状态
@@ -72,7 +77,7 @@ public class HallController extends HttpServlet {
     }
 
     //通过id批量删除放映厅
-    private void deleteHallsByIds(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void deleteHallsByIds(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
         String[] values = req.getParameterValues("ids");
         List<Integer> ids = new ArrayList<>();
         {

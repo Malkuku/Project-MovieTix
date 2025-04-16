@@ -11,20 +11,20 @@ public interface OrderSeatDao {
     void addOrderSeat(OrderSeat orderSeat, Connection conn, boolean isAutoCloseConn) throws Exception;
 
     //检查座位是否已经被预定
-    Integer checkSeatIsReserved(Integer screeningId, Integer seatRow, Integer seatCol,boolean isAutoCloseConn) throws Exception;
+    Integer checkSeatIsReserved(Integer screeningId, Integer seatRow, Integer seatCol,Connection conn,boolean isAutoCloseConn) throws Exception;
 
     //根据id查询座位
-    OrderSeat selectOrderSeatById(Integer id,boolean isAutoCloseConn) throws SQLException;
+    OrderSeat selectOrderSeatById(Integer id,Connection conn,boolean isAutoCloseConn) throws SQLException;
 
     //根据复合条件查询座位
-    OrderSeat selectOrderSeatsByCondition(String orderId, String seatRow, String seatCol, boolean isAutoCloseConn) throws SQLException;
+    OrderSeat selectOrderSeatsByCondition(String orderId, String seatRow, String seatCol,Connection conn, boolean isAutoCloseConn) throws SQLException;
 
     //根据订单id查询座位
-    List<OrderSeat> selectOrderSeatsByOrderId(Integer orderId, boolean isAutoCloseConn) throws SQLException;
+    List<OrderSeat> selectOrderSeatsByOrderId(Integer orderId,Connection conn, boolean isAutoCloseConn) throws SQLException;
 
     //更新座位
-    void updateOrderSeats(OrderSeat orderSeat, boolean isAutoCloseConn) throws SQLException;
+    void updateOrderSeats(OrderSeat orderSeat,Connection conn, boolean isAutoCloseConn) throws SQLException;
 
     //批量删除座位信息
-    void deleteOrderSeats(List<Integer> ids, boolean isAutoCloseConn) throws SQLException;
+    void deleteOrderSeats(List<Integer> ids,Connection conn, boolean isAutoCloseConn) throws SQLException;
 }

@@ -4,6 +4,7 @@ import com.movietix.xiazihao.dao.Impl.LogDaoImpl;
 import com.movietix.xiazihao.dao.LogDao;
 import com.movietix.xiazihao.entity.pojo.Log;
 import com.movietix.xiazihao.service.LogService;
+import com.movietix.xiazihao.utils.JdbcUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
@@ -16,7 +17,7 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public List<Log> selectAllLogs() throws SQLException {
-        return logDao.selectAllLogs(true);
+        return logDao.selectAllLogs(JdbcUtils.getConnection(), true);
     }
 
     @Override
@@ -33,7 +34,7 @@ public class LogServiceImpl implements LogService {
                 }
             }
             log.info("Parsed IDs for deletion: {}", ids);
-            logDao.deleteLogByIds(ids, true);
+            logDao.deleteLogByIds(ids, JdbcUtils.getConnection(), true);
         }
     }
 }

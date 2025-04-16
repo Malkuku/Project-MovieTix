@@ -5,6 +5,7 @@ import com.movietix.xiazihao.entity.param.ScreeningQueryParam;
 import com.movietix.xiazihao.entity.pojo.Screening;
 import com.movietix.xiazihao.utils.JdbcUtils;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 public class ScreeningDaoImpl implements ScreeningDao {
 
     @Override
-    public void updateScreening(Screening screening, boolean isAutoCloseConn) throws SQLException {
+    public void updateScreening(Screening screening, Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "UPDATE screenings SET " +
                 "movie_id = COALESCE(?, movie_id), " +
                 "hall_id = COALESCE(?, hall_id), " +
@@ -23,7 +24,7 @@ public class ScreeningDaoImpl implements ScreeningDao {
                 "status = COALESCE(?, status), " +
                 "updated_at = NOW() " +
                 "WHERE id = ?";
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,
                 screening.getMovieId(),
                 screening.getHallId(),
                 screening.getStartTime(),
@@ -35,10 +36,10 @@ public class ScreeningDaoImpl implements ScreeningDao {
     }
 
     @Override
-    public Screening selectScreeningById(Integer id,boolean isAutoCloseConn) throws SQLException {
+    public Screening selectScreeningById(Integer id, Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT * FROM screenings WHERE id = ?";
         List<Screening> screeningList = JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -65,20 +66,20 @@ public class ScreeningDaoImpl implements ScreeningDao {
     }
 
     @Override
-    public void setScreeningStatus(List<Integer> ids, Integer status, boolean isAutoCloseConn) throws SQLException {
+    public void setScreeningStatus(List<Integer> ids, Integer status, Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "UPDATE screenings SET status = ? WHERE id IN (" + String.join(",", ids.stream().map(id -> "?").toArray(String[]::new)) + ")";
         List<Object> params = new ArrayList<>();
         params.add(status);
         params.addAll(ids);
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,
                 params.toArray());
     }
 
     @Override
-    public void addScreening(Screening screening, boolean isAutoCloseConn) throws SQLException {
+    public void addScreening(Screening screening, Connection conn, boolean isAutoCloseConn) throws SQLException {
         String sql = "INSERT INTO screenings (movie_id, hall_id, start_time, end_time, price, remaining_seats, status) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,
                 screening.getMovieId(),
                 screening.getHallId(),
                 screening.getStartTime(),
@@ -89,13 +90,13 @@ public class ScreeningDaoImpl implements ScreeningDao {
     }
 
     @Override
-    public void deleteScreeningByIds(List<Integer> ids,boolean isAutoCloseConn) throws SQLException {
+    public void deleteScreeningByIds(List<Integer> ids,Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql = "DELETE FROM screenings WHERE id IN (" + String.join(",", ids.stream().map(id->"?").toArray(String[]::new)) + ")";
-        JdbcUtils.executeUpdate(JdbcUtils.getConnection(), sql, isAutoCloseConn,ids.toArray());
+        JdbcUtils.executeUpdate(conn, sql, isAutoCloseConn,ids.toArray());
     }
 
     @Override
-    public Integer selectScreeningCount(ScreeningQueryParam param,boolean isAutoCloseConn) throws SQLException {
+    public Integer selectScreeningCount(ScreeningQueryParam param,Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT COUNT(*) " +
                 "FROM screenings s " +
                 "JOIN movies m ON s.movie_id = m.id " +
@@ -113,7 +114,7 @@ public class ScreeningDaoImpl implements ScreeningDao {
                 "    AND (? IS NULL OR s.status = ?)";
 
         List<Integer> total = JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
@@ -138,7 +139,7 @@ public class ScreeningDaoImpl implements ScreeningDao {
     }
 
     @Override
-    public List<Screening> selectScreeningByPage(ScreeningQueryParam param,boolean isAutoCloseConn) throws SQLException {
+    public List<Screening> selectScreeningByPage(ScreeningQueryParam param,Connection conn,boolean isAutoCloseConn) throws SQLException {
         String sql = "SELECT s.*, m.title AS movie_title, h.name AS hall_name " +
                 "FROM screenings s " +
                 "JOIN movies m ON s.movie_id = m.id " +
@@ -158,7 +159,7 @@ public class ScreeningDaoImpl implements ScreeningDao {
                 "LIMIT ? OFFSET ?";
 
         return JdbcUtils.executeQuery(
-                JdbcUtils.getConnection(),
+                conn,
                 sql,
                 isAutoCloseConn,
                 rs -> {
