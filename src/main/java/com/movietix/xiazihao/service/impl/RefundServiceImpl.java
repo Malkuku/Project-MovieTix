@@ -67,4 +67,9 @@ public class RefundServiceImpl implements RefundService {
         }
 
     }
+
+    @Override
+    public List<Refund> selectRefundsByUserId(Integer userId) throws SQLException {
+        return refundDao.selectRefundsByUserId(userId, JdbcUtils.getConnection(), true);
+    }
 }

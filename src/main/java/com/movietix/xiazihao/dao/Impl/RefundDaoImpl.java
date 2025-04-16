@@ -144,4 +144,35 @@ public class RefundDaoImpl implements RefundDao {
                 refund.getId()
         );
     }
+
+    @Override
+    public List<Refund> selectRefundsByUserId(Integer userId, Connection conn, boolean isAutoCloseConn) throws SQLException {
+        String sql = "SELECT * " +
+                "FROM refunds " +
+                "WHERE user_id = ?";
+        return JdbcUtils.executeQuery(
+                conn,
+                sql,
+                isAutoCloseConn,
+                rs -> {
+                    Refund refund = new Refund();
+                    try {
+                        refund.setId(rs.getInt("id"));
+                        refund.setOrderId(rs.getInt("order_id"));
+                        refund.setUserId(rs.getInt("user_id"));
+                        refund.setReason(rs.getString("reason"));
+                        refund.setStatus(rs.getInt("status"));
+                        refund.setAdminId(rs.getObject("admin_id") == null ? null : rs.getInt("admin_id"));
+                        refund.setProcessedAt(rs.getObject("processed_at") == null ? null : rs.getTimestamp("processed_at").toLocalDateTime());
+                        refund.setRefundAmount(rs.getBigDecimal("refund_amount"));
+                        refund.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                        refund.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    return refund;
+                },
+                userId
+        );
+    }
 }

@@ -21,4 +21,7 @@ public interface RefundDao {
 
     // 更新退票记录
     void updateRefund(Refund refund, Connection conn, boolean isAutoCloseConn) throws SQLException;
+
+    // 根据用户ID查询退票记录
+    List<Refund> selectRefundsByUserId(Integer userId, Connection conn, boolean isAutoCloseConn) throws SQLException;
 }

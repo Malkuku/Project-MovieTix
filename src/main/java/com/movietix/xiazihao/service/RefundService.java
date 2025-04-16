@@ -16,4 +16,7 @@ public interface RefundService {
 
     // 批量处理退票记录
     void processRefunds(List<Integer> ids, Integer adminId, Integer status) throws Exception;
+
+    // 根据用户ID查询退票记录
+    List<Refund> selectRefundsByUserId(Integer userId) throws SQLException;
 }

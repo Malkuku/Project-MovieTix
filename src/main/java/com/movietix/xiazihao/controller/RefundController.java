@@ -35,7 +35,11 @@ public class RefundController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
         if(pathInfo != null && pathInfo.matches("/\\d+")){
-
+            try {
+                selectRefundsByUserId(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }else{
             try {
                 selectRefundsByPage(req, resp);
@@ -107,4 +111,12 @@ public class RefundController extends HttpServlet {
         refundService.processRefunds(ids, adminId, status);
         ServletUtils.sendResponse(resp, Result.success());
    }
+
+   //查询指定用户的所有退票申请
+    private void selectRefundsByUserId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String pathInfo = req.getPathInfo();
+        Integer userId = Integer.parseInt(pathInfo.substring(1));
+        List<Refund> refunds = refundService.selectRefundsByUserId(userId);
+        ServletUtils.sendResponse(resp, Result.success(refunds));
+    }
 }
