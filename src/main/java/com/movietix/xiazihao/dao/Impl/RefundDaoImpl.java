@@ -147,9 +147,18 @@ public class RefundDaoImpl implements RefundDao {
 
     @Override
     public List<Refund> selectRefundsByUserId(Integer userId, Connection conn, boolean isAutoCloseConn) throws SQLException {
-        String sql = "SELECT * " +
-                "FROM refunds " +
-                "WHERE user_id = ?";
+        String sql = "SELECT \n" +
+                "    r.*\n,"+
+                "    o.order_no,\n" +
+                "    u.username AS admin_name\n" +
+                "FROM \n" +
+                "    refunds r\n" +
+                "LEFT JOIN \n" +
+                "    orders o ON r.order_id = o.id\n" +
+                "LEFT JOIN \n" +
+                "    users u ON r.admin_id = u.id\n" +
+                "WHERE \n" +
+                "    r.user_id = ?";
         return JdbcUtils.executeQuery(
                 conn,
                 sql,
@@ -165,6 +174,8 @@ public class RefundDaoImpl implements RefundDao {
                         refund.setAdminId(rs.getObject("admin_id") == null ? null : rs.getInt("admin_id"));
                         refund.setProcessedAt(rs.getObject("processed_at") == null ? null : rs.getTimestamp("processed_at").toLocalDateTime());
                         refund.setRefundAmount(rs.getBigDecimal("refund_amount"));
+                        refund.setOrderNo(rs.getString("order_no"));
+                        refund.setAdminName(rs.getObject("admin_name") == null ? null : rs.getString("admin_name"));
                         refund.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                         refund.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
                     } catch (Exception e) {

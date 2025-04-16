@@ -21,4 +21,7 @@ public class Refund {
     private BigDecimal refundAmount; // 退款金额
     private LocalDateTime createdAt; // 创建时间
     private LocalDateTime updatedAt; // 更新时间
+
+    private String orderNo; // 订单编号
+    private String adminName; // 管理员名称
 }
