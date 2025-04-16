@@ -26,9 +26,8 @@ public class c_AdminFilter implements Filter {
             return;
         }
 
-        // 放行登录接口和普通用户接口
-        if (httpRequest.getRequestURI().contains("/login")
-        || httpRequest.getRequestURI().contains("/works")) {
+        // 放行普通用户接口
+        if (httpRequest.getRequestURI().contains("/works")) {
             chain.doFilter(request, response);
             return;
         }

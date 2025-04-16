@@ -26,11 +26,17 @@ public class b_LoginFilter implements Filter {
             return;
         }
 
-        // 放行登录接口
-        if (httpRequest.getRequestURI().contains("/login")) {
+        // 放行登录接口 和 注册接口
+        if (httpRequest.getRequestURI().contains("/login") || httpRequest.getRequestURI().contains("/register")) {
             chain.doFilter(request, response);
             return;
         }
+        // 放行游客 GET 请求
+        if (httpRequest.getRequestURI().contains("/works/") && "GET".equalsIgnoreCase(httpRequest.getMethod())) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         //获取请求头的Token
         String token = httpRequest.getHeader("token");
         log.info("Token:{}", token);
