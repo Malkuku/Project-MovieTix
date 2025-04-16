@@ -58,7 +58,7 @@ const screenings = ref([]);
 const selectedScreening = ref(null);
 
 // 座位数据
-const seats = ref({ rows: 0, cols: 0, seats: [] });
+const seats = ref({ rows: 0, cols: 0, price: 0, seats: [] });
 const selectedSeats = ref([]);
 
 // 订单数据
@@ -71,7 +71,7 @@ const totalPrice = computed(() => {
 });
 
 //生成座位图
-const generateSeatMap = (rows, cols) => {
+const generateSeatMap = (rows, cols, price) => {
   const seatMap = [];
   for (let row = 1; row <= rows; row++) {
     for (let col = 1; col <= cols; col++) {
@@ -80,7 +80,7 @@ const generateSeatMap = (rows, cols) => {
         seatRow: row,
         seatCol: col,
         seatNo: `${seatLetter}${col.toString().padStart(2, '0')}`, // 例如 A03
-        price: 60.00, // 假设所有座位价格相同
+        price: price, // 假设所有座位价格相同
         status: 'available' // 初始状态为可选
       });
     }
@@ -310,7 +310,7 @@ const fetchSeats = async (screeningId) => {
   try {
     const response = await getSeatsApi(screeningId);
     if (response.code === 1) {
-      const allSeats = generateSeatMap(response.data.rows, response.data.cols);
+      const allSeats = generateSeatMap(response.data.rows, response.data.cols, response.data.price);
       const occupiedSeats = response.data.seats.map(seat => ({
         ...seat,
         status: 'occupied'
@@ -319,6 +319,7 @@ const fetchSeats = async (screeningId) => {
       seats.value = {
         rows: response.data.rows,
         cols: response.data.cols,
+        price: response.data.price,
         seats: allSeats.map(seat => occupiedSeats.find(s => s.seatNo === seat.seatNo) || seat)
       };
 
@@ -372,27 +373,19 @@ const createOrder = async () => {
   }
 
   try {
-    // 准备请求数据
-    const orderData = {
-      screeningId: selectedScreening.value.id, // 从响应式引用中获取场次ID
-      userId: userStore.id, // 从用户存储中获取用户ID
-      contactPhone: phone.value, // 从响应式引用中获取联系电话
-      seats: selectedSeats.value.map(seat => ({
-        seatRow: seat.seatRow,
-        seatCol: seat.seatCol,
-        seatNo: seat.seatNo,
-        price: seat.price
-      }))
+    // 准备请求参数（现在作为查询参数）
+    const params = {
+      screeningId: selectedScreening.value.id,
+      userId: userStore.id
     };
 
     // 发起创建订单的请求
-    const response = await createOrderApi(orderData);
+    const response = await createOrderApi(params);
     console.log('createOrderApi', response);
     if (response.code === 1) {
-      orderId.value = response.data.orderId; // 保存订单ID到响应式引用
+      orderId.value = response.data.orderId;
       ElMessage.success('订单创建成功');
-      // 可以在这里进行后续操作，如跳转到支付页面等
-      currentStep.value = 3; // 假设跳转到支付步骤
+      currentStep.value = 3; // 跳转到支付步骤
     } else {
       ElMessage.error(response.msg || '订单创建失败');
     }
@@ -402,17 +395,30 @@ const createOrder = async () => {
   }
 };
 
-// 支付订单
+//支付订单
 const payOrder = async () => {
   try {
-    const success = await payOrderApi(orderId.value, userStore.id);
-    if (success) {
+    // 准备请求数据（现在作为请求体）
+    const paymentData = {
+      orderId: orderId.value,
+      userId: userStore.id,
+      contactPhone: phone.value,
+      seats: selectedSeats.value.map(seat => ({
+        seatRow: seat.seatRow,
+        seatCol: seat.seatCol,
+        seatNo: seat.seatNo,
+        price: seat.price
+      }))
+    };
+
+    const response = await payOrderApi(paymentData);
+    if (response.code === 1) {
       ElMessage.success('支付成功');
       clearInterval(paymentTimer.value);
       closeDialog();
     } else {
-      ElMessage.warning('余额不足，请充值');
-      // 可以在这里跳转到充值页面
+      ElMessage.warning(response.msg || '支付失败');
+      // TODO 跳转到充值页面
     }
   } catch (error) {
     ElMessage.error('支付失败');
@@ -945,11 +951,12 @@ onMounted(() => {
       <div class="action-buttons">
         <el-button @click="currentStep = 2">上一步</el-button>
         <el-button type="danger" @click="cancelOrder">取消订单</el-button>
-        <el-button type="primary" @click="payOrder">立即支付</el-button>
+        <el-button type="primary" @click="payOrder">立即支付</el-button> <!-- TODO 回到上一步/关闭弹窗时，如何处理已经创建的订单问题？ --->
       </div>
     </div>
   </el-dialog>
 </template>
+
 
 <style scoped>
 .home-container {

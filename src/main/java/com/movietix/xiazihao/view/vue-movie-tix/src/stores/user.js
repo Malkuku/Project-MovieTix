@@ -1,6 +1,5 @@
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
-
+import {defineStore} from 'pinia';
+import {ref} from 'vue';
 
 
 export const useUserStore = defineStore('user', () => {
@@ -44,6 +43,7 @@ export const useUserStore = defineStore('user', () => {
             {
                 key: 'user', // 存储在 sessionStorage 中的键名
                 storage: sessionStorage, // 使用 sessionStorage 持久化
+                autoPrune: true
             },
         ],
     },

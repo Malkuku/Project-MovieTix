@@ -54,16 +54,16 @@ export const getScreeningsApi = (params) => {
     return request.get('/works/screenings', { params });
 }
 
-// 创建订单
-export const createOrderApi = (data) => {
-    return request.post('/works/orders', data);
+// 创建订单 - 修改为使用查询参数
+export const createOrderApi = (params) => {
+    return request.post('/works/orders', null, {
+        params
+    });
 }
 
-// 支付订单
-export const payOrderApi = (orderId, userId) => {
-    return request.post('/works/orders/pay', null, {
-        params: { orderId, userId }
-    });
+// 支付订单 - 修改为使用请求体
+export const payOrderApi = (data) => {
+    return request.post('/works/orders/pay', data);
 }
 
 // 查询订单

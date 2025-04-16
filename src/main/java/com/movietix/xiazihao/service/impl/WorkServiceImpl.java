@@ -86,8 +86,8 @@ public class WorkServiceImpl implements WorkService {
     public Integer userBuyTicket(Integer screeningId,Integer userId) throws Exception {
         //先创建订单
         Order order = new Order();
-        order.setUserId(screeningId);
-        order.setScreeningId(userId);
+        order.setUserId(userId);
+        order.setScreeningId(screeningId);
         //TODO need to lock
         //转交给OrderServiceImpl处理
         orderService.createOrder(order);
@@ -178,6 +178,7 @@ public class WorkServiceImpl implements WorkService {
     public WorkSeatResult selectSeatsByScreeningId(Integer screeningId) throws SQLException {
         List<OrderSeat> seats = workDao.selectSeatsByScreeningId(screeningId,JdbcUtils.getConnection(),true);
         Hall hall = hallService.selectHallById(screeningService.selectScreeningById(screeningId).getHallId());
-        return new WorkSeatResult(hall.getRows(), hall.getCols(), seats);
+        Screening screening = screeningService.selectScreeningById(screeningId);
+        return new WorkSeatResult(hall.getRows(), hall.getCols(),screening.getPrice(), seats);
     }
 }
