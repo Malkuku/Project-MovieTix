@@ -79,4 +79,21 @@ public class RefundDaoImpl implements RefundDao {
         );
     }
 
+    @Override
+    public void createRefund(Refund refund, Connection conn, boolean isAutoCloseConn) throws SQLException {
+        String sql = "INSERT INTO refunds(order_id, user_id, reason, status, created_at, updated_at) " +
+                "VALUES(?, ?, ?, ?, ?, ?)";
+        JdbcUtils.executeUpdate(
+                conn,
+                sql,
+                isAutoCloseConn,
+                refund.getOrderId(),
+                refund.getUserId(),
+                refund.getReason(),
+                refund.getStatus(),
+                refund.getCreatedAt(),
+                refund.getUpdatedAt()
+        );
+    }
+
 }

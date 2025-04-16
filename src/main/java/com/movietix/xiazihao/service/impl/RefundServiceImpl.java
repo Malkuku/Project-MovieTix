@@ -20,4 +20,9 @@ public class RefundServiceImpl implements RefundService {
         List<Refund> refundList = refundDao.selectRefundsByPage(refundQueryParam,JdbcUtils.getConnection(), true);
         return new PageResult<>(total, refundList);
     }
+
+    @Override
+    public void createRefund(Refund refund) throws SQLException {
+        refundDao.createRefund(refund, JdbcUtils.getConnection(), true);
+    }
 }

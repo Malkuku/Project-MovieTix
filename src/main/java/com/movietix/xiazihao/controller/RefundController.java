@@ -6,6 +6,7 @@ import com.movietix.xiazihao.entity.result.PageResult;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.RefundService;
 import com.movietix.xiazihao.service.impl.RefundServiceImpl;
+import com.movietix.xiazihao.utils.JsonUtils;
 import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +26,7 @@ public class RefundController extends HttpServlet {
     //post请求入口
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        createRefund(req, resp);
     }
 
     //get请求入口
@@ -77,4 +79,17 @@ public class RefundController extends HttpServlet {
         log.info("查询到的退票申请信息:{}", pageResult);
         ServletUtils.sendResponse(resp, Result.success(pageResult));
     }
+
+    // 创建退票申请
+    private void createRefund(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String json = ServletUtils.getRequestBody(req);
+        Refund refund = JsonUtils.parseJson(json, Refund.class);
+        log.info("接收到的退票申请信息:{}", refund);
+        try {
+            refundService.createRefund(refund);
+            ServletUtils.sendResponse(resp, Result.success());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+   }
 }

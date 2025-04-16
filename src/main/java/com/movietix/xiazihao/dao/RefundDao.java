@@ -12,4 +12,7 @@ public interface RefundDao {
     Integer selectRefundsCount(RefundQueryParam refundQueryParam, Connection conn, boolean isAutoCloseConn) throws SQLException;
     // 分页查询退票记录
     List<Refund> selectRefundsByPage(RefundQueryParam refundQueryParam, Connection conn, boolean isAutoCloseConn) throws SQLException;
+
+    // 创建退票记录
+    void createRefund(Refund refund, Connection conn, boolean isAutoCloseConn) throws SQLException;
 }
