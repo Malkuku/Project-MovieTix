@@ -76,12 +76,13 @@ export const cancelOrderApi = (id) => {
     return request.post('/works/orders/cancel', null, { params: { id } });
 }
 
-// 申请退款 //TODO
-export const refundOrderApi = (data) => {
-    return request.post('/works/refunds', data);
-}
-
 // 查询座位信息
 export const getSeatsApi = (screeningId) => {
     return request.get('/works/seats', { params: { id: screeningId } });
 }
+
+// 创建退票申请
+export const createRefundApi = (refundData) => request.post('/works/refunds', refundData);
+
+// 查询用户退票申请列表
+export const queryRefundsByUserIdApi = (userId) => request.get(`/works/refunds/${userId}`);

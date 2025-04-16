@@ -486,7 +486,7 @@ const goToProfile = () => {
 };
 
 const goToOrders = () => {
-  router.push('/orders');
+  router.push('/user_order');
 };
 
 const goToLayout = () => {

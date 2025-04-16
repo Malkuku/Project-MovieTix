@@ -11,6 +11,7 @@ import RegisterView from '@/views/register/index.vue'
 import ProfileView from '@/views/user_profile/index.vue'
 import HomeView from '@/views/homeView/index.vue'
 import RefundView from '@/views/refund/index.vue'
+import UserOrderView from '@/views/user_order/index.vue'
 import { useUserStore } from '@/stores/user';
 
 
@@ -55,6 +56,12 @@ const router = createRouter({
             path: '/profile',
             name: 'profile',
             component: ProfileView,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/user_order',
+            name: 'user_order',
+            component: UserOrderView,
             meta: { requiresAuth: true }
         },
         { path: '/home', name: 'home', component: HomeView }
