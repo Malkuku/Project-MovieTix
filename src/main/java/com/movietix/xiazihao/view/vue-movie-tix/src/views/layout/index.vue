@@ -100,7 +100,7 @@ const goToHome = () => {
                 <span>订单管理</span>
               </template>
               <el-menu-item index="/order">全部订单</el-menu-item>
-              <el-menu-item index="/order/refund">退款申请</el-menu-item>
+              <el-menu-item index="/refund">退款申请</el-menu-item>
             </el-sub-menu>
 
             <!-- 用户管理 -->

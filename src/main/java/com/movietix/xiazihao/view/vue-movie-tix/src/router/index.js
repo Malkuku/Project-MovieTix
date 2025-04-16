@@ -10,6 +10,7 @@ import OrderView from '@/views/order/index.vue'
 import RegisterView from '@/views/register/index.vue'
 import ProfileView from '@/views/user_profile/index.vue'
 import HomeView from '@/views/homeView/index.vue'
+import RefundView from '@/views/refund/index.vue'
 import { useUserStore } from '@/stores/user';
 
 
@@ -34,7 +35,8 @@ const router = createRouter({
                 { path: '/user', name: 'user', component: UserView },
                 { path: '/screening', name: 'screening', component: ScreeningView },
                 { path: '/log', name: 'log', component: LogView },
-                { path: '/order', name: 'order', component: OrderView }
+                { path: '/order', name: 'order', component: OrderView },
+                { path: '/refund', name: 'refund', component: RefundView},
             ]
         },
         {
