@@ -86,3 +86,6 @@ export const createRefundApi = (refundData) => request.post('/works/refunds', re
 
 // 查询用户退票申请列表
 export const queryRefundsByUserIdApi = (userId) => request.get(`/works/refunds/${userId}`);
+
+// 根据电影ID查询场次最低价格
+export const queryMinPriceByMovieIdApi = (movieId) => request.get(`/works/price/${movieId}`);

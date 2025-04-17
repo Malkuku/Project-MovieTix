@@ -10,7 +10,9 @@ import {
   cancelOrderApi,
   getScreeningsApi,
   payOrderApi,
-  getSeatsApi, createOrderApi
+  getSeatsApi,
+  createOrderApi,
+  queryMinPriceByMovieIdApi
 } from '@/api/user_work';
 import { formatDateTime } from '@/utils/date';
 
@@ -33,6 +35,7 @@ const loading = ref(false);
 const orders = ref([]);
 const screeningInfo = ref({});
 const searchValue = ref('');
+
 
 //时间选择器
 const selectedStartTime = ref(null); // 用户选择的开始时间
@@ -64,6 +67,203 @@ const selectedSeats = ref([]);
 // 订单数据
 const orderId = ref(null);
 const orderInfo = ref(null);
+
+// 获取电影数据
+const fetchMovies = async () => {
+  try {
+    loading.value = true;
+
+    // 获取正在热映和即将上映电影
+    await Promise.all([fetchNowShowingMovies(), fetchComingSoonMovies()]);
+
+    // 从已获取的热映电影中随机选取3部作为推荐
+    if (allMovies.value.length > 0) {
+      // 更好的随机选择算法（Fisher-Yates洗牌算法）
+      const shuffled = [...allMovies.value]
+          .filter(movie => movie.price !== null);
+
+      // 随机选择最多3部
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+
+      featuredMovies.value = shuffled.slice(0, 3);
+    }
+
+  } catch (error) {
+    ElMessage.error('获取电影数据失败');
+    console.error('获取电影数据失败:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// 计算属性 - 修改为同时处理正在热映和即将上映的电影
+const filteredMovies = computed(() => {
+  let movies = activeIndex.value === '2' ?
+      [...allMovies.value].filter(movie => movie.price !== null) :
+      [...comingSoonMovies.value].filter(movie => movie.price !== null);
+
+  // 筛选
+  if (activeFilter.value !== 'all') {
+    movies = movies.filter(movie =>
+        movie.genre.some(g => g.toLowerCase().includes(activeFilter.value)))
+  }
+
+  // 排序
+  switch (sortBy.value) {
+    case 'rating':
+      return movies.sort((a, b) => b.rating - a.rating);
+    case 'newest':
+      return movies.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
+    case 'price-low':
+      return movies.sort((a, b) => a.price - b.price);
+    case 'price-high':
+      return movies.sort((a, b) => b.price - a.price);
+    default:
+      return movies.sort((a, b) => b.rating - a.rating); // 默认按热门排序
+  }
+});
+
+// 计算所有存在的电影类型
+const allGenres = computed(() => {
+  const genres = new Set();
+
+  // 合并正在热映和即将上映的电影，并过滤无价格的电影
+  const allMoviesList = [...allMovies.value, ...comingSoonMovies.value]
+      .filter(movie => movie.price !== null);
+
+  // 遍历所有电影，收集类型
+  allMoviesList.forEach(movie => {
+    if (movie.genre && Array.isArray(movie.genre)) {
+      movie.genre.forEach(g => genres.add(g.trim()));
+    }
+  });
+
+  return Array.from(genres);
+});
+
+const recommendedMovies = computed(() => {
+  // 从热映电影中随机推荐3部，确保有价格
+  return [...allMovies.value]
+      .filter(movie => movie.price !== null)
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 3);
+});
+
+// 分离获取正在热映和即将上映的电影
+const fetchNowShowingMovies = async () => {
+  try {
+    loading.value = true;
+    const nowShowingResult = await getMoviesApi({
+      page: pagination.value.page,
+      pageSize: pagination.value.pageSize,
+      status: 1
+    });
+
+    if (nowShowingResult.code === 1) {
+      // 获取所有电影的最低价格并过滤掉无价格的电影
+      allMovies.value = (await Promise.all(
+          nowShowingResult.data.list.map(async movie => {
+            const priceResult = await queryMinPriceByMovieIdApi(movie.id);
+            const minPrice = priceResult.code === 1 && priceResult.data;
+
+            return minPrice ? {
+              ...movie,
+              poster: movie.posterUrl,
+              genre: movie.genre.split(','),
+              price: minPrice
+            } : null;
+          })
+      )).filter(movie => movie !== null);
+
+      pagination.value.total = allMovies.value.length; // 更新为实际显示的数量
+    }
+  } catch (error) {
+    ElMessage.error('获取电影数据失败');
+    console.error('获取电影数据失败:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const fetchComingSoonMovies = async () => {
+  try {
+    loading.value = true;
+    const comingSoonResult = await getMoviesApi({
+      page: pagination.value.page,
+      pageSize: pagination.value.pageSize,
+      status: 0
+    });
+
+    if (comingSoonResult.code === 1) {
+      // 获取所有电影的最低价格并过滤掉无价格的电影
+      comingSoonMovies.value = (await Promise.all(
+          comingSoonResult.data.list.map(async movie => {
+            const priceResult = await queryMinPriceByMovieIdApi(movie.id);
+            const minPrice = priceResult.code === 1 && priceResult.data;
+
+            return minPrice ? {
+              ...movie,
+              poster: movie.posterUrl,
+              genre: movie.genre.split(','),
+              price: minPrice
+            } : null;
+          })
+      )).filter(movie => movie !== null);
+
+      pagination.value.total = comingSoonMovies.value.length; // 更新为实际显示的数量
+    }
+  } catch (error) {
+    ElMessage.error('获取电影数据失败');
+    console.error('获取电影数据失败:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const handleSearch = async () => {
+  if (searchQuery.value.trim()) {
+    try {
+      loading.value = true;
+      const result = await getMoviesApi({
+        title: searchQuery.value,
+        page: 1,
+        pageSize: 10
+      });
+
+      if (result.code === 1) {
+        // 获取所有电影的最低价格并过滤掉无价格的电影
+        allMovies.value = (await Promise.all(
+            result.data.list.map(async movie => {
+              const priceResult = await queryMinPriceByMovieIdApi(movie.id);
+              const minPrice = priceResult.code === 1 && priceResult.data ?
+                  priceResult.data :
+                  Math.floor(Math.random() * 20) + 30;
+
+              return minPrice ? {
+                ...movie,
+                poster: movie.posterUrl,
+                genre: movie.genre.split(','),
+                price: minPrice
+              } : null;
+            })
+        )).filter(movie => movie !== null);
+
+        pagination.value.total = allMovies.value.length;
+        const count = allMovies.value.length;
+        ElMessage.success(`找到${count}部相关电影${count < result.data.total ? `(过滤了${result.data.total - count}部无价格电影)` : ''}`);
+      }
+    } catch (error) {
+      ElMessage.error('搜索失败');
+      console.error('搜索失败:', error);
+    } finally {
+      loading.value = false;
+    }
+  }
+};
+
 
 // 计算属性
 const totalPrice = computed(() => {
@@ -109,100 +309,6 @@ const isSeatSelected = (seat) => {
   return selectedSeats.value.some(s => s.seatNo === seat.seatNo);
 };
 
-// 获取电影数据
-const fetchMovies = async () => {
-  try {
-    loading.value = true;
-
-    // 获取推荐电影（轮播图）
-    const featuredResult = await getMoviesApi({
-      page: 1,
-      pageSize: 3,
-      status: 1
-    });
-
-    if (featuredResult.code === 1) {
-      featuredMovies.value = featuredResult.data.list.map(movie => ({
-        ...movie,
-        poster: movie.posterUrl,
-        genre: movie.genre.split(','),
-        price: Math.floor(Math.random() * 20) + 30 // 模拟价格
-      }));
-    }
-
-    // 获取正在热映电影
-    const nowShowingResult = await getMoviesApi({
-      page: pagination.value.page,
-      pageSize: pagination.value.pageSize,
-      status: 1
-    });
-
-    if (nowShowingResult.code === 1) {
-      allMovies.value = nowShowingResult.data.list.map(movie => ({
-        ...movie,
-        poster: movie.posterUrl,
-        genre: movie.genre.split(','),
-        price: Math.floor(Math.random() * 20) + 30 // 模拟价格
-      }));
-      pagination.value.total = nowShowingResult.data.total;
-    }
-
-    // 获取即将上映电影
-    const comingSoonResult = await getMoviesApi({
-      page: 1,
-      pageSize: 4,
-      status: 0
-    });
-
-    if (comingSoonResult.code === 1) {
-      comingSoonMovies.value = comingSoonResult.data.list.map(movie => ({
-        ...movie,
-        poster: movie.posterUrl,
-        genre: movie.genre.split(','),
-        price: Math.floor(Math.random() * 20) + 30 // 模拟价格
-      }));
-    }
-  } catch (error) {
-    ElMessage.error('获取电影数据失败');
-    console.error('获取电影数据失败:', error);
-  } finally {
-    loading.value = false;
-  }
-};
-
-// 计算属性
-const filteredMovies = computed(() => {
-  let movies = [...allMovies.value];
-
-  // 筛选
-  if (activeFilter.value !== 'all') {
-    movies = movies.filter(movie =>
-        movie.genre.some(g => g.toLowerCase().includes(activeFilter.value))
-    );
-  }
-
-  // 排序
-  switch (sortBy.value) {
-    case 'rating':
-      return movies.sort((a, b) => b.rating - a.rating);
-    case 'newest':
-      return movies.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
-    case 'price-low':
-      return movies.sort((a, b) => a.price - b.price);
-    case 'price-high':
-      return movies.sort((a, b) => b.price - a.price);
-    default:
-      return movies.sort((a, b) => b.rating - a.rating); // 默认按热门排序
-  }
-});
-
-const recommendedMovies = computed(() => {
-  // 从热映电影中随机推荐3部
-  return [...allMovies.value]
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 3);
-});
-
 // 获取用户订单列表
 const fetchUserOrders = async () => {
   try {
@@ -217,38 +323,16 @@ const fetchUserOrders = async () => {
   }
 };
 
-// 方法
+// 导航选择处理
 const handleSelect = (index) => {
   activeIndex.value = index;
-  // 这里可以添加导航逻辑
-};
-
-const handleSearch = async () => {
-  if (searchQuery.value.trim()) {
-    try {
-      loading.value = true;
-      const result = await getMoviesApi({
-        title: searchQuery.value,
-        page: 1,
-        pageSize: 10
-      });
-
-      if (result.code === 1) {
-        allMovies.value = result.data.list.map(movie => ({
-          ...movie,
-          poster: movie.posterUrl,
-          genre: movie.genre.split(','),
-          price: Math.floor(Math.random() * 20) + 30 // 模拟价格 //TODO 替换为实际价格
-        }));
-        pagination.value.total = result.data.total;
-        ElMessage.success(`找到${result.data.total}部相关电影`);
-      }
-    } catch (error) {
-      ElMessage.error('搜索失败');
-      console.error('搜索失败:', error);
-    } finally {
-      loading.value = false;
-    }
+  // 根据选择加载不同的电影数据
+  if (index === '2') {
+    // 正在热映
+    fetchNowShowingMovies();
+  } else if (index === '3') {
+    // 即将上映
+    fetchComingSoonMovies();
   }
 };
 
@@ -464,11 +548,11 @@ const formatTime = (seconds) => {
 };
 
 // 筛选和排序处理
-const handleFilterChange = () => { //TODO
+const handleFilterChange = () => {
   fetchMovies();
 };
 
-const handleSortChange = () => { //TODO
+const handleSortChange = () => {
   fetchMovies();
 };
 
@@ -499,8 +583,6 @@ const toggleLoginState = () => {
   }
   router.push('/login');
 };
-
-
 
 // 方法
 const toggleSeatSelection = (seat) => {
@@ -598,16 +680,16 @@ onMounted(() => {
       </el-carousel>
 
       <!-- 分类筛选 -->
-      <div class="filter-section">
+      <div class="filter-section" v-if="activeIndex === '2' || activeIndex === '3'">
         <div class="filter-tabs">
           <el-tabs v-model="activeFilter" @tab-change="handleFilterChange">
             <el-tab-pane label="全部" name="all"></el-tab-pane>
-            <el-tab-pane label="动作" name="动作"></el-tab-pane>
-            <el-tab-pane label="喜剧" name="喜剧"></el-tab-pane> <!--TODO-->
-            <el-tab-pane label="爱情" name="爱情"></el-tab-pane>
-            <el-tab-pane label="科幻" name="科幻"></el-tab-pane>
-            <el-tab-pane label="恐怖" name="恐怖"></el-tab-pane>
-            <el-tab-pane label="动画" name="动画"></el-tab-pane>
+            <el-tab-pane
+                v-for="genre in allGenres"
+                :key="genre"
+                :label="genre"
+                :name="genre"
+            ></el-tab-pane>
           </el-tabs>
         </div>
         <div class="sort-options">
@@ -621,9 +703,62 @@ onMounted(() => {
         </div>
       </div>
 
+      <!-- 首页 -->
+      <div class="movie-list" v-if="activeIndex === '1'">
+        <h2 class="section-title">{{ '热门电影' }}</h2>
+        <el-row :gutter="20">
+          <el-col
+              v-for="movie in allMovies"
+              :key="movie.id"
+              :xs="12"
+              :sm="8"
+              :md="6"
+              :lg="4"
+              :xl="4"
+          >
+            <el-card
+                class="movie-card"
+                :body-style="{ padding: '0px' }"
+                shadow="hover"
+                @click="goToMovieDetail(movie.id)"
+            >
+              <div class="movie-poster" :style="{ backgroundImage: `url(${movie.poster})` }">
+                <div class="movie-rating">
+                  <el-rate
+                      :model-value="Math.round(Number(movie.rating) / 2)"
+                      disabled
+                      show-score
+                      text-color="#ff9900"
+                      :score-template="`${movie.rating.toFixed(1)}`"
+                      :colors="['#99A9BF', '#F7BA2A', '#FF9900']"
+                  />
+                </div>
+              </div>
+              <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <p class="movie-genre">{{ movie.genre.join(' / ') }}</p>
+                <div class="movie-footer">
+                  <span class="price">
+                    ¥{{ movie.price }}
+                  </span>
+                  <el-button
+                      type="primary"
+                      size="small"
+                      round
+                      @click.stop="openBookingDialog(movie)"
+                  >
+                    购票
+                  </el-button>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
+
       <!-- 电影列表 -->
-      <div class="movie-list">
-        <h2 class="section-title">正在热映</h2>
+      <div class="movie-list" v-if="activeIndex === '2'">
+        <h2 class="section-title">{{ '正在热映' }}</h2>
         <el-row :gutter="20">
           <el-col
               v-for="movie in filteredMovies"
@@ -643,11 +778,12 @@ onMounted(() => {
               <div class="movie-poster" :style="{ backgroundImage: `url(${movie.poster})` }">
                 <div class="movie-rating">
                   <el-rate
-                      v-model="movie.rating"
+                      :model-value="Math.floor(Number(movie.rating) / 2)"
                       disabled
                       show-score
                       text-color="#ff9900"
-                      score-template="{value}"
+                      :score-template="`${movie.rating.toFixed(1)}`"
+                      :colors="['#99A9BF', '#F7BA2A', '#FF9900']"
                   />
                 </div>
               </div>
@@ -655,7 +791,9 @@ onMounted(() => {
                 <h3 class="movie-title">{{ movie.title }}</h3>
                 <p class="movie-genre">{{ movie.genre.join(' / ') }}</p>
                 <div class="movie-footer">
-                  <span class="price">¥{{ movie.price }}</span>
+                  <span class="price">
+                    {{ movie.price }}
+                  </span>
                   <el-button
                       type="primary"
                       size="small"
@@ -672,11 +810,11 @@ onMounted(() => {
       </div>
 
       <!-- 即将上映 -->
-      <div class="coming-soon">
-        <h2 class="section-title">即将上映</h2>
+      <div class="coming-soon" v-if="activeIndex === '1' || activeIndex === '3'">
+        <h2 class="section-title">{{ activeIndex === '3' ? '即将上映' : '即将上映' }}</h2>
         <el-row :gutter="20">
           <el-col
-              v-for="movie in comingSoonMovies"
+              v-for="movie in filteredMovies"
               :key="movie.id"
               :xs="12"
               :sm="8"
@@ -713,7 +851,7 @@ onMounted(() => {
       </div>
 
       <!-- 底部推荐 -->
-      <div class="recommendations">
+      <div class="recommendations" v-if="activeIndex === '1'">
         <h2 class="section-title">为您推荐</h2>
         <el-row :gutter="20">
           <el-col
@@ -1103,14 +1241,14 @@ onMounted(() => {
   position: relative;
 }
 
+
 .movie-rating {
   position: absolute;
   bottom: 10px;
-  left: 10px;
-  right: 10px;
+  left: 0;
+  right: 0;
+  padding: 5px 10px;
   background-color: rgba(0, 0, 0, 0.7);
-  padding: 5px;
-  border-radius: 4px;
 }
 
 .release-date {
