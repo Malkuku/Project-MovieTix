@@ -11,12 +11,7 @@ import {
   User,
   VideoCamera
 } from '@element-plus/icons-vue'
-import router from "@/router";
 
-// 手动路由方法
-const goToHome = () => {
-  router.push('/home');
-};
 </script>
 
 <template>
@@ -127,7 +122,6 @@ const goToHome = () => {
               </template>
               <el-menu-item index="/system/log">系统日志</el-menu-item>
               <el-menu-item index="/system/setting">系统设置</el-menu-item>
-              <el-menu-item index="/system/account">账号管理</el-menu-item>
             </el-sub-menu>
           </el-menu>
         </el-aside>

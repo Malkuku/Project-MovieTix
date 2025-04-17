@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import { sha256 } from 'js-sha256';
+import {sha256} from 'js-sha256';
 
 // 用户登录
 export const loginApi = (username, password) => {

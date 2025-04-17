@@ -12,7 +12,9 @@ import ProfileView from '@/views/user_profile/index.vue'
 import HomeView from '@/views/homeView/index.vue'
 import RefundView from '@/views/refund/index.vue'
 import UserOrderView from '@/views/user_order/index.vue'
-import { useUserStore } from '@/stores/user';
+import ErrorView from '@/views/error/index.vue'
+import PlaceHolderView from '@/views/placeHolder/index.vue'
+import {useUserStore} from '@/stores/user';
 
 
 const router = createRouter({
@@ -29,7 +31,7 @@ const router = createRouter({
             name: 'layout',
             component: LayoutView,
             redirect: '/hall',
-            meta: { requiresAuth: true }, // 添加元数据标记需要认证
+            meta: { requiresAuth: true, requiresAdmin: true }, // 添加元数据标记需要认证
             children: [
                 { path: '/hall', name: 'hall', component: HallView },
                 { path: '/movie', name: 'movie', component: MovieView },
@@ -38,6 +40,12 @@ const router = createRouter({
                 { path: '/log', name: 'log', component: LogView },
                 { path: '/order', name: 'order', component: OrderView },
                 { path: '/refund', name: 'refund', component: RefundView},
+                { path:'/movie/category', name: 'category', component: PlaceHolderView,meta: { requiresDev: true }},
+                { path:'/screening/schedule', name: 'schedule', component: PlaceHolderView,meta: { requiresDev: true }},
+                { path:'/finance/daily', name: 'daily', component: PlaceHolderView,meta: { requiresDev: true }},
+                { path:'/finance/monthly', name: 'monthly', component: PlaceHolderView,meta: { requiresDev: true }},
+                { path:'/system/log', name: 'log', component: PlaceHolderView,meta: { requiresDev: true }},
+                { path:'/system/setting', name: 'setting', component: PlaceHolderView,meta: { requiresDev: true }},
             ]
         },
         {
@@ -64,9 +72,11 @@ const router = createRouter({
             component: UserOrderView,
             meta: { requiresAuth: true }
         },
-        { path: '/home', name: 'home', component: HomeView }
+        { path: '/home', name: 'home', component: HomeView },
+        { path: '/error', name: 'error', component: ErrorView}
     ]
 })
+
 
 // 路由守卫 //TODO配置对管理员入口的验证
 router.beforeEach((to, from, next) => {
@@ -92,6 +102,31 @@ router.beforeEach((to, from, next) => {
         }
     }
 
+    //检查需要管理员权限
+    if(to.matched.some(record => record.meta.requiresAdmin)){
+        if(!userStore.adminToken){
+            next({
+                path: '/error',
+                query: {
+                    errorMessage: '您没有管理员权限，无法访问此页面',
+                    redirectTo: '/'
+                }
+            })
+        }
+    }
+
+    // 检查需要开发者权限 //TODO 暂时需要手动关闭
+    if (to.matched.some(record => record.meta.requiresDev)) {
+        if (1 === 1) {
+            next({
+                path: '/error',
+                query: {
+                    errorMessage: '噢，非常抱歉，此界面还在开发中😣',
+                    redirectTo: '/'
+                }
+            })
+        }
+    }
     next()
 })
 
