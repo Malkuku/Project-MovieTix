@@ -93,18 +93,19 @@ public class HallDaoImpl implements HallDao {
 
     @Override
     public List<Hall> selectHallsByPage(HallQueryParam param,Connection conn,boolean isAutoCloseConn) throws SQLException, SQLException {
-        String sql = "SELECT *\n" +
-                "FROM halls\n" +
-                "WHERE 1=1 \n" +
-                "    AND (? IS NULL OR name LIKE CONCAT('%', ?, '%'))\n" +
-                "    AND (? IS NULL OR capacity >= ?)\n" +
-                "    AND (? IS NULL OR capacity <= ?)\n" +
-                "    AND (? IS NULL OR `rows` >= ?)\n" +
-                "    AND (? IS NULL OR `cols` >= ?)\n" +
-                "    AND (? IS NULL OR facilities LIKE CONCAT('%', ?, '%'))\n" +
-                "    AND (? IS NULL OR status = ?)\n" +
-                "ORDER BY id \n" +
-                "LIMIT ? OFFSET ?";
+        String sql = """
+                SELECT *
+                FROM halls
+                WHERE 1=1\s
+                    AND (? IS NULL OR name LIKE CONCAT('%', ?, '%'))
+                    AND (? IS NULL OR capacity >= ?)
+                    AND (? IS NULL OR capacity <= ?)
+                    AND (? IS NULL OR `rows` >= ?)
+                    AND (? IS NULL OR `cols` >= ?)
+                    AND (? IS NULL OR facilities LIKE CONCAT('%', ?, '%'))
+                    AND (? IS NULL OR status = ?)
+                ORDER BY updated_at desc
+                LIMIT ? OFFSET ?""";
 
         return JdbcUtils.executeQuery(
                 conn,

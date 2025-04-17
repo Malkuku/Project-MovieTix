@@ -53,7 +53,7 @@ public class OrderDaoImpl implements OrderDao {
         String sql = "SELECT o.* " +
                 "FROM orders o " +
                 "WHERE 1=1 " +
-                "    AND (? IS NULL OR o.order_no = ?) " +
+                "    AND (? IS NULL OR o.order_no LIKE CONCAT('%', ?, '%')) " +
                 "    AND (? IS NULL OR o.user_id = ?) " +
                 "    AND (? IS NULL OR o.screening_id = ?) " +
                 "    AND (? IS NULL OR o.status = ?) " +
@@ -61,7 +61,7 @@ public class OrderDaoImpl implements OrderDao {
                 "    AND (? IS NULL OR o.total_amount <= ?) " +
                 "    AND (? IS NULL OR o.created_at >= ?) " +
                 "    AND (? IS NULL OR o.created_at <= ?) " +
-                "ORDER BY o.created_at DESC " +
+                "ORDER BY o.updated_at DESC " +
                 "LIMIT ? OFFSET ?";
 
         return JdbcUtils.executeQuery(

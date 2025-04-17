@@ -155,7 +155,7 @@ public class ScreeningDaoImpl implements ScreeningDao {
                 "    AND (? IS NULL OR s.price <= ?) " +
                 "    AND (? IS NULL OR s.remaining_seats >= ?) " +
                 "    AND (? IS NULL OR s.status = ?) " +
-                "ORDER BY s.start_time " +
+                "ORDER BY updated_at desc " +
                 "LIMIT ? OFFSET ?";
 
         return JdbcUtils.executeQuery(

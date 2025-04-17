@@ -132,19 +132,20 @@ public class MovieDaoImpl implements MovieDao {
 
     @Override
     public List<Movie> selectMoviesByPage(MovieQueryParam param,Connection conn ,boolean isAutoCloseConn) throws SQLException {
-        String sql = "SELECT *\n" +
-                "FROM movies\n" +
-                "WHERE 1=1 \n" +
-                "    AND (? IS NULL OR title LIKE CONCAT('%', ?, '%'))\n" +
-                "    AND (? IS NULL OR release_date = ?)\n" +
-                "    AND (? IS NULL OR duration >= ?)\n" +
-                "    AND (? IS NULL OR duration <= ?)\n" +
-                "    AND (? IS NULL OR genre = ?)\n" +
-                "    AND (? IS NULL OR rating >= ?)\n" +
-                "    AND (? IS NULL OR rating <= ?)\n" +
-                "    AND (? IS NULL OR status = ?)\n" +
-                "ORDER BY id \n" +
-                "LIMIT ? OFFSET ?";
+        String sql = """
+                SELECT *
+                FROM movies
+                WHERE 1=1\s
+                    AND (? IS NULL OR title LIKE CONCAT('%', ?, '%'))
+                    AND (? IS NULL OR release_date <= ?)
+                    AND (? IS NULL OR duration >= ?)
+                    AND (? IS NULL OR duration <= ?)
+                    AND (? IS NULL OR genre LIKE CONCAT('%', ?, '%'))
+                    AND (? IS NULL OR rating >= ?)
+                    AND (? IS NULL OR rating <= ?)
+                    AND (? IS NULL OR status = ?)
+                ORDER BY updated_at desc\s
+                LIMIT ? OFFSET ?""";
 
         return JdbcUtils.executeQuery(
                 conn,
