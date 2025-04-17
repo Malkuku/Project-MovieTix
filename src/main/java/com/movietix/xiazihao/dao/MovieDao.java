@@ -26,4 +26,7 @@ public interface MovieDao {
 
     //根据ID查询电影
     Movie selectMovieById(Integer id,Connection conn,boolean isAutoCloseConn) throws SQLException;
+
+    //查询电影最低价格
+    Double selectMovieLowestPriceByScreeningId(Integer movieId, Connection connection, boolean isAutoCloseConn) throws SQLException;
 }

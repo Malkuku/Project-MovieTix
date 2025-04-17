@@ -57,8 +57,11 @@ public class MovieServiceImpl implements MovieService {
     public PageResult<Movie> selectMoviesByPage(MovieQueryParam param) throws SQLException {
         Integer total = movieDao.countMovies(param, JdbcUtils.getConnection(),true);
         List<Movie> movies = movieDao.selectMoviesByPage(param, JdbcUtils.getConnection(),true);
-
-
         return new PageResult<>(total, movies);
+    }
+
+    @Override
+    public Double selectMovieLowestPriceByScreeningId(Integer movieId) throws SQLException {
+        return movieDao.selectMovieLowestPriceByScreeningId(movieId, JdbcUtils.getConnection(),true);
     }
 }

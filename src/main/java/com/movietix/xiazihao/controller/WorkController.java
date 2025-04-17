@@ -154,6 +154,14 @@ public class WorkController extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        //查询电影最低价格
+        else if(pathInfo != null && pathInfo.matches("/price/\\d+")) {
+            try {
+                selectMovieLowestPriceByScreeningId(req, resp);
+            } catch (IOException | SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     //put请求入口
     @Override
@@ -166,6 +174,11 @@ public class WorkController extends HttpServlet {
     //delete请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    //根据电影Id查询场次最低价格
+    private void selectMovieLowestPriceByScreeningId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        movieController.exposeSelectMovieLowestPriceByScreeningId(req, resp);
     }
 
     //查询放映场次信息的座位信息

@@ -14,4 +14,5 @@ public interface WorkDao {
 
     //根据场次id查询座位
     List<OrderSeat> selectSeatsByScreeningId(Integer screeningId, Connection connection, boolean isAutoCloseConn) throws SQLException;
+
 }

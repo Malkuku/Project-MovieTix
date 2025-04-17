@@ -180,4 +180,5 @@ public class WorkServiceImpl implements WorkService {
         Screening screening = screeningService.selectScreeningById(screeningId);
         return new WorkSeatResult(hall.getRows(), hall.getCols(),screening.getPrice(), seats);
     }
+
 }

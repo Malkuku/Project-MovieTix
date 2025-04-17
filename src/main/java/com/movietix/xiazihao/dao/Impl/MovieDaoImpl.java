@@ -180,4 +180,25 @@ public class MovieDaoImpl implements MovieDao {
                 param.getPageSize(), (param.getPage() - 1) * param.getPageSize()
         );
     }
+
+    @Override
+    public Double selectMovieLowestPriceByScreeningId(Integer movieId, Connection connection, boolean isAutoCloseConn) throws SQLException {
+        String sql = "select min(price) from screenings where movie_id = ?";
+        List<Double> priceList = JdbcUtils.executeQuery(
+                connection,
+                sql,
+                isAutoCloseConn,
+                rs -> {
+                    Double price = 0.0;
+                    try {
+                        price = rs.getDouble(1);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return price;
+                },
+                movieId
+        );
+        return priceList.isEmpty() ? 0.0 : priceList.get(0);
+    }
 }

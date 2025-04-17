@@ -33,4 +33,5 @@ public interface WorkService {
 
     //查询放映场次信息的座位信息
     WorkSeatResult selectSeatsByScreeningId(Integer screeningId) throws SQLException;
+
 }

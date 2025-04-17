@@ -44,6 +44,14 @@ public class MovieController extends HttpServlet {
         if (pathInfo != null && pathInfo.matches("/\\d+")) {
             selectMovieById(req, resp);
         }
+        // 处理/movies/price/{movieId}请求
+        if (pathInfo != null && pathInfo.matches("/price/\\d+")) {
+            try {
+                selectMovieLowestPriceByScreeningId(req, resp);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
         // 处理/movies?query=params请求
         else {
             try {
@@ -152,9 +160,20 @@ public class MovieController extends HttpServlet {
         ServletUtils.sendResponse(resp, Result.success());
     }
 
+    //根据电影Id查询场次最低价格
+    private void selectMovieLowestPriceByScreeningId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String pathInfo = req.getPathInfo();
+        int movieId = Integer.parseInt(pathInfo.replaceAll("\\D", ""));
+        Double lowestPrice = movieService.selectMovieLowestPriceByScreeningId(movieId);
+        log.info("查询成功,结果:{}", lowestPrice);
+        ServletUtils.sendResponse(resp, Result.success(lowestPrice));
+    }
 
     //公共方法暴露
     public void exposeSelectMoviesByPage(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
         this.selectMoviesByPage(req, resp);
+    }
+    public void exposeSelectMovieLowestPriceByScreeningId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        this.selectMovieLowestPriceByScreeningId(req, resp);
     }
 }

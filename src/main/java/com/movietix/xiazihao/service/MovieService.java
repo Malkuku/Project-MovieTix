@@ -22,4 +22,7 @@ public interface MovieService {
 
     //根据ID查询电影
     Movie selectMovieById(Integer id);
+
+    //查询电影最低票价
+    Double selectMovieLowestPriceByScreeningId(Integer movieId) throws SQLException;
 }
