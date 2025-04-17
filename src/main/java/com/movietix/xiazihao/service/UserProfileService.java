@@ -2,7 +2,6 @@ package com.movietix.xiazihao.service;
 
 import com.movietix.xiazihao.entity.pojo.UserProfile;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
