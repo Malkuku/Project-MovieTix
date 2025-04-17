@@ -46,6 +46,7 @@ const router = createRouter({
                 { path:'/finance/monthly', name: 'monthly', component: PlaceHolderView,meta: { requiresDev: true }},
                 { path:'/system/log', name: 'log', component: PlaceHolderView,meta: { requiresDev: true }},
                 { path:'/system/setting', name: 'setting', component: PlaceHolderView,meta: { requiresDev: true }},
+                { path:'/movie/:movieId', name: 'movie_detail', component: PlaceHolderView,meta: { requiresDev: true }},
             ]
         },
         {

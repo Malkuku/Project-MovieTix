@@ -118,9 +118,7 @@ const fetchMovies = async () => {
     const featuredResult = await getMoviesApi({
       page: 1,
       pageSize: 3,
-      status: 1,
-      sortBy: 'rating',
-      order: 'desc'
+      status: 1
     });
 
     if (featuredResult.code === 1) {
@@ -153,9 +151,7 @@ const fetchMovies = async () => {
     const comingSoonResult = await getMoviesApi({
       page: 1,
       pageSize: 4,
-      status: 0,
-      sortBy: 'releaseDate',
-      order: 'asc'
+      status: 0
     });
 
     if (comingSoonResult.code === 1) {
@@ -242,7 +238,7 @@ const handleSearch = async () => {
           ...movie,
           poster: movie.posterUrl,
           genre: movie.genre.split(','),
-          price: Math.floor(Math.random() * 20) + 30
+          price: Math.floor(Math.random() * 20) + 30 // 模拟价格 //TODO 替换为实际价格
         }));
         pagination.value.total = result.data.total;
         ElMessage.success(`找到${result.data.total}部相关电影`);
@@ -468,12 +464,12 @@ const formatTime = (seconds) => {
 };
 
 // 筛选和排序处理
-const handleFilterChange = () => {
-  fetchScreenings();
+const handleFilterChange = () => { //TODO
+  fetchMovies();
 };
 
-const handleSortChange = () => {
-  fetchScreenings();
+const handleSortChange = () => { //TODO
+  fetchMovies();
 };
 
 // 路径跳转
@@ -606,12 +602,12 @@ onMounted(() => {
         <div class="filter-tabs">
           <el-tabs v-model="activeFilter" @tab-change="handleFilterChange">
             <el-tab-pane label="全部" name="all"></el-tab-pane>
-            <el-tab-pane label="动作" name="action"></el-tab-pane>
-            <el-tab-pane label="喜剧" name="comedy"></el-tab-pane>
-            <el-tab-pane label="爱情" name="romance"></el-tab-pane>
-            <el-tab-pane label="科幻" name="sci-fi"></el-tab-pane>
-            <el-tab-pane label="恐怖" name="horror"></el-tab-pane>
-            <el-tab-pane label="动画" name="animation"></el-tab-pane>
+            <el-tab-pane label="动作" name="动作"></el-tab-pane>
+            <el-tab-pane label="喜剧" name="喜剧"></el-tab-pane> <!--TODO-->
+            <el-tab-pane label="爱情" name="爱情"></el-tab-pane>
+            <el-tab-pane label="科幻" name="科幻"></el-tab-pane>
+            <el-tab-pane label="恐怖" name="恐怖"></el-tab-pane>
+            <el-tab-pane label="动画" name="动画"></el-tab-pane>
           </el-tabs>
         </div>
         <div class="sort-options">
