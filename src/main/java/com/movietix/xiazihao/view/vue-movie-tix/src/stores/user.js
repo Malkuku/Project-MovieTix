@@ -1,7 +1,6 @@
 import {defineStore} from 'pinia';
 import {ref} from 'vue';
 import {getUserProfileApi} from "@/api/user_work";
-import {ElMenuItem, ElMessage} from "element-plus";
 
 export const useUserStore = defineStore('user', () => {
     const id = ref(null);
