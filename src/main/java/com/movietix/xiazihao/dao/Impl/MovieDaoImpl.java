@@ -183,7 +183,7 @@ public class MovieDaoImpl implements MovieDao {
 
     @Override
     public Double selectMovieLowestPriceByScreeningId(Integer movieId, Connection connection, boolean isAutoCloseConn) throws SQLException {
-        String sql = "select min(price) from screenings where movie_id = ?";
+        String sql = "select min(price) from screenings where movie_id = ? and status = 1";
         List<Double> priceList = JdbcUtils.executeQuery(
                 connection,
                 sql,
