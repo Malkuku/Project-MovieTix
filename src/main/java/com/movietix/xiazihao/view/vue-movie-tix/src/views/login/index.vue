@@ -85,6 +85,7 @@ const handleLogin = async () => {
     if (result.code === 1) {
       ElMessage.success('登录成功');
       userStore.setUserInfo(result.data);
+      await userStore.updateUserProfile();
       await router.push('/');
     } else {
       ElMessage.error(result.msg || '登录失败');

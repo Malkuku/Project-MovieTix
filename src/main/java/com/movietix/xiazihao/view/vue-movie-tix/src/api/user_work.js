@@ -14,8 +14,8 @@ export const registerApi = (username, password) => {
 }
 
 // 用户充值
-export const rechargeApi = (userId, amount) => {
-    return request.post('/works/recharge', { id: userId, amount });
+export const rechargeApi = (userId, balance) => {
+    return request.post('/works/recharge', { id: userId, balance });
 }
 
 // 修改密码

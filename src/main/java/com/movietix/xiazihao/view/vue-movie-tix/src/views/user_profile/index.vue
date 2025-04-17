@@ -261,6 +261,7 @@ const handleSave = async () => {
 
     if (result.code === 1) {
       ElMessage.success('保存成功');
+      await userStore.updateUserProfile();
       isEditing.value = false;
       await fetchUserProfile();
     } else {
@@ -363,7 +364,7 @@ const updatePassword = async () => {
 // 充值相关
 const rechargeDialogVisible = ref(false);
 const rechargeForm = ref({
-  amount: 100
+  balance: 100
 });
 
 const rechargeRules = ref({
@@ -387,11 +388,11 @@ const handleRecharge = async () => {
     await rechargeFormRef.value.validate();
     const result = await rechargeApi(
         profileForm.value.userId,
-        rechargeForm.value.amount
+        rechargeForm.value.balance
     );
-
     if (result.code === 1) {
       ElMessage.success('充值成功');
+      await userStore.updateUserProfile();
       rechargeDialogVisible.value = false;
       await fetchUserProfile();
     } else {

@@ -76,7 +76,7 @@ const fetchMovies = async () => {
     // 获取正在热映和即将上映电影
     await Promise.all([fetchNowShowingMovies(), fetchComingSoonMovies()]);
 
-    // 从已获取的热映电影中随机选取3部作为推荐
+    // 从已获取的热映电影中随机选取3部 作为推荐
     if (allMovies.value.length > 0) {
       // 更好的随机选择算法（Fisher-Yates洗牌算法）
       const shuffled = [...allMovies.value]
@@ -424,6 +424,7 @@ const fetchSeats = async (screeningId) => {
 const paymentTimer = ref(null);
 const paymentTimeLeft = ref(900); // 15分钟
 
+//TODO 启动倒计时
 const startPaymentTimer = () => {
   paymentTimer.value = setInterval(() => {
     paymentTimeLeft.value--;
@@ -494,6 +495,7 @@ const payOrder = async () => {
     const response = await payOrderApi(paymentData);
     if (response.code === 1) {
       ElMessage.success('支付成功');
+      await userStore.updateUserProfile();
       clearInterval(paymentTimer.value);
       closeDialog();
     } else {
@@ -574,7 +576,7 @@ const goToLayout = () => {
 };
 
 const toggleLoginState = () => {
-  if (userStore.isAuthenticated()) { // 修复这里
+  if (userStore.isAuthenticated()) {
     userStore.clearUserInfo();
     ElMessage({
       message: '退出登录成功',
@@ -640,12 +642,17 @@ onMounted(() => {
       </div>
       <div class="user-actions">
         <el-dropdown>
-          <span class="el-dropdown-link">
-            <el-avatar :size="40" :src="userStore.avatar"/>
-            <span class="username">{{ userStore.username }}</span>
-          </span>
+    <span class="el-dropdown-link">
+      <el-avatar :size="40" :src="userStore.avatar"/>
+      <span class="username">{{ userStore.nickname }}</span>
+    </span>
           <template #dropdown>
             <el-dropdown-menu>
+              <!-- 添加余额显示 -->
+              <el-dropdown-item disabled class="balance-item">
+                <span>当前余额: ¥{{ userStore.balance }}</span>
+              </el-dropdown-item>
+              <el-dropdown-item divided></el-dropdown-item>
               <el-dropdown-item @click="goToProfile">个人中心</el-dropdown-item>
               <el-dropdown-item @click="goToOrders">我的订单</el-dropdown-item>
               <el-dropdown-item divided @click="toggleLoginState">
@@ -1149,13 +1156,30 @@ onMounted(() => {
 }
 
 .user-actions {
-  display: flex;
-  align-items: center;
-}
+  .balance-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 20px;
+    color: #666;
 
-.username {
-  margin-left: 10px;
-  font-size: 14px;
+    .recharge-btn {
+      padding: 0;
+      margin-left: 10px;
+      color: var(--el-color-primary);
+    }
+  }
+
+  .el-dropdown-link {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    .username {
+      margin-left: 8px;
+      font-size: 14px;
+    }
+  }
 }
 
 .main-content {

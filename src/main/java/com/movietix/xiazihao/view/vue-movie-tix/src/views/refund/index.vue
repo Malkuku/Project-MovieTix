@@ -145,7 +145,8 @@ const handleProcess = (status) => {
 
     if (result.code) {
       ElMessage.success('处理成功');
-      search();
+      await userStore.updateUserProfile();
+      await search();
     } else {
       ElMessage.error(result.msg || '处理失败');
     }
