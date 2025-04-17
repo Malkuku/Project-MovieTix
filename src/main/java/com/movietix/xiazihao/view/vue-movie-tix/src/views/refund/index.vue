@@ -2,6 +2,9 @@
 import { ref, onMounted } from 'vue';
 import { queryRefundsApi, createRefundApi, processRefundApi } from '@/api/refund';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import {useUserStore} from "@/stores/user";
+
+const userStore = useUserStore();
 
 // 状态枚举
 const statusOptions = [
@@ -136,7 +139,7 @@ const handleProcess = (status) => {
   ).then(async () => {
     const result = await processRefundApi({
       ids: selectedIds.join(','),
-      adminId: 1, // 实际项目中应该从登录信息中获取
+      adminId: userStore.id,
       status: status
     });
 
@@ -157,6 +160,13 @@ const handleSelectionChange = (val) => {
   selection.value = val.map(item => item.id);
 };
 
+//重置空串为null
+const handleStatusChange = (value)=> {
+  if (value === '') {
+    queryParams.value.status = null;
+  }
+};
+
 // 初始化加载
 onMounted(() => {
   search();
@@ -175,7 +185,7 @@ onMounted(() => {
           <el-input v-model="queryParams.userId" placeholder="用户ID" clearable />
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="queryParams.status" placeholder="状态" clearable>
+          <el-select v-model="queryParams.status" placeholder="状态" @change="handleStatusChange" clearable>
             <el-option
                 v-for="item in statusOptions"
                 :key="item.value"

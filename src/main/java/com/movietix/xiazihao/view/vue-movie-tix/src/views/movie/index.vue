@@ -68,12 +68,12 @@ const handleSizeChange = (val) => {
 const dialogFormVisible = ref(false);
 const formTitle = ref('');
 const movie = ref({
-  title: '',
-  posterUrl: '',
-  releaseDate: '',
-  duration: '',
-  genre: '',
-  rating: '',
+  title: null,
+  posterUrl: null,
+  releaseDate: null,
+  duration: null,
+  genre: null,
+  rating: null,
   status: 1
 });
 
@@ -221,7 +221,7 @@ onMounted(() => {
       <el-form-item label="上映日期">
         <el-date-picker
             v-model="queryParams.releaseDate"
-            type="date"
+            type="Date"
             placeholder="选择日期"
             value-format="YYYY-MM-DD"
             clearable

@@ -333,9 +333,9 @@ const resetQuery = () => {
   <!-- 操作按钮 -->
   <div class="container">
     <el-button type="primary" @click="addUser">新增用户</el-button>
-    <el-button type="danger" @click="batchDelete" :disabled="selection.length === 0">批量删除</el-button>
-    <el-button type="warning" @click="batchUpdateStatus(1)" :disabled="selection.length === 0">批量拉黑</el-button>
-    <el-button type="success" @click="batchUpdateStatus(0)" :disabled="selection.length === 0">批量解封</el-button>
+    <el-button type="danger" @click="batchDelete" :disabled="selection.length === 0 || selection.some(user => user.isAdmin)">批量删除</el-button>
+    <el-button type="warning" @click="batchUpdateStatus(1)" :disabled="selection.length === 0|| selection.some(user => user.isAdmin)">批量拉黑</el-button>
+    <el-button type="success" @click="batchUpdateStatus(0)" :disabled="selection.length === 0|| selection.some(user => user.isAdmin)">批量解封</el-button>
   </div>
 
   <!-- 用户表格 -->
@@ -386,9 +386,9 @@ const resetQuery = () => {
 
       <el-table-column label="操作" align="center" width="280">
         <template #default="{row}">
-          <el-button type="primary" size="small" @click="editUser(row.id)">编辑</el-button>
-          <el-button type="warning" size="small" @click="openPasswordDialog(row)">改密</el-button>
-          <el-button type="info" size="small" @click="openBalanceDialog(row)">调额</el-button>
+          <el-button type="primary" size="small" @click="editUser(row.id)" :disabled="row.isAdmin">编辑</el-button>
+          <el-button type="warning" size="small" @click="openPasswordDialog(row)" :disabled="row.isAdmin">改密</el-button>
+          <el-button type="info" size="small" @click="openBalanceDialog(row)" :disabled="row.isAdmin">调额</el-button>
           <el-button
               type="danger"
               size="small"
