@@ -1,7 +1,6 @@
 import {defineStore} from 'pinia';
 import {ref} from 'vue';
 
-
 export const useUserStore = defineStore('user', () => {
     const id = ref(null);
     const username = ref('');
@@ -36,15 +35,11 @@ export const useUserStore = defineStore('user', () => {
         clearUserInfo,
         isAuthenticated
     };
-}, {
-    persist: {
-        enabled: true, // 启用持久化
-        strategies: [
-            {
-                key: 'user', // 存储在 sessionStorage 中的键名
-                storage: sessionStorage, // 使用 sessionStorage 持久化
-                autoPrune: true
-            },
-        ],
     },
-});
+    {
+        persist: {
+            enabled: true, // 启用持久化
+            storage: sessionStorage,
+        },
+    }
+);
