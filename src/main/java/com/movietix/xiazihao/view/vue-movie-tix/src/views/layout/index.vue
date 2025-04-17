@@ -28,18 +28,8 @@ import {
             <el-dropdown>
               <span class="user-actions">
                 <el-avatar :size="32" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" />
-                <span class="username">管理员</span>
+                <span class="username">管理员模式</span>
               </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item>
-                    <el-icon><EditPen /></el-icon> 修改密码
-                  </el-dropdown-item>
-                  <el-dropdown-item divided>
-                    <el-icon><SwitchButton /></el-icon> 退出登录
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
             </el-dropdown>
           </div>
         </div>
