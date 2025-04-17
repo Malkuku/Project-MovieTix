@@ -6,7 +6,7 @@ Translation: First-round assessment for the Anyview project
 相应的接口文档和api请访问https://apifox.com/apidoc/shared-222e8a42-c558-475a-9171-12462ed646bb
 
 
-**目前功能较为稳定的分支版本是：Release-1.0**
+**目前功能较为稳定的分支版本是：Release-1.0，请阅读该分支的README文档**
 
 ## 目前项目仍在开发之中，以下是每个分支实现功能的简述：
 
