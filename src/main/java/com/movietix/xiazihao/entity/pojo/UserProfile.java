@@ -27,4 +27,6 @@ public class UserProfile {
     private String idCard; // 身份证号
     private LocalDateTime createdAt; // 创建时间
     private LocalDateTime updatedAt; // 更新时间
+
+    private Double balance = 0.0; // 余额
 }

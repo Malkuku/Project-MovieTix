@@ -73,7 +73,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
 
     @Override
     public UserProfile selectUserProfileByUserId(Integer userId, Connection conn, boolean isAutoCloseConn) throws SQLException {
-        String sql = "SELECT up.*,u.username as username FROM user_profiles up join users u on up.user_id = u.id WHERE up.user_id = ?";
+        String sql = "SELECT up.*,u.username as username,u.balance as balance FROM user_profiles up join users u on up.user_id = u.id WHERE up.user_id = ?";
         List<UserProfile> userProfileList = JdbcUtils.executeQuery(conn, sql, isAutoCloseConn,
                 rs -> {
                     UserProfile userProfile = new UserProfile();
@@ -90,6 +90,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
                         userProfile.setProvince(rs.getString("province"));
                         userProfile.setSignature(rs.getString("signature"));
                         userProfile.setPhone(rs.getString("phone"));
+                        userProfile.setBalance(rs.getDouble("balance"));
                         userProfile.setRealName(rs.getString("real_name"));
                         userProfile.setIdCard(rs.getString("id_card"));
                         userProfile.setCreatedAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
