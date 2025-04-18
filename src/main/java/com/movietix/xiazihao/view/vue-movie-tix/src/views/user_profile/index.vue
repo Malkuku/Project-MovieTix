@@ -100,13 +100,16 @@
         <el-form-item label="头像" prop="avatar">
           <el-upload
               class="avatar-uploader"
-              action="/api/upload"
+              action="#"
               :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
+              :auto-upload="false"
+              :on-change="handleAvatarChange"
+              :accept="'image/jpeg,image/png,image/gif'"
           >
-            <img v-if="profileForm.avatar" :src="profileForm.avatar" class="avatar"  alt="加载失败"/>
-            <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+            <img v-if="tempAvatar || profileForm.avatar" :src="tempAvatar || profileForm.avatar" class="avatar" alt="用户头像"/>
+            <div v-else class="avatar-uploader-placeholder">
+              <el-icon class="plus-icon"><Plus /></el-icon>
+            </div>
           </el-upload>
         </el-form-item>
 
@@ -200,6 +203,7 @@ import {
   rechargeApi
 } from '@/api/user_work';
 import { useUserStore } from '@/stores/user';
+import {deleteFileApi, uploadFileApi} from "@/api/upload";
 
 const userStore = useUserStore();
 
@@ -237,57 +241,78 @@ const profileRules = ref({
   ]
 });
 
+const tempAvatar = ref(null) // 用于存储临时头像URL
+const oldAvatar = ref(null) // 用于存储原始头像URL
+
 const isEditing = ref(false);
 const originalProfile = ref({});
 
 const profileFormRef = ref();
 
 const handleEdit = () => {
-  isEditing.value = true;
-  originalProfile.value = { ...profileForm.value };
-};
+  isEditing.value = true
+  originalProfile.value = { ...profileForm.value }
+  oldAvatar.value = profileForm.value.avatar // 保存原始头像URL
+  tempAvatar.value = null // 清空临时头像
+}
 
 const cancelEdit = () => {
-  isEditing.value = false;
-  profileForm.value = { ...originalProfile.value };
-};
+  isEditing.value = false
+  profileForm.value = { ...originalProfile.value }
+  tempAvatar.value = null // 取消时清除临时头像
+}
+
 
 const handleSave = async () => {
-  if (!profileFormRef.value) return;
+  if (!profileFormRef.value) return
 
   try {
-    await profileFormRef.value.validate();
-    const result = await updateUserProfileApi(profileForm.value);
+    await profileFormRef.value.validate()
 
+    // 如果有临时头像，先上传
+    if (tempAvatar.value) {
+      // 获取上传文件
+      const fileInput = document.querySelector('.avatar-uploader input[type="file"]')
+      const file = fileInput?.files?.[0]
+
+      if (file) {
+        // 上传新头像
+        const uploadResult = await uploadFileApi(file)
+        if (uploadResult.code !== 1) {
+          Error(uploadResult.msg || '上传失败')
+        }
+
+        // 删除旧头像
+        if (oldAvatar.value) {
+          try {
+            await deleteFileApi(oldAvatar.value)
+          } catch (error) {
+            console.error('删除旧头像失败:', error)
+            // 继续执行，不中断流程
+          }
+        }
+
+        // 更新头像URL
+        profileForm.value.avatar = uploadResult.data
+      }
+    }
+
+    // 保存用户信息
+    const result = await updateUserProfileApi(profileForm.value)
     if (result.code === 1) {
-      ElMessage.success('保存成功');
-      await userStore.updateUserProfile();
-      isEditing.value = false;
-      await fetchUserProfile();
+      ElMessage.success('保存成功')
+      await userStore.updateUserProfile()
+      isEditing.value = false
+      tempAvatar.value = null // 清空临时头像
+      await fetchUserProfile()
     } else {
-      ElMessage.error(result.msg || '保存失败');
+       Error(result.msg || '保存失败')
     }
   } catch (error) {
-    console.error('保存出错:', error);
+    console.error('保存出错:', error)
+    ElMessage.error(error.message || '保存失败')
   }
-};
-
-const handleAvatarSuccess = (response) => {
-  profileForm.value.avatar = response.data.url;
-};
-
-const beforeAvatarUpload = (file) => {
-  const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
-  const isLt2M = file.size / 1024 / 1024 < 2;
-
-  if (!isJPG) {
-    ElMessage.error('上传头像图片只能是 JPG/PNG 格式!');
-  }
-  if (!isLt2M) {
-    ElMessage.error('上传头像图片大小不能超过 2MB!');
-  }
-  return isJPG && isLt2M;
-};
+}
 
 // 修改密码相关
 const passwordDialogVisible = ref(false);
@@ -420,12 +445,71 @@ const fetchUserProfile = async () => {
   }
 };
 
+// 头像上传处理
+const handleAvatarChange = async (file) => {
+  try {
+    // 验证文件
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
+    const maxSize = 2 * 1024 * 1024 // 2MB
+
+    if (!allowedTypes.includes(file.raw.type)) {
+      ElMessage.error('只能上传JPG/PNG/GIF格式的图片!')
+      return false
+    }
+
+    if (file.raw.size > maxSize) {
+      ElMessage.error('图片大小不能超过2MB!')
+      return false
+    }
+
+    // 生成临时预览URL
+    tempAvatar.value = URL.createObjectURL(file.raw)
+  } catch (error) {
+    console.error('头像预览失败:', error)
+    ElMessage.error('头像预览失败')
+  }
+}
+
+
+
 onMounted(() => {
   fetchUserProfile();
 });
 </script>
 
 <style scoped>
+
+/* 占位容器样式 */
+.avatar-uploader-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-uploader .plus-icon{
+  width: 100px;
+  height: 100px;
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader:hover {
+  border-color: var(--el-color-primary);
+}
+
+
+/* +号图标样式 */
+.plus-icon {
+  font-size: 24px;
+  color: var(--el-text-color-secondary);
+}
+
 .user-profile-container {
   padding: 20px;
 }
@@ -440,35 +524,13 @@ onMounted(() => {
   align-items: center;
 }
 
-.avatar-uploader {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  width: 100px;
-  height: 100px;
-}
 
-.avatar-uploader:hover {
-  border-color: #409EFF;
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
-  text-align: center;
-}
-
+/* 头像图片样式 */
 .avatar {
   width: 100px;
   height: 100px;
   display: block;
 }
-
 .action-buttons {
   text-align: center;
   margin-top: 20px;
