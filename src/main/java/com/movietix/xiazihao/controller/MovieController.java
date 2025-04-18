@@ -45,7 +45,7 @@ public class MovieController extends HttpServlet {
             selectMovieById(req, resp);
         }
         // 处理/movies/price/{movieId}请求
-        if (pathInfo != null && pathInfo.matches("/price/\\d+")) {
+        else if (pathInfo != null && pathInfo.matches("/price/\\d+")) {
             try {
                 selectMovieLowestPriceByScreeningId(req, resp);
             } catch (SQLException e) {

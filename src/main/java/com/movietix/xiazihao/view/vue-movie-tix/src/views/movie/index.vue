@@ -2,6 +2,8 @@
 import {onMounted, reactive, ref} from 'vue';
 import {addMovieApi, deleteMoviesApi, queryByIdApi, queryMoviesApi, updateMovieApi} from '@/api/movie';
 import {ElMessage, ElMessageBox} from 'element-plus';
+import {Plus} from "@element-plus/icons-vue";
+import {deleteFileApi, uploadFileApi} from "@/api/upload";
 
 // 分页查询参数
 const queryParams = reactive({
@@ -85,6 +87,7 @@ const addMovie = () => {
   dialogFormVisible.value = true;
   formTitle.value = '新增电影';
   movie.value = {
+    id: null,
     title: '',
     posterUrl: '',
     releaseDate: '',
@@ -102,28 +105,39 @@ const addMovie = () => {
 
 // 保存电影
 const save = async () => {
-  if(!movieFormRef.value) return;
+  if (!movieFormRef.value) return
 
   await movieFormRef.value.validate(async (valid) => {
-    if(valid){
-      let result;
-      if(movie.value.id){ // 修改
-        result = await updateMovieApi(movie.value);
-      }else{ // 新增
-        result = await addMovieApi(movie.value);
+    if (valid) {
+      // 确保有海报URL
+      if (!movie.value.posterUrl) {
+        ElMessage.warning('请上传电影海报')
+        return
       }
 
-      if(result.code){
-        ElMessage.success('操作成功');
-        dialogFormVisible.value = false;
-        search();
-      }else{
-        ElMessage.error(result.msg);
+      let result
+      try {
+        if (movie.value.id) { // 修改
+          result = await updateMovieApi(movie.value)
+        } else { // 新增
+          result = await addMovieApi(movie.value)
+        }
+
+        if (result.code === 1) {
+          ElMessage.success('操作成功')
+          dialogFormVisible.value = false
+          await search()
+        } else {
+          ElMessage.error(result.msg)
+        }
+      } catch (error) {
+        console.error('保存失败:', error)
+        ElMessage.error('操作失败，请稍后重试')
       }
-    }else{
-      ElMessage.error('表单校验不通过');
+    } else {
+      ElMessage.error('表单校验不通过')
     }
-  });
+  })
 }
 
 // 编辑电影
@@ -132,7 +146,6 @@ const edit = async (id) => {
   if (movieFormRef.value){
     movieFormRef.value.resetFields();
   }
-
   const result = await queryByIdApi(id);
   if(result.code){
     dialogFormVisible.value = true;
@@ -148,7 +161,7 @@ const delMovies = (ids) => {
     const result = await deleteMoviesApi(ids);
     if(result.code){
       ElMessage.success('删除成功');
-      search();
+      await search();
     }else{
       ElMessage.error(result.msg);
     }
@@ -202,6 +215,51 @@ const rules = ref({
     { type: 'number', min: 0, max: 10, message: '评分必须在0-10之间', trigger: 'blur' }
   ]
 });
+
+// 处理海报上传
+const handlePosterChange = async (file) => {
+  // 验证文件类型
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']
+  if (!allowedTypes.includes(file.raw.type)) {
+    ElMessage.error('只能上传JPG/PNG格式的图片')
+    return false
+  }
+
+  // 验证文件大小 (1MB)
+  const maxSize = 1024 * 1024
+  if (file.raw.size > maxSize) {
+    ElMessage.error('图片大小不能超过1MB')
+    return false
+  }
+
+  try {
+    // 如果有旧图片，先删除
+    if (movie.value.posterUrl) {
+      await deleteOldPoster(movie.value.posterUrl)
+    }
+
+    const result = await uploadFileApi(file.raw)
+    if (result.code === 1) {
+      movie.value.posterUrl = result.data
+      ElMessage.success('上传成功')
+    } else {
+      ElMessage.error(result.msg || '上传失败')
+    }
+  } catch (error) {
+    console.error('上传出错:', error)
+    ElMessage.error('上传失败，请稍后重试')
+  }
+}
+
+// 删除旧海报
+const deleteOldPoster = async (url) => {
+  try {
+    await deleteFileApi(url)
+  } catch (error) {
+    console.error('删除旧图片失败:', error)
+    // 这里不提示用户，因为不影响主要功能
+  }
+}
 
 // 初始化加载
 onMounted(() => {
@@ -323,13 +381,27 @@ onMounted(() => {
       <el-form-item label="电影名称" prop="title">
         <el-input v-model="movie.title" placeholder="请输入电影名称" />
       </el-form-item>
-      <el-form-item label="海报URL" prop="posterUrl">
-        <el-input v-model="movie.posterUrl" placeholder="请输入海报URL" />
+      <!-- 修改海报上传部分 -->
+      <el-form-item label="海报" prop="posterUrl">
+        <el-upload
+            class="avatar-uploader"
+            action="#"
+            :show-file-list="false"
+            :auto-upload="false"
+            :on-change="handlePosterChange"
+            :accept="'image/jpeg,image/png,image/gif'"
+        >
+          <img v-if="movie.posterUrl" :src="movie.posterUrl" class="avatar"  alt=""/>
+          <el-icon v-else class="avatar-uploader-icon">
+            <Plus />
+            <div class="el-upload__text">点击上传海报</div>
+          </el-icon>
+        </el-upload>
       </el-form-item>
       <el-form-item label="上映日期" prop="releaseDate">
         <el-date-picker
             v-model="movie.releaseDate"
-            type="date"
+            type="Date"
             placeholder="选择上映日期"
             value-format="YYYY-MM-DD"
             style="width: 100%"
@@ -361,6 +433,33 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.avatar-uploader .avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+  object-fit: contain;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  text-align: center;
+}
 .container {
   margin: 15px 0;
 }
