@@ -16,7 +16,7 @@ public class ConstantsManager {
     //设置有效时间
     private static final long EXPIRATION_TIME = 12 * 60 * 60 * 1000; // 12小时
     //控制过滤器的开关
-    private static final boolean FILTER_SWITCH = true;
+    private static final boolean FILTER_SWITCH = false;
     //AliyunOss配置信息
     private static final String DEFAULT_ENDPOINT = "https://oss-cn-guangzhou.aliyuncs.com";
     private static final String DEFAULT_BUCKET_NAME = "movie-tix-ka-cat";
