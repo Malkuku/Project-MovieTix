@@ -227,7 +227,7 @@ public class WorkController extends HttpServlet {
                     req.getParameter("startTime") != null ? LocalDateTime.parse(req.getParameter("startTime")) : null
             );
             workOrderQueryParam.setStatus(
-                    req.getParameter("status") != null ? Integer.parseInt(req.getParameter("status")) : 1
+                    req.getParameter("status") != null ? Integer.parseInt(req.getParameter("status")) : null
             );
         }
         List<WorkOrderResult> workOrderResultList = workService.selectWorkOrders(workOrderQueryParam);

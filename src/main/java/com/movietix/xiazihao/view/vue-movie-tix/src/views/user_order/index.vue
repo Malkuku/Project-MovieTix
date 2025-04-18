@@ -283,7 +283,7 @@ const resetSearch = () => {
                 style="width: 120px"
                 @change="fetchMyOrders"
             >
-              <el-option label="全部" :value="undefined" />
+              <el-option label="全部" :value="null" />
               <el-option label="待支付" :value="0" />
               <el-option label="已支付" :value="1" />
               <el-option label="已取消" :value="2" />

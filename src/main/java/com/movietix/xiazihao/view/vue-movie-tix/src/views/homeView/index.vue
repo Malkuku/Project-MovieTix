@@ -950,8 +950,8 @@ onMounted(() => {
         >
           <div class="screening-info">
             <div class="screening-time">
-              <span class="time">{{ formatDateTime(screening.startTime) }}</span>
-              <span class="end-time">{{ formatDateTime(screening.endTime) }}</span>
+              <span class="time"> 开始：{{ formatDateTime(screening.startTime) }}</span>
+              <span class="end-time"> 结束：{{ formatDateTime(screening.endTime) }}</span>
             </div>
             <div class="screening-hall">
               <el-icon><Platform /></el-icon>
@@ -1447,6 +1447,7 @@ onMounted(() => {
   font-size: 14px;
   color: #999;
   margin-left: 5px;
+  display: block;
 }
 
 .screening-hall {
