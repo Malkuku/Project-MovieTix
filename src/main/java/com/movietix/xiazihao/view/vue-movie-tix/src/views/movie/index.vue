@@ -153,40 +153,66 @@ const edit = async (id) => {
   }
 }
 
-// 删除电影
-const delMovies = (ids) => {
-  ElMessageBox.confirm('您确认删除选中的电影吗?','提示',
-      { confirmButtonText: '确认', cancelButtonText: '取消', type: 'warning' }
-  ).then(async () => {
+// 删除电影（同时删除关联的海报）
+const delMovies = async (ids) => {
+  try {
+    // 获取要删除的电影信息
+    const moviesToDelete = movieList.value.filter(item =>
+        typeof ids === 'string' ? item.id.toString() === ids : ids.includes(item.id)
+    );
+
+    // 确认对话框
+    await ElMessageBox.confirm(
+        '删除电影将同时删除关联的海报，确认继续吗？',
+        '提示',
+        { confirmButtonText: '确认', cancelButtonText: '取消', type: 'warning' }
+    );
+
+    // 先删除海报图片
+    const deletePromises = moviesToDelete
+        .filter(movie => movie.posterUrl)
+        .map(movie => deleteFileApi(movie.posterUrl).catch(e => {
+          console.error(`删除海报失败: ${movie.posterUrl}`, e);
+          // 单个海报删除失败不影响整体流程
+        }));
+
+    await Promise.all(deletePromises);
+
+    // 再删除电影记录
     const result = await deleteMoviesApi(ids);
-    if(result.code){
+    if (result.code) {
       ElMessage.success('删除成功');
       await search();
-    }else{
-      ElMessage.error(result.msg);
+    } else {
+      ElMessage.error(result.msg || '删除电影失败');
     }
-  }).catch(() => {
-    ElMessage.info('您已取消删除');
-  });
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('删除操作失败:', error);
+      ElMessage.error('删除失败，请稍后重试');
+    } else {
+      ElMessage.info('您已取消删除');
+    }
+  }
 }
 
 // 单个删除
 const delById = (id) => {
-  delMovies(id);
+  delMovies(id.toString()); // 确保传入的是字符串
 }
 
 // 批量删除
 const batchDelete = () => {
   const selectedIds = movieList.value
       .filter(item => selected.value.includes(item.id))
-      .map(item => item.id);
+      .map(item => item.id.toString()); // 转为字符串
 
-  if(selectedIds.length === 0){
+  if (selectedIds.length === 0) {
     ElMessage.warning('请至少选择一条记录');
     return;
   }
 
-  delMovies(selectedIds.join(','));
+  delMovies(selectedIds.join(',')); // 用逗号分隔的字符串
 }
 
 // 表格多选

@@ -67,6 +67,7 @@ public class UploadController extends HttpServlet {
     //删除文件
     private void deleteFile(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String ossUrl = req.getParameter("ossUrl");
+        log.info("接收到的OSS访问URL:{}", ossUrl);
         try {
             AliyunOssUtils.deleteFile(ossUrl);
             ServletUtils.sendResponse(resp, Result.success());
