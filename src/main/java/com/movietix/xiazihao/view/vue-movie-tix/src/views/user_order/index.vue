@@ -347,7 +347,7 @@ const resetSearch = () => {
                 v-if="row.status === 0"
                 type="danger"
                 size="small"
-                @click="cancelOrder(row.id)"
+                @click="cancelOrder(row.orderId)"
             >
               取消订单
             </el-button>

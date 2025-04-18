@@ -950,8 +950,8 @@ onMounted(() => {
         >
           <div class="screening-info">
             <div class="screening-time">
-              <span class="time"> 开始：{{ formatDateTime(screening.startTime) }}</span>
-              <span class="end-time"> 结束：{{ formatDateTime(screening.endTime) }}</span>
+              <span class="time"> {{ formatDateTime(screening.startTime) }}</span>
+              <span class="end-time"> {{ formatDateTime(screening.endTime) }}</span>
             </div>
             <div class="screening-hall">
               <el-icon><Platform /></el-icon>
@@ -1024,7 +1024,7 @@ onMounted(() => {
           <p v-else class="no-seat">尚未选择座位</p>
 
           <div class="total-price">
-            总计: <span>¥{{ totalPrice }}</span>
+            总计: <span>¥{{ totalPrice.toFixed(2) }}</span>
           </div>
         </div>
 
@@ -1066,7 +1066,7 @@ onMounted(() => {
         </div>
         <div class="order-row">
           <span class="label">总价：</span>
-          <span class="value price">¥{{ totalPrice }}</span>
+          <span class="value price">¥{{ totalPrice.toFixed(2) }}</span>
         </div>
         <div class="order-row">
           <span class="label">手机号：</span>
