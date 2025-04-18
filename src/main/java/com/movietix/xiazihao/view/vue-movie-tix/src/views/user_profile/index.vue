@@ -163,9 +163,9 @@
           :rules="rechargeRules"
           label-width="100px"
       >
-        <el-form-item label="充值金额" prop="amount">
+        <el-form-item label="充值金额" prop="balance">
           <el-input-number
-              v-model="rechargeForm.amount"
+              v-model="rechargeForm.balance"
               :min="1"
               :max="10000"
               :precision="2"
@@ -368,7 +368,7 @@ const rechargeForm = ref({
 });
 
 const rechargeRules = ref({
-  amount: [
+  balance: [
     { required: true, message: '请输入充值金额', trigger: 'blur' },
     { type: 'number', min: 1, max: 10000, message: '金额必须在1-10000元之间', trigger: 'blur' }
   ]
@@ -378,7 +378,7 @@ const rechargeFormRef = ref();
 
 const showRechargeDialog = () => {
   rechargeDialogVisible.value = true;
-  rechargeForm.value.amount = 100;
+  rechargeForm.value.balance = 100;
 };
 
 const handleRecharge = async () => {
