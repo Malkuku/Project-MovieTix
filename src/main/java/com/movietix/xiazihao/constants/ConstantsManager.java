@@ -1,5 +1,7 @@
 package com.movietix.xiazihao.constants;
 
+import com.movietix.xiazihao.utils.AliyunOssUtils;
+
 public class ConstantsManager {
     //数据库配置信息
     private static final String URL = "jdbc:mysql://localhost:3306/movie_tix";
@@ -15,6 +17,11 @@ public class ConstantsManager {
     private static final long EXPIRATION_TIME = 12 * 60 * 60 * 1000; // 12小时
     //控制过滤器的开关
     private static final boolean FILTER_SWITCH = true;
+    //AliyunOss配置信息
+    private static final String DEFAULT_ENDPOINT = "https://oss-cn-guangzhou.aliyuncs.com";
+    private static final String DEFAULT_BUCKET_NAME = "movie-tix-ka-cat";
+    private static final String DEFAULT_REGION = "cn-guangzhou";
+    private static final boolean DEFAULT_USE_V4_SIGN = true;
 
     private static ConstantsManager instance;
 
@@ -55,5 +62,18 @@ public class ConstantsManager {
     //控制过滤器的开关
     public boolean getFilterSwitch() {
         return !FILTER_SWITCH;
+    }
+    //AliyunOss配置信息
+    public String getDefaultEndpoint() {
+        return DEFAULT_ENDPOINT;
+    }
+    public String getDefaultBucketName() {
+        return DEFAULT_BUCKET_NAME;
+    }
+    public String getDefaultRegion() {
+        return DEFAULT_REGION;
+    }
+    public boolean getDefaultUseV4Sign() {
+        return DEFAULT_USE_V4_SIGN;
     }
 }

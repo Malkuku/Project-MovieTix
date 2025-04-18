@@ -1,12 +1,16 @@
 package com.movietix;
 
+import com.aliyun.oss.model.PutObjectResult;
 import com.movietix.xiazihao.entity.pojo.Movie;
+import com.movietix.xiazihao.utils.AliyunOssUtils;
 import com.movietix.xiazihao.utils.JdbcUtils;
 import com.movietix.xiazihao.utils.JsonUtils;
 import com.movietix.xiazihao.utils.OrderNoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,6 +21,29 @@ import static com.movietix.xiazihao.utils.JdbcUtils.*;
 
 @Slf4j
 public class UtilsTest {
+
+    //测试OSS上传
+    @Test
+    // 示例用法
+    public void testOssUpload() throws SQLException {
+        try {
+            // 上传文件
+            File file = new File("C:\\Stable Diffusion\\45°爱丽丝！\\05417-2887801003-masterpiece, best quality,Alice,blue eyes, white bowtie,white serafuku ,screentones,outline,Line art,blonde_long _hair,chibi,lo.png");
+            String objectName = AliyunOssUtils.uploadFile("img", file);
+            log.info("文件上传成功: {}", objectName);
+
+
+            // 删除文件
+            AliyunOssUtils.deleteFile(objectName);
+            log.info("文件已删除");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            // 关闭客户端
+            AliyunOssUtils.shutdown();
+        }
+    }
+
 
     //测试订单号生成
     @Test
