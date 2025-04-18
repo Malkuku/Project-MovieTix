@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -32,7 +30,7 @@ public class UploadController extends HttpServlet {
     //delete 请求入口
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        deleteFile(req, resp);
     }
 
     //上传文件
@@ -58,9 +56,22 @@ public class UploadController extends HttpServlet {
             // 4. 上传到OSS
             String objectName = "img/" + UUID.randomUUID() + fileExt;
             AliyunOssUtils.uploadStream(objectName, fileContent);
-            ServletUtils.sendResponse(resp, Result.success(objectName));
+            // 获取OSS访问URL
+            String ossUrl = AliyunOssUtils.getFileUrl(objectName);
+            ServletUtils.sendResponse(resp, Result.success(ossUrl));
         } catch (Exception e) {
             throw new RuntimeException("上传失败");
+        }
+    }
+
+    //删除文件
+    private void deleteFile(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String ossUrl = req.getParameter("ossUrl");
+        try {
+            AliyunOssUtils.deleteFile(ossUrl);
+            ServletUtils.sendResponse(resp, Result.success());
+        } catch (Exception e) {
+            throw new RuntimeException("删除失败");
         }
     }
 }

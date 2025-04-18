@@ -8,6 +8,7 @@ import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.PutObjectResult;
 import com.movietix.xiazihao.constants.ConstantsManager;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 import static com.aliyun.oss.common.comm.SignVersion.V4;
 
+@Slf4j
 public final class AliyunOssUtils {
 
     // 内置默认配置（可根据需要修改）
@@ -88,8 +90,28 @@ public final class AliyunOssUtils {
         return objectName;
     }
 
-    public static void deleteFile(String objectName) {
+    //上传流
+    public static void uploadStream(String objectName, InputStream inputStream) {
         checkInitialized();
+        try {
+            ossClient.putObject(bucketName, objectName, inputStream);
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                // 忽略关闭异常
+            }
+        }
+    }
+
+    public static void deleteFile(String ossUrl) {
+        checkInitialized();
+        //去掉前缀
+        log.info("ossUrl:{}", ossUrl);
+        String index = "https://" + bucketName + "." + DEFAULT_ENDPOINT.replaceAll("https://", "") + "/";
+        log.info("去掉前缀：{}", index);
+        String objectName = ossUrl.replaceAll(index, "");
+        log.info("删除文件：{}", objectName);
         ossClient.deleteObject(bucketName, objectName);
     }
 
@@ -107,4 +129,8 @@ public final class AliyunOssUtils {
     }
 
 
+    public static String getFileUrl(String objectName) {
+        checkInitialized();
+        return "https://" + bucketName + "." + DEFAULT_ENDPOINT.replaceAll("https://", "") + "/" + objectName;
+    }
 }
