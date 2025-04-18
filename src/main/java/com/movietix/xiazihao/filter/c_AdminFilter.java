@@ -27,7 +27,8 @@ public class c_AdminFilter implements Filter {
         }
 
         // 放行普通用户接口
-        if (httpRequest.getRequestURI().contains("/works")) {
+        if (httpRequest.getRequestURI().contains("/works")
+                || httpRequest.getRequestURI().contains("/upload")) {
             chain.doFilter(request, response);
             return;
         }

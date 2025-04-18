@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @Slf4j
-@WebFilter(urlPatterns = {"/*"})
+@WebFilter(urlPatterns = {"/*"}) //TODO是否有更高效的过滤器机制？
 public class b_LoginFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -26,8 +26,10 @@ public class b_LoginFilter implements Filter {
             return;
         }
 
-        // 放行登录接口 和 注册接口
-        if (httpRequest.getRequestURI().contains("/login") || httpRequest.getRequestURI().contains("/register")) {
+        // 放行登录接口 和 注册接口 和 上传接口
+        if (httpRequest.getRequestURI().contains("/login")
+                || httpRequest.getRequestURI().contains("/register")
+                || httpRequest.getRequestURI().contains("/upload")) {
             chain.doFilter(request, response);
             return;
         }
