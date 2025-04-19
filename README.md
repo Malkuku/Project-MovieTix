@@ -38,7 +38,7 @@ Translation: First-round assessment for the Anyview project
 - 提供给普通用户的请求接口Work
 - 逐步对前端修改以达到完整效果。
 - 发布Release-1.0的稳定版本。
-- new 文件上传。
+- (new)文件上传。
 
 ### 正在进行的开发工作
 - 系统日志表。
