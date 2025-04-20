@@ -1,5 +1,6 @@
 package com.movietix.xiazihao.controller;
 
+import com.movietix.xiazihao.constants.ConstantsManager;
 import com.movietix.xiazihao.entity.body.WorkPaymentQueryBody;
 import com.movietix.xiazihao.entity.param.WorkOrderQueryParam;
 import com.movietix.xiazihao.entity.pojo.User;
@@ -9,6 +10,7 @@ import com.movietix.xiazihao.entity.result.WorkSeatResult;
 import com.movietix.xiazihao.service.WorkService;
 import com.movietix.xiazihao.service.impl.WorkServiceImpl;
 import com.movietix.xiazihao.utils.JsonUtils;
+import com.movietix.xiazihao.utils.JwtUtils;
 import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,7 +59,7 @@ public class WorkController extends HttpServlet {
         else if(pathInfo != null && pathInfo.matches("/recharge")) {
             try {
                 userRecharge(req, resp);
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -89,7 +91,7 @@ public class WorkController extends HttpServlet {
         else if(pathInfo != null && pathInfo.matches("/users/password")) {
             try {
                 updateUserPassword(req,resp);
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -134,7 +136,7 @@ public class WorkController extends HttpServlet {
         else if (pathInfo != null && pathInfo.matches("/user_profiles/\\d+")){
             try {
                 selectUserProfileByUserId(req, resp);
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -150,7 +152,7 @@ public class WorkController extends HttpServlet {
         else if(pathInfo != null && pathInfo.matches("/refunds/\\d+")) {
             try {
                 selectRefundsByUserId(req, resp);
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -195,12 +197,12 @@ public class WorkController extends HttpServlet {
     }
 
     //查询用户详细信息
-    private void selectUserProfileByUserId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+    private void selectUserProfileByUserId(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         userProfileController.exposeSelectUserProfileByUserId(req, resp);
     }
 
     //修改用户密码
-    private void updateUserPassword(HttpServletRequest req,HttpServletResponse resp) throws SQLException, IOException {
+    private void updateUserPassword(HttpServletRequest req,HttpServletResponse resp) throws Exception {
        userController.exposeUpdateUserPassword(req, resp);
     }
 
@@ -210,7 +212,7 @@ public class WorkController extends HttpServlet {
     }
 
     //查询退款申请
-    private void selectRefundsByUserId(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
+    private void selectRefundsByUserId(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         refundController.exposeSelectRefundsByUserId(req, resp);
     }
 
@@ -246,6 +248,11 @@ public class WorkController extends HttpServlet {
     private void payOrder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String json = ServletUtils.getRequestBody(req);
         WorkPaymentQueryBody workOrderQueryBody = JsonUtils.parseJson(json, WorkPaymentQueryBody.class);
+        //验证userId`
+        if(!ConstantsManager.getInstance().getFilterSwitch()){
+            String token = req.getHeader("token");
+            JwtUtils.verifyUserId(token,workOrderQueryBody.getUserId());
+        }
         workService.payOrder(workOrderQueryBody);
         ServletUtils.sendResponse(resp,Result.success());
     }
@@ -255,6 +262,11 @@ public class WorkController extends HttpServlet {
         Integer ScreeningId = Integer.parseInt(req.getParameter("screeningId"));
         Integer userId = Integer.parseInt(req.getParameter("userId"));
         Integer orderId = workService.userBuyTicket(ScreeningId,userId);
+        //验证userId
+        if(!ConstantsManager.getInstance().getFilterSwitch()){
+            String token = req.getHeader("token");
+            JwtUtils.verifyUserId(token,userId);
+        }
         HashMap<String,Integer> data = new HashMap<>();
         data.put("orderId", orderId);
         ServletUtils.sendResponse(resp, Result.success(data));
@@ -273,9 +285,14 @@ public class WorkController extends HttpServlet {
     }
 
     //账户余额充值
-    private void userRecharge(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+    private void userRecharge(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String json = ServletUtils.getRequestBody(req);
         User user = JsonUtils.parseJson(json, User.class);
+        //验证userId
+        if(!ConstantsManager.getInstance().getFilterSwitch()){
+            String token = req.getHeader("token");
+            JwtUtils.verifyUserId(token,user.getId());
+        }
         log.info("用户充值操作，参数：{}", user);
         workService.userRecharge(user);
         log.info("用户充值成功");

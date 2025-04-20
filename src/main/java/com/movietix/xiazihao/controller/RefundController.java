@@ -1,5 +1,6 @@
 package com.movietix.xiazihao.controller;
 
+import com.movietix.xiazihao.constants.ConstantsManager;
 import com.movietix.xiazihao.entity.param.RefundQueryParam;
 import com.movietix.xiazihao.entity.pojo.Refund;
 import com.movietix.xiazihao.entity.result.PageResult;
@@ -7,6 +8,7 @@ import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.RefundService;
 import com.movietix.xiazihao.service.impl.RefundServiceImpl;
 import com.movietix.xiazihao.utils.JsonUtils;
+import com.movietix.xiazihao.utils.JwtUtils;
 import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,7 +39,7 @@ public class RefundController extends HttpServlet {
         if(pathInfo != null && pathInfo.matches("/\\d+")){
             try {
                 selectRefundsByUserId(req, resp);
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }else{
@@ -96,6 +98,11 @@ public class RefundController extends HttpServlet {
         Refund refund = JsonUtils.parseJson(json, Refund.class);
         log.info("接收到的退票申请信息:{}", refund);
         try {
+            //验证userId
+            if(!ConstantsManager.getInstance().getFilterSwitch()){
+                String token = req.getHeader("token");
+                JwtUtils.verifyUserId(token,refund.getUserId());
+            }
             refundService.createRefund(refund);
             ServletUtils.sendResponse(resp, Result.success());
         } catch (Exception e) {
@@ -113,9 +120,14 @@ public class RefundController extends HttpServlet {
    }
 
    //查询指定用户的所有退票申请
-    private void selectRefundsByUserId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+    private void selectRefundsByUserId(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String pathInfo = req.getPathInfo();
         Integer userId = Integer.parseInt(pathInfo.replaceAll("\\D",""));
+        //验证userId
+        if(!ConstantsManager.getInstance().getFilterSwitch()){
+            String token = req.getHeader("token");
+            JwtUtils.verifyUserId(token,userId);
+        }
         List<Refund> refunds = refundService.selectRefundsByUserId(userId);
         ServletUtils.sendResponse(resp, Result.success(refunds));
     }
@@ -124,7 +136,7 @@ public class RefundController extends HttpServlet {
     public void exposeCreateRefund(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         this.createRefund(req, resp);
     }
-    public void exposeSelectRefundsByUserId(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
+    public void exposeSelectRefundsByUserId(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         this.selectRefundsByUserId(req, resp);
     }
 }

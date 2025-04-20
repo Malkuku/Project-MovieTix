@@ -1,10 +1,12 @@
 package com.movietix.xiazihao.controller;
 
+import com.movietix.xiazihao.constants.ConstantsManager;
 import com.movietix.xiazihao.entity.pojo.UserProfile;
 import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.UserProfileService;
 import com.movietix.xiazihao.service.impl.UserProfileServiceImpl;
 import com.movietix.xiazihao.utils.JsonUtils;
+import com.movietix.xiazihao.utils.JwtUtils;
 import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,7 +40,7 @@ public class UserProfileController extends HttpServlet {
         if (pathInfo != null && pathInfo.matches("/\\d+")) {
             try {
                 selectUserProfileByUserId(req, resp);
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -55,10 +57,15 @@ public class UserProfileController extends HttpServlet {
     }
 
     //根据userID 查询用户详细信息
-    private void selectUserProfileByUserId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+    private void selectUserProfileByUserId(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String pathInfo = req.getPathInfo();
         log.info("接收到的用户ID:{}", pathInfo);
         Integer userId = Integer.parseInt(pathInfo.replaceAll("\\D", ""));
+        //验证userId
+        if(!ConstantsManager.getInstance().getFilterSwitch()){
+            String token = req.getHeader("token");
+            JwtUtils.verifyUserId(token,userId);
+        }
         UserProfile userProfile = userProfileService.selectUserProfileByUserId(userId);
         ServletUtils.sendResponse(resp, Result.success(userProfile));
     }
@@ -79,9 +86,14 @@ public class UserProfileController extends HttpServlet {
         String json = ServletUtils.getRequestBody(req);
         UserProfile userProfile = JsonUtils.parseJson(json, UserProfile.class);
         try {
+            //验证userId`
+            if(!ConstantsManager.getInstance().getFilterSwitch()){
+                String token = req.getHeader("token");
+                JwtUtils.verifyUserId(token,userProfile.getUserId());
+            }
             userProfileService.updateUserProfile(userProfile);
             ServletUtils.sendResponse(resp, Result.success());
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -96,7 +108,7 @@ public class UserProfileController extends HttpServlet {
     }
 
     //暴露方法
-    public void exposeSelectUserProfileByUserId(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+    public void exposeSelectUserProfileByUserId(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         this.selectUserProfileByUserId(req,resp);
     }
     public void exposeUpdateUserProfile(HttpServletRequest req, HttpServletResponse resp) throws IOException {

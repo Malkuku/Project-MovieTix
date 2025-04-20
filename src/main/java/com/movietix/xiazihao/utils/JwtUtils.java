@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import javax.security.sasl.AuthenticationException;
 import java.util.Date;
 import java.util.Map;
 
@@ -47,5 +48,14 @@ public class JwtUtils {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    /**
+     * 验证JWT令牌的userId字段
+     */
+    public static void verifyUserId(String token, Integer userId) throws Exception {
+        Claims claims = parseToken(token);
+        Integer id = (Integer) claims.get("id");
+        if(!id.equals(userId)) throw new AuthenticationException("Token中的userId与请求参数不一致");
     }
 }

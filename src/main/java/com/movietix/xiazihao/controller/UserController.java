@@ -1,5 +1,6 @@
 package com.movietix.xiazihao.controller;
 
+import com.movietix.xiazihao.constants.ConstantsManager;
 import com.movietix.xiazihao.entity.param.UserQueryParam;
 import com.movietix.xiazihao.entity.pojo.User;
 import com.movietix.xiazihao.entity.result.PageResult;
@@ -7,6 +8,7 @@ import com.movietix.xiazihao.entity.result.Result;
 import com.movietix.xiazihao.service.UserService;
 import com.movietix.xiazihao.service.impl.UserServiceImpl;
 import com.movietix.xiazihao.utils.JsonUtils;
+import com.movietix.xiazihao.utils.JwtUtils;
 import com.movietix.xiazihao.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,7 +59,7 @@ public class UserController extends HttpServlet {
         if(pathInfo != null && pathInfo.matches("/password")){
             try {
                 updateUserPassword(req, resp);
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }else if(pathInfo != null && pathInfo.matches("/balance")){
@@ -115,9 +117,14 @@ public class UserController extends HttpServlet {
     }
 
     //修改用户密码
-    private void updateUserPassword(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+    private void updateUserPassword(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String json = ServletUtils.getRequestBody(req);
         User user = JsonUtils.parseJson(json, User.class);
+        //验证userId
+        if(!ConstantsManager.getInstance().getFilterSwitch()){
+            String token = req.getHeader("token");
+            JwtUtils.verifyUserId(token,user.getId());
+        }
         log.info("接收到的用户信息:{}", user);
         userService.updateUserPassword(user);
         ServletUtils.sendResponse(resp, Result.success());
@@ -171,7 +178,7 @@ public class UserController extends HttpServlet {
     }
 
     //暴露方法
-    public void exposeUpdateUserPassword(HttpServletRequest req, HttpServletResponse resp) throws  IOException, SQLException{
+    public void exposeUpdateUserPassword(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         this.updateUserPassword(req, resp);
     }
 }
