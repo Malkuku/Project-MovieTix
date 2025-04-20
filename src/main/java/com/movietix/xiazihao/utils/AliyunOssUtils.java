@@ -43,7 +43,7 @@ public final class AliyunOssUtils {
     }
 
     /**
-     * 初始化OSS客户端（可选，如果默认配置不合适可以调用此方法覆盖）
+     * 初始化OSS客户端
      */
     public static synchronized void init(String endpoint, String bucketName, String region, boolean useV4Sign) {
         if (initialized) {

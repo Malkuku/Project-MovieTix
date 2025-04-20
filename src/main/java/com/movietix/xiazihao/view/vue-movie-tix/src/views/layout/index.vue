@@ -1,17 +1,16 @@
 <script setup>
 import {
-  EditPen,
   Film,
   HomeFilled,
   List,
   Money,
   Promotion,
-  SwitchButton,
   Tools,
   User,
   VideoCamera
 } from '@element-plus/icons-vue'
-
+import {useRoute} from "vue-router";
+const route = useRoute()
 </script>
 
 <template>
@@ -44,7 +43,7 @@ import {
               background-color="#2c3e50"
               class="sidebar-menu"
               text-color="#b8c7ce"
-              :default-active="$route.path"
+              :default-active="route.path"
           >
             <!-- 首页 -->
             <el-menu-item index="/home">
@@ -122,8 +121,8 @@ import {
             <!-- 面包屑导航 -->
             <div class="breadcrumb-container">
               <el-breadcrumb separator="/">
-                <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
-                <el-breadcrumb-item v-for="(item, index) in $route.matched" :key="index">
+                <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+                <el-breadcrumb-item v-for="(item, index) in route.matched" :key="index">
                   {{ item.meta.title || item.name }}
                 </el-breadcrumb-item>
               </el-breadcrumb>
