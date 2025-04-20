@@ -47,7 +47,7 @@ const currentMovieId = ref(null); // 当前电影的 ID
 // 分页参数
 const pagination = ref({
   page: 1,
-  pageSize: 10,
+  pageSize: 100, //TODO 设置分页浏览
   total: 0
 });
 
@@ -710,6 +710,8 @@ onMounted(() => {
         </div>
       </div>
 
+
+
       <!-- 首页 -->
       <div class="movie-list" v-if="activeIndex === '1'">
         <h2 class="section-title">{{ '热门电影' }}</h2>
@@ -799,7 +801,7 @@ onMounted(() => {
                 <p class="movie-genre">{{ movie.genre.join(' / ') }}</p>
                 <div class="movie-footer">
                   <span class="price">
-                    {{ movie.price }}
+                    ¥{{ movie.price }}
                   </span>
                   <el-button
                       type="primary"
