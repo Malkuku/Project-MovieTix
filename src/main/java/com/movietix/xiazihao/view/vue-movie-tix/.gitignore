@@ -14,6 +14,8 @@ dist-ssr
 coverage
 *.local
 
+README.md
+
 /cypress/videos/
 /cypress/screenshots/
 

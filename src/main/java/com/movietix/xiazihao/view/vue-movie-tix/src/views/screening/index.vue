@@ -9,11 +9,10 @@ import {
   updateStatusApi
 } from '@/api/screening';
 import {ElMessage, ElMessageBox} from 'element-plus';
+import {queryHallsApi} from "@/api/hall";
+import {queryMoviesApi} from "@/api/movie";
 
-// 钩子函数
-onMounted(() => {
-  search();
-});
+
 
 // 查询条件
 const queryParams = reactive({
@@ -117,7 +116,7 @@ const save = async () => {
       if(result.code){
         ElMessage.success('操作成功');
         dialogFormVisible.value = false;
-        search();
+        await search();
       } else {
         ElMessage.error(result.msg);
       }
@@ -130,17 +129,35 @@ const save = async () => {
 // 表单校验规则
 const rules = ref({
   movieId: [
-    { required: true, message: '请选择电影', trigger: 'blur' }
+    { required: true, message: '请选择电影', trigger: 'change' }
   ],
   hallId: [
-    { required: true, message: '请选择放映厅', trigger: 'blur' }
+    { required: true, message: '请选择放映厅', trigger: 'change' }
   ],
   startTime: [
     { required: true, message: '请选择开始时间', trigger: 'blur' }
   ],
   price: [
     { required: true, message: '请输入票价', trigger: 'blur' },
-    { type: 'number', min: 0, message: '票价必须大于0', trigger: 'blur' }
+    {
+      validator: (rule, value, callback) => {
+        if (value === null || value === undefined || value === '') {
+          return callback(new Error('请输入票价'))
+        }
+        if (isNaN(value)) {
+          return callback(new Error('请输入有效数字'))
+        }
+        if (value <= 0) {
+          return callback(new Error('票价必须大于0'))
+        }
+        // 验证小数点后最多两位
+        if (String(value).split('.')[1]?.length > 2) {
+          return callback(new Error('最多保留两位小数'))
+        }
+        callback()
+      },
+      trigger: 'blur'
+    }
   ]
 });
 
@@ -175,7 +192,7 @@ const batchDelete = () => {
     const result = await deleteScreeningsApi(selectedIds);
     if(result.code){
       ElMessage.success('删除成功');
-      search();
+      await search();
     } else {
       ElMessage.error(result.msg);
     }
@@ -207,7 +224,7 @@ const batchUpdateStatus = (status) => {
     const result = await updateStatusApi(selectedIds, status);
     if(result.code){
       ElMessage.success('操作成功');
-      search();
+      await search();
     } else {
       ElMessage.error(result.msg);
     }
@@ -242,6 +259,59 @@ const statusText = (status) => {
 const statusStyle = (status) => {
   return status === 1 ? 'color: green' : 'color: red';
 }
+
+// 电影和放映厅下拉选项
+const movieOptions = ref([])
+const hallOptions = ref([])
+
+// 加载电影选项
+const loadMovieOptions = async (query = '') => {
+  const result = await queryMoviesApi({
+    title: query,
+    status: 1, // 只查询上映中的电影
+    pageSize: 50 // 适当限制数量
+  })
+  if (result.code) {
+    movieOptions.value = result.data.list.map(item => ({
+      value: item.id,
+      label: `${item.title} (${item.releaseDate})`
+    }))
+  }
+}
+
+// 加载放映厅选项
+const loadHallOptions = async (query = '') => {
+  const result = await queryHallsApi({
+    name: query,
+    status: 1, // 只查询启用的放映厅
+    pageSize: 50 // 适当限制数量
+  })
+  if (result.code) {
+    hallOptions.value = result.data.list.map(item => ({
+      value: item.id,
+      label: `${item.name} (${item.capacity}座)`
+    }))
+  }
+}
+
+const handlePriceInput = (e) => {
+  // 允许: 数字、小数点、退格、删除、Tab、左右 箭头
+  const allowedKeys = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight']
+  const isNumber = /[0-9]/.test(e.key)
+  const isDecimal = e.key === '.' && !e.target.value.includes('.')
+
+  if (!isNumber && !isDecimal && !allowedKeys.includes(e.key)) {
+    e.preventDefault()
+  }
+}
+
+// 钩子函数
+onMounted(() => {
+  loadMovieOptions()
+  loadHallOptions()
+  search();
+});
+
 </script>
 
 <template>
@@ -251,10 +321,40 @@ const statusStyle = (status) => {
   <div class="container">
     <el-form :inline="true" :model="queryParams" class="demo-form-inline">
       <el-form-item label="电影名称">
-        <el-input v-model="queryParams.movieTitle" placeholder="电影名称" clearable />
+        <el-select
+            v-model="queryParams.movieId"
+            filterable
+            remote
+            clearable
+            placeholder="请选择电影"
+            :remote-method="loadMovieOptions"
+            :loading="false"
+        >
+          <el-option
+              v-for="item in movieOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="放映厅">
-        <el-input v-model="queryParams.hallName" placeholder="放映厅名称" clearable />
+        <el-select
+            v-model="queryParams.hallId"
+            filterable
+            remote
+            clearable
+            placeholder="请选择放映厅"
+            :remote-method="loadHallOptions"
+            :loading="false"
+        >
+          <el-option
+              v-for="item in hallOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="开始时间从">
         <el-date-picker
@@ -354,11 +454,43 @@ const statusStyle = (status) => {
   <!-- Dialog对话框 -->
   <el-dialog v-model="dialogFormVisible" :title="formTitle" width="500">
     <el-form :model="screening" :rules="rules" ref="screeningFormRef">
-      <el-form-item label="电影ID" label-width="80px" prop="movieId">
-        <el-input v-model.number="screening.movieId" />
+      <el-form-item label="电影" label-width="80px" prop="movieId">
+        <el-select
+            v-model="screening.movieId"
+            filterable
+            remote
+            clearable
+            placeholder="请选择电影"
+            :remote-method="loadMovieOptions"
+            :loading="false"
+            style="width: 100%"
+        >
+          <el-option
+              v-for="item in movieOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="放映厅ID" label-width="80px" prop="hallId">
-        <el-input v-model.number="screening.hallId" />
+      <el-form-item label="放映厅" label-width="80px" prop="hallId">
+        <el-select
+            v-model="screening.hallId"
+            filterable
+            remote
+            clearable
+            placeholder="请选择放映厅"
+            :remote-method="loadHallOptions"
+            :loading="false"
+            style="width: 100%"
+        >
+          <el-option
+              v-for="item in hallOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="开始时间" label-width="80px" prop="startTime">
         <el-date-picker
@@ -369,7 +501,13 @@ const statusStyle = (status) => {
         />
       </el-form-item>
       <el-form-item label="票价(元)" label-width="80px" prop="price">
-        <el-input v-model.number="screening.price" />
+      <el-input
+          v-model.number="screening.price"
+          type="number"
+          step="0.01"
+          min="0"
+          @keydown="handlePriceInput"
+      />
       </el-form-item>
       <el-form-item label="状态" label-width="80px" v-if="screening.id">
         <el-select v-model="screening.status" placeholder="状态">
@@ -389,6 +527,6 @@ const statusStyle = (status) => {
 
 <style scoped>
 .container {
-  margin: 15px 0px;
+  margin: 15px 0;
 }
 </style>
