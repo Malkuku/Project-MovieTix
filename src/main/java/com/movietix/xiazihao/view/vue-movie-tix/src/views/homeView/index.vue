@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { Search, ChatDotRound, Platform, VideoCamera } from '@element-plus/icons-vue';
+import {Search, ChatDotRound, Platform, VideoCamera, Refresh} from '@element-plus/icons-vue';
 import {
   getMoviesApi,
   getOrdersApi,
@@ -223,6 +223,7 @@ const fetchComingSoonMovies = async () => {
   }
 };
 
+//搜索方法
 const handleSearch = async () => {
   if (searchQuery.value.trim()) {
     try {
@@ -264,6 +265,12 @@ const handleSearch = async () => {
   }
 };
 
+// 添加重置方法
+const handleResetSearch = () => {
+  searchQuery.value = '';
+  pagination.value.page = 1; // 重置到第一页
+  fetchMovies(); // 重新加载原始数据
+};
 
 // 计算属性
 const totalPrice = computed(() => {
@@ -634,9 +641,14 @@ onMounted(() => {
             placeholder="搜索电影..."
             class="search-input"
             @keyup.enter="handleSearch"
+            clearable
+            @clear="handleResetSearch"
         >
           <template #append>
-            <el-button :icon='Search' @click="handleSearch"/>
+            <el-button-group>
+              <el-button :icon="Search" @click="handleSearch" />
+              <el-button :icon="Refresh" @click="handleResetSearch" title="重置搜索" />
+            </el-button-group>
           </template>
         </el-input>
       </div>
