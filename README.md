@@ -1,5 +1,10 @@
+
 ## 概述
 - 这是用于发布的稳定版本，由于开发时间紧张，不排除在有限测试后仍然存在较多bug的可能。
+
+- 这是前端暂存的路径：src/main/java/com/movietix/xiazihao/view/vue-movie-tix
+
+- 相应的接口文档和api请访问https://apifox.com/apidoc/shared-222e8a42-c558-475a-9171-12462ed646bb
 
 - 由于开启了Jwt令牌验证，不建议再通过ApiPower进行请求测试，如有必要，可以在constants/ConstantsManager中手动关闭过滤器。
 
