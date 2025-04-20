@@ -26,10 +26,9 @@ public class b_LoginFilter implements Filter {
             return;
         }
 
-        // 放行登录接口 和 注册接口 和 上传接口
+        // 放行登录接口 和 注册接口
         if (httpRequest.getRequestURI().contains("/login")
-                || httpRequest.getRequestURI().contains("/register")
-                || httpRequest.getRequestURI().contains("/upload")) {
+                || httpRequest.getRequestURI().contains("/register")) {
             chain.doFilter(request, response);
             return;
         }
