@@ -449,16 +449,16 @@ const fetchUserProfile = async () => {
 const handleAvatarChange = async (file) => {
   try {
     // 验证文件
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
-    const maxSize = 2 * 1024 * 1024 // 2MB
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']
+    const maxSize = 1024 * 1024 // 1MB
 
     if (!allowedTypes.includes(file.raw.type)) {
-      ElMessage.error('只能上传JPG/PNG/GIF格式的图片!')
+      ElMessage.error('只能上传JPG/PNG/JPEG格式的图片!')
       return false
     }
 
     if (file.raw.size > maxSize) {
-      ElMessage.error('图片大小不能超过2MB!')
+      ElMessage.error('图片大小不能超过1MB!')
       return false
     }
 

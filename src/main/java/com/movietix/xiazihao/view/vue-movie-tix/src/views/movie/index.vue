@@ -247,7 +247,7 @@ const handlePosterChange = async (file) => {
   // 验证文件类型
   const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']
   if (!allowedTypes.includes(file.raw.type)) {
-    ElMessage.error('只能上传JPG/PNG格式的图片')
+    ElMessage.error('只能上传JPG/PNG/JPEG格式的图片')
     return false
   }
 
