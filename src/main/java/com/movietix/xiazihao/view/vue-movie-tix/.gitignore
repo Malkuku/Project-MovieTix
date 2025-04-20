@@ -14,7 +14,7 @@ dist-ssr
 coverage
 *.local
 
-README.md
+src/main/java/com/movietix/xiazihao/view/vue-movie-tix/README.md
 
 /cypress/videos/
 /cypress/screenshots/
