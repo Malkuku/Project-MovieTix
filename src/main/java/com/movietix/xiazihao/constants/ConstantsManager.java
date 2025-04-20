@@ -7,6 +7,7 @@ public class ConstantsManager {
     private static final String PASSWORD = "pin666";
     //数据库引擎
     private static final String DRIVER = "com.mysql.jdbc.Driver";
+
     //Jwt密钥
     private static final String SECRET_KEY = "ProjectMovieTixKaCatIsMyLongLongSecretKeyTo256Bits"; // 秘钥
     //管理员Jwt密钥
@@ -15,6 +16,7 @@ public class ConstantsManager {
     private static final long EXPIRATION_TIME = 12 * 60 * 60 * 1000; // 12小时
     //控制过滤器的开关
     private static final boolean FILTER_SWITCH = true;
+
     //AliyunOss配置信息
     private static final String DEFAULT_ENDPOINT = "https://oss-cn-guangzhou.aliyuncs.com";
     private static final String DEFAULT_BUCKET_NAME = "movie-tix-ka-cat";

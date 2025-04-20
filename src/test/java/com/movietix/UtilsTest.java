@@ -1,6 +1,5 @@
 package com.movietix;
 
-import com.aliyun.oss.model.PutObjectResult;
 import com.movietix.xiazihao.entity.pojo.Movie;
 import com.movietix.xiazihao.utils.AliyunOssUtils;
 import com.movietix.xiazihao.utils.JdbcUtils;
