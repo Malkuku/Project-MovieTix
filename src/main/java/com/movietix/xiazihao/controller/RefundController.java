@@ -69,10 +69,10 @@ public class RefundController extends HttpServlet {
         RefundQueryParam refundQueryParam = new RefundQueryParam();
         {
             refundQueryParam.setPage(
-                    req.getParameter("page") != null ? Integer.parseInt(req.getParameter("page")) : 1
+                    req.getParameter("page") != null ? Integer.parseInt(req.getParameter("page")) : refundQueryParam.getPage()
             );
             refundQueryParam.setPageSize(
-                    req.getParameter("pageSize") != null ? Integer.parseInt(req.getParameter("pageSize")) : 10
+                    req.getParameter("pageSize") != null ? Integer.parseInt(req.getParameter("pageSize")) : refundQueryParam.getPageSize()
             );
             refundQueryParam.setOrderId(
                     req.getParameter("orderId") != null ? Integer.parseInt(req.getParameter("orderId")) : null

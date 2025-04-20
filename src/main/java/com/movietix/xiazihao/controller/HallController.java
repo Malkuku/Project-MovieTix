@@ -118,9 +118,9 @@ public class HallController extends HttpServlet {
             );param.setStatus(
                     req.getParameter("status") != null ? Integer.valueOf(req.getParameter("status")) : null
             );param.setPage(
-                    req.getParameter("page") != null ? Integer.valueOf(req.getParameter("page")) : null
+                    req.getParameter("page") != null ? Integer.valueOf(req.getParameter("page")) : param.getPage()
             );param.setPageSize(
-                    req.getParameter("pageSize") != null ? Integer.valueOf(req.getParameter("pageSize")) : null
+                    req.getParameter("pageSize") != null ? Integer.valueOf(req.getParameter("pageSize")) : param.getPageSize()
             );
        }
         PageResult<Hall> pageResult = hallService.selectHallsByPage(param);

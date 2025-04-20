@@ -121,10 +121,10 @@ public class MovieController extends HttpServlet {
                     req.getParameter("status") != null ? Integer.parseInt(req.getParameter("status")) : null
             );
             param.setPage(
-                    req.getParameter("page") != null ? Integer.parseInt(req.getParameter("page")) : 1
+                    req.getParameter("page") != null ? Integer.parseInt(req.getParameter("page")) : param.getPage()
             );
             param.setPageSize(
-                    req.getParameter("pageSize") != null ? Integer.parseInt(req.getParameter("pageSize")) : 10
+                    req.getParameter("pageSize") != null ? Integer.parseInt(req.getParameter("pageSize")) : param.getPageSize()
             );
         }
         log.info("接收到的电影查询参数:{}", param);

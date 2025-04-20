@@ -159,10 +159,10 @@ public class UserController extends HttpServlet {
                     req.getParameter("createdAtTo") != null ? LocalDateTime.parse(req.getParameter("createdAtTo")) : null
             );
             userQueryParam.setPage(
-                    req.getParameter("page") != null ? Integer.parseInt(req.getParameter("page")) : 1
+                    req.getParameter("page") != null ? Integer.parseInt(req.getParameter("page")) : userQueryParam.getPage()
             );
             userQueryParam.setPageSize(
-                    req.getParameter("pageSize") != null ? Integer.parseInt(req.getParameter("pageSize")) : 10
+                    req.getParameter("pageSize") != null ? Integer.parseInt(req.getParameter("pageSize")) : userQueryParam.getPageSize()
             );
         }
         log.info("接收到的用户查询参数:{}", userQueryParam);

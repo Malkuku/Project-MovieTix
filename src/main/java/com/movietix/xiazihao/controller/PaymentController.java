@@ -112,10 +112,10 @@ public class PaymentController extends HttpServlet {
                     req.getParameter("maxAmount") != null ? Double.valueOf(req.getParameter("maxAmount")) : null
             );
             param.setPage(
-                    req.getParameter("page") != null ? Integer.parseInt(req.getParameter("page")) : 1
+                    req.getParameter("page") != null ? Integer.parseInt(req.getParameter("page")) : param.getPage()
             );
             param.setPageSize(
-                    req.getParameter("pageSize") != null ? Integer.parseInt(req.getParameter("pageSize")) : 10
+                    req.getParameter("pageSize") != null ? Integer.parseInt(req.getParameter("pageSize")) : param.getPageSize()
             );
         }
         log.info("接收到的查询参数:{}", param);

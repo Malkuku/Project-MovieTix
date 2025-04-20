@@ -72,8 +72,8 @@ public class OrderController extends HttpServlet {
             param.setMaxAmount(req.getParameter("maxAmount") != null ? Double.valueOf(req.getParameter("maxAmount")) : null);
             param.setStartDate(req.getParameter("startDate") != null ? LocalDateTime.parse(req.getParameter("startDate")) : null);
             param.setEndDate(req.getParameter("endDate") != null ? LocalDateTime.parse(req.getParameter("endDate")) : null);
-            param.setPage(req.getParameter("page") != null ? Integer.parseInt(req.getParameter("page")) : 1);
-            param.setPageSize(req.getParameter("pageSize") != null ? Integer.parseInt(req.getParameter("pageSize")) : 10);
+            param.setPage(req.getParameter("page") != null ? Integer.parseInt(req.getParameter("page")) : param.getPage());
+            param.setPageSize(req.getParameter("pageSize") != null ? Integer.parseInt(req.getParameter("pageSize")) : param.getPageSize());
         }
         log.info("接收到的订单查询参数:{}", param);
         PageResult<Order> pageResult = orderService.selectOrdersByPage(param);
