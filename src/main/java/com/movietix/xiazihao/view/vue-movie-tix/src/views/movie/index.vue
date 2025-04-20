@@ -287,6 +287,12 @@ const deleteOldPoster = async (url) => {
   }
 }
 
+const handleStatusChange = (value)=> {
+  if (value === "") {
+    queryParams.status = null;
+  }
+}
+
 // 初始化加载
 onMounted(() => {
   search();
@@ -325,7 +331,7 @@ onMounted(() => {
         <el-input-number v-model="queryParams.maxRating" :min="0" :max="10" :precision="1" placeholder="最高" />
       </el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable>
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable @change="handleStatusChange">
           <el-option label="上映" :value="1" />
           <el-option label="下架" :value="0" />
         </el-select>
